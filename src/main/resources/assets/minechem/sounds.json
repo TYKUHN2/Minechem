@@ -1,0 +1,10 @@
+{
+    "projector": {
+        "category": "master",
+        "sounds": [{
+                "name": "minechem:projector",
+                "stream": false
+            }],
+		"subtitle": "minechem.subtitles.projector_sound"
+    }
+}

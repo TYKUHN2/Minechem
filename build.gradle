@@ -1,174 +1,92 @@
 buildscript {
     repositories {
-        mavenCentral()
         jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-        maven {
-            // Add maven repo for SpecialSource
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-        classpath 'de.undercouch:gradle-download-task:1.2'
+        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
     }
 }
 
-apply plugin: 'forge'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'de.undercouch.download'
+apply plugin: "net.minecraftforge.gradle.forge"
 
-ext.buildProps = file "build.properties"
+sourceCompatibility = targetCompatibility = "1.8"
+version = "1.12.2-" + getVersion("VERSION")
+group = "minechem"
+archivesBaseName = "MineChem"
 
-buildProps.withReader {
-    def prop = new Properties()
-    prop.load(it)
-    ext.config = new ConfigSlurper().parse prop
+minecraft {
+    version = "1.12.2-14.23.2.2653"
+    runDir = "run"
+    mappings = "snapshot_20171003"
 }
 
 repositories {
+    mavenCentral()
     maven {
-        name = "forge"
-        url = "http://files.minecraftforge.net/maven"
-    }
-    maven { // the repo from which to get NEI and stuff
         name 'CB Repo'
         url "http://chickenbones.net/maven"
     }
-    ivy {
-        name 'FMP'
-        artifactPattern "http://files.minecraftforge.net/[module]/[module]-dev-[revision].[ext]"
-    }
 	maven {
-		// OpenComputers maven repo
-		url = "http://maven.cil.li/"
+		name = "progwml6"
+		url = "http://dvs1.progwml6.com/files/maven"
 	}
 }
 
 dependencies {
-    compile group: 'codechicken', name: 'NotEnoughItems', version: "${config.version.minecraft}-${config.version.cc.nei}", ext: 'jar', classifier: "dev"
-    compile group: 'codechicken', name: 'CodeChickenCore', version: "${config.version.minecraft}-${config.version.cc.core}", ext: 'jar', classifier: "dev"
-    compile group: 'codechicken', name: 'CodeChickenLib', version: "${config.version.minecraft}-${config.version.cc.lib}", ext: 'jar', classifier: "dev"
-    compile group: 'li.cil.oc', name: 'OpenComputers', version: "MC${config.version.minecraft}-${config.version.oc.api}-dev", ext: 'jar', classifier: "api"
-    compile fileTree(dir: 'libs', include: '*.jar')
-    compile fileTree(dir: 'libs', include: '*.zip')
+	//deobfCompile "codechicken:CodeChickenCore:1.10.2-2.4.1.102:universal"
+	deobfCompile "mezz.jei:jei_1.12.2:+"
+	//deobfCompile "codechicken:CodeChickenLib:1.12.2-3.1.5.334:universal"
 }
 
-group = "minechem"
-archivesBaseName = "Minechem"
+task apiJar(type: Jar) {
+	classifier = 'api'
+	from sourceSets.api.output
+	from sourceSets.api.allJava
+}
 
-minecraft {
-    version = "${config.version.forge}-${config.version.minecraft}"
-
-    replace "@MAJOR@", config.version.mod.major
-    replace "@MINOR@", config.version.mod.minor
-
-    if (System.getenv("BUILD_NUMBER") != null) {
-        replace "@BUILD@", System.getenv("BUILD_NUMBER")
-    }
-    else
-    {
-        replace "@BUILD@", "ManuallyBuilt"
-    }
+artifacts {
+	archives apiJar
 }
 
 processResources {
-    from 'build.properties'
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+    from(sourceSets.main.resources.srcDirs) {
+        include "mcmod.info"
+        expand "version": project.version, "mcversion": project.minecraft.version
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "mcmod.info"
+    }
+	rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
-allprojects {
-    version = "${config.version.minecraft}-${config.version.mod.major}.${config.version.mod.minor}"
-
-    if (System.getenv("BUILD_NUMBER") != null) {
-        version += ".${System.getenv("BUILD_NUMBER")}"
-    } else {
-        version += "-ManuallyBuilt"
-    }
-
-    jar {
-    	manifest {
-			attributes 'FMLCorePlugin': 'minechem.asm.LoadingPlugin'
-			attributes 'FMLCorePluginContainsFMLMod': 'true'
-		}
-        destinationDir = file (rootProject.getRootDir().getPath() + '/output')
-    }
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                artifact jar
-            }
-        }
-        repositories {
-            maven {
-                url "file://var/www/maven"
-            }
-        }
-    }
+jar {
+	manifest {
+	    attributes 'FMLAT': 'minechem_at.cfg'
+	}
 }
 
-sourceSets {
-    main {
-        resources {
-            exclude '**/xcf/*'
-            exclude 'resources/assets/minechem/xcf'
-        }
-        java {
-            srcDir 'src/fontbox/src/main/java'
-        }
-    }
-}
+String getVersion(String type) {
+	String major = "0";
+	String revision = "0";
+	String patch = "0";
+	String prefix = "public static final String $type = \"";
+	File file = file("src/main/java/minechem/init/ModGlobals.java")
+	file.eachLine { String s ->
+		s = s.trim();
+		if (s.startsWith(prefix)) {
+			s = s.substring(prefix.length(), s.length() - 2);
+			String[] pts = s.split("\\.");
 
-import de.undercouch.gradle.tasks.download.Download
-
-task getLibraries {
-    def libsFolder = new File('libs')
-    if (!libsFolder.isDirectory() ) {
-        libsFolder.mkdirs()
-    }
-
-	def ccSource = 'http://minecraft.curseforge.com/mc-mods/67504-computercraft/files/2216236/download'
-	def ccDest = new File('libs', 'ComputerCraft-1.65.jar')
-
-
-	if(!ccDest.exists() ){
-		download {
-			src ccSource
-			dest ccDest
+			major = pts[0];
+			revision = pts[1];
+			patch = pts[2];
 		}
 	}
-
-    def mtSource = 'http://minetweaker3.powerofbytes.com/download/MineTweaker3-Dev-1.7.10-3.0.9C.jar'
-    def mtDest = new File('libs', 'MineTweaker3-Dev-1.7.10-3.0.9C.jar')
-
-    if(!mtDest.exists() ){
-        download {
-            src mtSource
-            dest mtDest
-        }
-    }
-
-    def cofhSource = 'http://minecraft.curseforge.com/mc-mods/220333-cofhlib/files/2233833/download'
-    def cofhDest = new File('libs', 'CoFHLib-1.7.10-1.0.1-151-dev.jar')
-
-    if(!cofhDest.exists() ){
-        download {
-            src cofhSource
-            dest cofhDest
-        }
-    }
+	return "$major.$revision.$patch";
 }
-
-task apiZip(type: Zip) {
-    classifier = 'api'
-    from sourceSets*.allSource
-    include 'minechem/api/**'
-    destinationDir = file 'output'
-}
-
-build.dependsOn "apiZip", "getLibraries"

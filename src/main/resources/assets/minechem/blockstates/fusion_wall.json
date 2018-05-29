@@ -1,0 +1,26 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"model": "cube_all",
+		"transform": "forge:default-block"
+	},
+	"variants": {
+		"type": {
+			"fusion_wall": {
+				"textures": {
+					"all": "minechem:blocks/fusion_wall"
+				}
+			},
+			"tungsten_plating": {
+				"textures": {
+					"all": "minechem:blocks/tungsten_plating"
+				}
+			},
+			"fusion_core": {
+				"textures": {
+					"all": "minechem:blocks/fusion_core"
+				}
+			}
+		}
+	}
+}

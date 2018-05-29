@@ -1,0 +1,870 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"model": "forge:fluid",
+		"transform": "forge:default-item"
+	},
+	"variants": {
+		"element.po": [{
+			"custom": { "fluid": "element.po" }
+		}],
+		"element.k": [{
+			"custom": { "fluid": "element.k" }
+		}],
+		"element.uut": [{
+			"custom": { "fluid": "element.uut" }
+		}],
+		"element.cn": [{
+			"custom": { "fluid": "element.cn" }
+		}],
+		"element.rg": [{
+			"custom": { "fluid": "element.rg" }
+		}],
+		"element.ds": [{
+			"custom": { "fluid": "element.ds" }
+		}],
+		"element.mt": [{
+			"custom": { "fluid": "element.mt" }
+		}],
+		"element.hs": [{
+			"custom": { "fluid": "element.hs" }
+		}],
+		"element.bh": [{
+			"custom": { "fluid": "element.bh" }
+		}],
+		"element.sg": [{
+			"custom": { "fluid": "element.sg" }
+		}],
+		"element.db": [{
+			"custom": { "fluid": "element.db" }
+		}],
+		"element.rf": [{
+			"custom": { "fluid": "element.rf" }
+		}],
+		"element.lr": [{
+			"custom": { "fluid": "element.lr" }
+		}],
+		"element.no": [{
+			"custom": { "fluid": "element.no" }
+		}],
+		"element.md": [{
+			"custom": { "fluid": "element.md" }
+		}],
+		"element.fm": [{
+			"custom": { "fluid": "element.fm" }
+		}],
+		"element.es": [{
+			"custom": { "fluid": "element.es" }
+		}],
+		"element.cf": [{
+			"custom": { "fluid": "element.cf" }
+		}],
+		"element.bk": [{
+			"custom": { "fluid": "element.bk" }
+		}],
+		"element.cm": [{
+			"custom": { "fluid": "element.cm" }
+		}],
+		"element.am": [{
+			"custom": { "fluid": "element.am" }
+		}],
+		"element.pu": [{
+			"custom": { "fluid": "element.pu" }
+		}],
+		"element.np": [{
+			"custom": { "fluid": "element.np" }
+		}],
+		"element.u": [{
+			"custom": { "fluid": "element.u" }
+		}],
+		"element.pa": [{
+			"custom": { "fluid": "element.pa" }
+		}],
+		"element.th": [{
+			"custom": { "fluid": "element.th" }
+		}],
+		"element.ac": [{
+			"custom": { "fluid": "element.ac" }
+		}],
+		"element.ra": [{
+			"custom": { "fluid": "element.ra" }
+		}],
+		"element.fr": [{
+			"custom": { "fluid": "element.fr" }
+		}],
+		"element.rn": [{
+			"custom": { "fluid": "element.rn" }
+		}],
+		"element.at": [{
+			"custom": { "fluid": "element.at" }
+		}],
+		"element.bi": [{
+			"custom": { "fluid": "element.bi" }
+		}],
+		"element.pb": [{
+			"custom": { "fluid": "element.pb" }
+		}],
+		"element.tl": [{
+			"custom": { "fluid": "element.tl" }
+		}],
+		"element.hg": [{
+			"custom": { "fluid": "element.hg" }
+		}],
+		"element.au": [{
+			"custom": { "fluid": "element.au" }
+		}],
+		"element.pt": [{
+			"custom": { "fluid": "element.pt" }
+		}],
+		"element.ir": [{
+			"custom": { "fluid": "element.ir" }
+		}],
+		"element.os": [{
+			"custom": { "fluid": "element.os" }
+		}],
+		"element.re": [{
+			"custom": { "fluid": "element.re" }
+		}],
+		"element.w": [{
+			"custom": { "fluid": "element.w" }
+		}],
+		"element.ta": [{
+			"custom": { "fluid": "element.ta" }
+		}],
+		"element.hf": [{
+			"custom": { "fluid": "element.hf" }
+		}],
+		"element.lu": [{
+			"custom": { "fluid": "element.lu" }
+		}],
+		"element.yb": [{
+			"custom": { "fluid": "element.yb" }
+		}],
+		"element.tm": [{
+			"custom": { "fluid": "element.tm" }
+		}],
+		"element.er": [{
+			"custom": { "fluid": "element.er" }
+		}],
+		"element.ho": [{
+			"custom": { "fluid": "element.ho" }
+		}],
+		"element.dy": [{
+			"custom": { "fluid": "element.dy" }
+		}],
+		"element.tb": [{
+			"custom": { "fluid": "element.tb" }
+		}],
+		"element.gd": [{
+			"custom": { "fluid": "element.gd" }
+		}],
+		"element.eu": [{
+			"custom": { "fluid": "element.eu" }
+		}],
+		"element.sm": [{
+			"custom": { "fluid": "element.sm" }
+		}],
+		"element.pm": [{
+			"custom": { "fluid": "element.pm" }
+		}],
+		"element.nd": [{
+			"custom": { "fluid": "element.nd" }
+		}],
+		"element.pr": [{
+			"custom": { "fluid": "element.pr" }
+		}],
+		"element.ce": [{
+			"custom": { "fluid": "element.ce" }
+		}],
+		"element.la": [{
+			"custom": { "fluid": "element.la" }
+		}],
+		"element.ba": [{
+			"custom": { "fluid": "element.ba" }
+		}],
+		"element.cs": [{
+			"custom": { "fluid": "element.cs" }
+		}],
+		"element.xe": [{
+			"custom": { "fluid": "element.xe" }
+		}],
+		"element.i": [{
+			"custom": { "fluid": "element.i" }
+		}],
+		"element.te": [{
+			"custom": { "fluid": "element.te" }
+		}],
+		"element.sb": [{
+			"custom": { "fluid": "element.sb" }
+		}],
+		"element.sn": [{
+			"custom": { "fluid": "element.sn" }
+		}],
+		"element.in": [{
+			"custom": { "fluid": "element.in" }
+		}],
+		"element.cd": [{
+			"custom": { "fluid": "element.cd" }
+		}],
+		"element.ag": [{
+			"custom": { "fluid": "element.ag" }
+		}],
+		"element.pd": [{
+			"custom": { "fluid": "element.pd" }
+		}],
+		"element.rh": [{
+			"custom": { "fluid": "element.rh" }
+		}],
+		"element.ru": [{
+			"custom": { "fluid": "element.ru" }
+		}],
+		"element.tc": [{
+			"custom": { "fluid": "element.tc" }
+		}],
+		"element.mo": [{
+			"custom": { "fluid": "element.mo" }
+		}],
+		"element.nb": [{
+			"custom": { "fluid": "element.nb" }
+		}],
+		"element.zr": [{
+			"custom": { "fluid": "element.zr" }
+		}],
+		"element.y": [{
+			"custom": { "fluid": "element.y" }
+		}],
+		"element.sr": [{
+			"custom": { "fluid": "element.sr" }
+		}],
+		"element.rb": [{
+			"custom": { "fluid": "element.rb" }
+		}],
+		"element.kr": [{
+			"custom": { "fluid": "element.kr" }
+		}],
+		"element.br": [{
+			"custom": { "fluid": "element.br" }
+		}],
+		"element.se": [{
+			"custom": { "fluid": "element.se" }
+		}],
+		"element.as": [{
+			"custom": { "fluid": "element.as" }
+		}],
+		"element.ge": [{
+			"custom": { "fluid": "element.ge" }
+		}],
+		"element.ga": [{
+			"custom": { "fluid": "element.ga" }
+		}],
+		"element.zn": [{
+			"custom": { "fluid": "element.zn" }
+		}],
+		"element.cu": [{
+			"custom": { "fluid": "element.cu" }
+		}],
+		"element.ni": [{
+			"custom": { "fluid": "element.ni" }
+		}],
+		"element.co": [{
+			"custom": { "fluid": "element.co" }
+		}],
+		"element.fe": [{
+			"custom": { "fluid": "element.fe" }
+		}],
+		"element.mn": [{
+			"custom": { "fluid": "element.mn" }
+		}],
+		"element.cr": [{
+			"custom": { "fluid": "element.cr" }
+		}],
+		"element.v": [{
+			"custom": { "fluid": "element.v" }
+		}],
+		"element.ti": [{
+			"custom": { "fluid": "element.ti" }
+		}],
+		"element.sc": [{
+			"custom": { "fluid": "element.sc" }
+		}],
+		"element.ca": [{
+			"custom": { "fluid": "element.ca" }
+		}],
+		"element.ar": [{
+			"custom": { "fluid": "element.ar" }
+		}],
+		"element.cl": [{
+			"custom": { "fluid": "element.cl" }
+		}],
+		"element.s": [{
+			"custom": { "fluid": "element.s" }
+		}],
+		"element.p": [{
+			"custom": { "fluid": "element.p" }
+		}],
+		"element.si": [{
+			"custom": { "fluid": "element.si" }
+		}],
+		"element.al": [{
+			"custom": { "fluid": "element.al" }
+		}],
+		"element.mg": [{
+			"custom": { "fluid": "element.mg" }
+		}],
+		"element.na": [{
+			"custom": { "fluid": "element.na" }
+		}],
+		"element.ne": [{
+			"custom": { "fluid": "element.ne" }
+		}],
+		"element.f": [{
+			"custom": { "fluid": "element.f" }
+		}],
+		"element.o": [{
+			"custom": { "fluid": "element.o" }
+		}],
+		"element.n": [{
+			"custom": { "fluid": "element.n" }
+		}],
+		"element.c": [{
+			"custom": { "fluid": "element.c" }
+		}],
+		"element.b": [{
+			"custom": { "fluid": "element.b" }
+		}],
+		"element.be": [{
+			"custom": { "fluid": "element.be" }
+		}],
+		"element.li": [{
+			"custom": { "fluid": "element.li" }
+		}],
+		"element.he": [{
+			"custom": { "fluid": "element.he" }
+		}],
+		"element.h": [{
+			"custom": { "fluid": "element.h" }
+		}],
+		"molecule.meoh": [{
+			"custom": { "fluid": "molecule.meoh" }
+		}],
+		"molecule.water": [{
+			"custom": { "fluid": "molecule.water" }
+		}],
+		"molecule.oleicacid": [{
+			"custom": { "fluid": "molecule.oleicacid" }
+		}],
+		"molecule.dimethyltryptamine": [{
+			"custom": { "fluid": "molecule.dimethyltryptamine" }
+		}],
+		"molecule.sodiumsulfate": [{
+			"custom": { "fluid": "molecule.sodiumsulfate" }
+		}],
+		"molecule.sodiumbisulfate": [{
+			"custom": { "fluid": "molecule.sodiumbisulfate" }
+		}],
+		"molecule.hydrogensulfide": [{
+			"custom": { "fluid": "molecule.hydrogensulfide" }
+		}],
+		"molecule.sulfurdioxide": [{
+			"custom": { "fluid": "molecule.sulfurdioxide" }
+		}],
+		"molecule.arsenicoxide": [{
+			"custom": { "fluid": "molecule.arsenicoxide" }
+		}],
+		"molecule.galliumoxide": [{
+			"custom": { "fluid": "molecule.galliumoxide" }
+		}],
+		"molecule.ironoxide": [{
+			"custom": { "fluid": "molecule.ironoxide" }
+		}],
+		"molecule.siliconoxide": [{
+			"custom": { "fluid": "molecule.siliconoxide" }
+		}],
+		"molecule.chromite": [{
+			"custom": { "fluid": "molecule.chromite" }
+		}],
+		"molecule.forsterite": [{
+			"custom": { "fluid": "molecule.forsterite" }
+		}],
+		"molecule.redgarnet": [{
+			"custom": { "fluid": "molecule.redgarnet" }
+		}],
+		"molecule.spessartine": [{
+			"custom": { "fluid": "molecule.spessartine" }
+		}],
+		"molecule.almadine": [{
+			"custom": { "fluid": "molecule.almadine" }
+		}],
+		"molecule.silicate": [{
+			"custom": { "fluid": "molecule.silicate" }
+		}],
+		"molecule.omphacite": [{
+			"custom": { "fluid": "molecule.omphacite" }
+		}],
+		"molecule.aluminiumhypophosphite": [{
+			"custom": { "fluid": "molecule.aluminiumhypophosphite" }
+		}],
+		"molecule.hypophosphite": [{
+			"custom": { "fluid": "molecule.hypophosphite" }
+		}],
+		"molecule.cesiumhydroxide": [{
+			"custom": { "fluid": "molecule.cesiumhydroxide" }
+		}],
+		"molecule.rubidiumhydroxide": [{
+			"custom": { "fluid": "molecule.franciumhydroxide" }
+		}],
+		"molecule.franciumhydroxide": [{
+			"custom": { "fluid": "molecule.rubidiumhydroxide" }
+		}],
+		"molecule.potassiumhydroxide": [{
+			"custom": { "fluid": "molecule.potassiumhydroxide" }
+		}],
+		"molecule.sodiumhydroxide": [{
+			"custom": { "fluid": "molecule.sodiumhydroxide" }
+		}],
+		"molecule.lithiumhydroxide": [{
+			"custom": { "fluid": "molecule.lithiumhydroxide" }
+		}],
+		"molecule.keratin": [{
+			"custom": { "fluid": "molecule.keratin" }
+		}],
+		"molecule.asparagine": [{
+			"custom": { "fluid": "molecule.asparagine" }
+		}],
+		"molecule.glutamates": [{
+			"custom": { "fluid": "molecule.glutamates" }
+		}],
+		"molecule.asbestos": [{
+			"custom": { "fluid": "molecule.asbestos" }
+		}],
+		"molecule.pyrope": [{
+			"custom": { "fluid": "molecule.pyrope" }
+		}],
+		"molecule.isoleucine": [{
+			"custom": { "fluid": "molecule.isoleucine" }
+		}],
+		"molecule.tryptophan": [{
+			"custom": { "fluid": "molecule.tryptophan" }
+		}],
+		"molecule.leucine": [{
+			"custom": { "fluid": "molecule.leucine" }
+		}],
+		"molecule.proline": [{
+			"custom": { "fluid": "molecule.proline" }
+		}],
+		"molecule.glutamine": [{
+			"custom": { "fluid": "molecule.glutamine" }
+		}],
+		"molecule.phenylalanine": [{
+			"custom": { "fluid": "molecule.phenylalanine" }
+		}],
+		"molecule.histidine": [{
+			"custom": { "fluid": "molecule.histidine" }
+		}],
+		"molecule.tyrosine": [{
+			"custom": { "fluid": "molecule.tyrosine" }
+		}],
+		"molecule.methionine": [{
+			"custom": { "fluid": "molecule.methionine" }
+		}],
+		"molecule.lysine": [{
+			"custom": { "fluid": "molecule.lysine" }
+		}],
+		"molecule.threonine": [{
+			"custom": { "fluid": "molecule.threonine" }
+		}],
+		"molecule.cysteine": [{
+			"custom": { "fluid": "molecule.cysteine" }
+		}],
+		"molecule.zoisite": [{
+			"custom": { "fluid": "molecule.zoisite" }
+		}],
+		"molecule.topaz": [{
+			"custom": { "fluid": "molecule.topaz" }
+		}],
+		"molecule.peridot": [{
+			"custom": { "fluid": "molecule.peridot" }
+		}],
+		"molecule.propane": [{
+			"custom": { "fluid": "molecule.propane" }
+		}],
+		"molecule.talc": [{
+			"custom": { "fluid": "molecule.talc" }
+		}],
+		"molecule.augite": [{
+			"custom": { "fluid": "molecule.augite" }
+		}],
+		"molecule.biotite": [{
+			"custom": { "fluid": "molecule.biotite" }
+		}],
+		"molecule.orthoclase": [{
+			"custom": { "fluid": "molecule.orthoclase" }
+		}],
+		"molecule.plagioclasealbite": [{
+			"custom": { "fluid": "molecule.plagioclasealbite" }
+		}],
+		"molecule.plagioclaseanorthite": [{
+			"custom": { "fluid": "molecule.plagioclaseanorthite" }
+		}],
+		"molecule.sodiumoxide": [{
+			"custom": { "fluid": "molecule.sodiumoxide" }
+		}],
+		"molecule.potassiumoxide": [{
+			"custom": { "fluid": "molecule.potassiumoxide" }
+		}],
+		"molecule.aluminiumphosphate": [{
+			"custom": { "fluid": "molecule.aluminiumphosphate" }
+		}],
+		"molecule.fibroin": [{
+			"custom": { "fluid": "molecule.fibroin" }
+		}],
+		"molecule.galliumarsenide": [{
+			"custom": { "fluid": "molecule.galliumarsenide" }
+		}],
+		"molecule.hperox": [{
+			"custom": { "fluid": "molecule.hperox" }
+		}],
+		"molecule.tannicacid": [{
+			"custom": { "fluid": "molecule.tannicacid" }
+		}],
+		"molecule.glucose": [{
+			"custom": { "fluid": "molecule.glucose" }
+		}],
+		"molecule.gallicacid": [{
+			"custom": { "fluid": "molecule.gallicacid" }
+		}],
+		"molecule.latropine": [{
+			"custom": { "fluid": "molecule.latropine" }
+		}],
+		"molecule.caulerpenyne": [{
+			"custom": { "fluid": "molecule.caulerpenyne" }
+		}],
+		"molecule.radchlor": [{
+			"custom": { "fluid": "molecule.radchlor" }
+		}],
+		"molecule.lcd": [{
+			"custom": { "fluid": "molecule.lcd" }
+		}],
+		"molecule.metblue": [{
+			"custom": { "fluid": "molecule.metblue" }
+		}],
+		"molecule.olivine": [{
+			"custom": { "fluid": "molecule.olivine" }
+		}],
+		"molecule.purpleorgodye": [{
+			"custom": { "fluid": "molecule.purpleorgodye" }
+		}],
+		"molecule.redorgodye": [{
+			"custom": { "fluid": "molecule.redorgodye" }
+		}],
+		"molecule.blueorgodye": [{
+			"custom": { "fluid": "molecule.blueorgodye" }
+		}],
+		"molecule.cocainehcl": [{
+			"custom": { "fluid": "molecule.cocainehcl" }
+		}],
+		"molecule.cocaine": [{
+			"custom": { "fluid": "molecule.cocaine" }
+		}],
+		"molecule.hcl": [{
+			"custom": { "fluid": "molecule.hcl" }
+		}],
+		"molecule.xanax": [{
+			"custom": { "fluid": "molecule.xanax" }
+		}],
+		"molecule.weedex": [{
+			"custom": { "fluid": "molecule.weedex" }
+		}],
+		"molecule.xylitol": [{
+			"custom": { "fluid": "molecule.xylitol" }
+		}],
+		"molecule.retinol": [{
+			"custom": { "fluid": "molecule.retinol" }
+		}],
+		"molecule.pal2": [{
+			"custom": { "fluid": "molecule.pal2" }
+		}],
+		"molecule.hist": [{
+			"custom": { "fluid": "molecule.hist" }
+		}],
+		"molecule.aalc": [{
+			"custom": { "fluid": "molecule.aalc" }
+		}],
+		"molecule.phosgene": [{
+			"custom": { "fluid": "molecule.phosgene" }
+		}],
+		"molecule.plat": [{
+			"custom": { "fluid": "molecule.plat" }
+		}],
+		"molecule.buli": [{
+			"custom": { "fluid": "molecule.buli" }
+		}],
+		"molecule.mt": [{
+			"custom": { "fluid": "molecule.mt" }
+		}],
+		"molecule.thc": [{
+			"custom": { "fluid": "molecule.thc" }
+		}],
+		"molecule.tetrodotoxin": [{
+			"custom": { "fluid": "molecule.tetrodotoxin" }
+		}],
+		"molecule.nodularin": [{
+			"custom": { "fluid": "molecule.nodularin" }
+		}],
+		"molecule.ammonia": [{
+			"custom": { "fluid": "molecule.ammonia" }
+		}],
+		"molecule.salt": [{
+			"custom": { "fluid": "molecule.salt" }
+		}],
+		"molecule.mycotoxin": [{
+			"custom": { "fluid": "molecule.mycotoxin" }
+		}],
+		"molecule.dota": [{
+			"custom": { "fluid": "molecule.dota" }
+		}],
+		"molecule.ddt": [{
+			"custom": { "fluid": "molecule.ddt" }
+		}],
+		"molecule.asprin": [{
+			"custom": { "fluid": "molecule.asprin" }
+		}],
+		"molecule.glyphosate": [{
+			"custom": { "fluid": "molecule.glyphosate" }
+		}],
+		"molecule.sulfuricacid": [{
+			"custom": { "fluid": "molecule.sulfuricacid" }
+		}],
+		"molecule.shikimicacid": [{
+			"custom": { "fluid": "molecule.shikimicacid" }
+		}],
+		"molecule.arginine": [{
+			"custom": { "fluid": "molecule.arginine" }
+		}],
+		"molecule.fingolimod": [{
+			"custom": { "fluid": "molecule.fingolimod" }
+		}],
+		"molecule.kaolinite": [{
+			"custom": { "fluid": "molecule.kaolinite" }
+		}],
+		"molecule.testosterone": [{
+			"custom": { "fluid": "molecule.testosterone" }
+		}],
+		"molecule.penicillin": [{
+			"custom": { "fluid": "molecule.penicillin" }
+		}],
+		"molecule.valine": [{
+			"custom": { "fluid": "molecule.valine" }
+		}],
+		"molecule.fullrene": [{
+			"custom": { "fluid": "molecule.fullrene" }
+		}],
+		"molecule.aluminiumoxide": [{
+			"custom": { "fluid": "molecule.aluminiumoxide" }
+		}],
+		"molecule.pantherine": [{
+			"custom": { "fluid": "molecule.pantherine" }
+		}],
+		"molecule.sucrose": [{
+			"custom": { "fluid": "molecule.sucrose" }
+		}],
+		"molecule.starch": [{
+			"custom": { "fluid": "molecule.starch" }
+		}],
+		"molecule.theobromine": [{
+			"custom": { "fluid": "molecule.theobromine" }
+		}],
+		"molecule.amphetamine": [{
+			"custom": { "fluid": "molecule.amphetamine" }
+		}],
+		"molecule.ethanol": [{
+			"custom": { "fluid": "molecule.ethanol" }
+		}],
+		"molecule.beryl": [{
+			"custom": { "fluid": "molecule.beryl" }
+		}],
+		"molecule.metasilicate": [{
+			"custom": { "fluid": "molecule.metasilicate" }
+		}],
+		"molecule.whitepigment": [{
+			"custom": { "fluid": "molecule.whitepigment" }
+		}],
+		"molecule.blackpigment": [{
+			"custom": { "fluid": "molecule.blackpigment" }
+		}],
+		"molecule.greenpigment": [{
+			"custom": { "fluid": "molecule.greenpigment" }
+		}],
+		"molecule.purplepigment": [{
+			"custom": { "fluid": "molecule.purplepigment" }
+		}],
+		"molecule.lightbluepigment": [{
+			"custom": { "fluid": "molecule.lightbluepigment" }
+		}],
+		"molecule.limepigment": [{
+			"custom": { "fluid": "molecule.limepigment" }
+		}],
+		"molecule.yellowpigment": [{
+			"custom": { "fluid": "molecule.yellowpigment" }
+		}],
+		"molecule.orangepigment": [{
+			"custom": { "fluid": "molecule.orangepigment" }
+		}],
+		"molecule.redpigment": [{
+			"custom": { "fluid": "molecule.redpigment" }
+		}],
+		"molecule.pmma": [{
+			"custom": { "fluid": "molecule.pmma" }
+		}],
+		"molecule.memethacrylate": [{
+			"custom": { "fluid": "molecule.memethacrylate" }
+		}],
+		"molecule.methylene": [{
+			"custom": { "fluid": "molecule.methylene" }
+		}],
+		"molecule.methyl": [{
+			"custom": { "fluid": "molecule.methyl" }
+		}],
+		"molecule.mescaline": [{
+			"custom": { "fluid": "molecule.mescaline" }
+		}],
+		"molecule.serine": [{
+			"custom": { "fluid": "molecule.serine" }
+		}],
+		"molecule.glycine": [{
+			"custom": { "fluid": "molecule.glycine" }
+		}],
+		"molecule.alinine": [{
+			"custom": { "fluid": "molecule.alinine" }
+		}],
+		"molecule.hydroxylapatite": [{
+			"custom": { "fluid": "molecule.hydroxylapatite" }
+		}],
+		"molecule.asparticacid": [{
+			"custom": { "fluid": "molecule.asparticacid" }
+		}],
+		"molecule.cucurbitacin": [{
+			"custom": { "fluid": "molecule.cucurbitacin" }
+		}],
+		"molecule.magnesiumoxide": [{
+			"custom": { "fluid": "molecule.magnesiumoxide" }
+		}],
+		"molecule.magnetite": [{
+			"custom": { "fluid": "molecule.magnetite" }
+		}],
+		"molecule.strontiumnitrate": [{
+			"custom": { "fluid": "molecule.strontiumnitrate" }
+		}],
+		"molecule.iron3oxide": [{
+			"custom": { "fluid": "molecule.iron3oxide" }
+		}],
+		"molecule.psilocybin": [{
+			"custom": { "fluid": "molecule.psilocybin" }
+		}],
+		"molecule.methamphetamine": [{
+			"custom": { "fluid": "molecule.methamphetamine" }
+		}],
+		"molecule.polyvinylchloride": [{
+			"custom": { "fluid": "molecule.polyvinylchloride" }
+		}],
+		"molecule.vinylchloride": [{
+			"custom": { "fluid": "molecule.vinylchloride" }
+		}],
+		"molecule.malicacid": [{
+			"custom": { "fluid": "molecule.malicacid" }
+		}],
+		"molecule.polyisobutylene": [{
+			"custom": { "fluid": "molecule.polyisobutylene" }
+		}],
+		"molecule.butene": [{
+			"custom": { "fluid": "molecule.butene" }
+		}],
+		"molecule.isoprene": [{
+			"custom": { "fluid": "molecule.isoprene" }
+		}],
+		"molecule.lazurite": [{
+			"custom": { "fluid": "molecule.lazurite" }
+		}],
+		"molecule.magnesiumcarbonate": [{
+			"custom": { "fluid": "molecule.magnesiumcarbonate" }
+		}],
+		"molecule.calciumcarbonate": [{
+			"custom": { "fluid": "molecule.calciumcarbonate" }
+		}],
+		"molecule.calciumoxide": [{
+			"custom": { "fluid": "molecule.calciumoxide" }
+		}],
+		"molecule.peroxide": [{
+			"custom": { "fluid": "molecule.peroxide" }
+		}],
+		"molecule.hydronium": [{
+			"custom": { "fluid": "molecule.hydronium" }
+		}],
+		"molecule.ammonium": [{
+			"custom": { "fluid": "molecule.ammonium" }
+		}],
+		"molecule.hydroxide": [{
+			"custom": { "fluid": "molecule.hydroxide" }
+		}],
+		"molecule.chromate": [{
+			"custom": { "fluid": "molecule.chromate" }
+		}],
+		"molecule.peroxide": [{
+			"custom": { "fluid": "molecule.peroxide" }
+		}],
+		"molecule.acetate": [{
+			"custom": { "fluid": "molecule.acetate" }
+		}],
+		"molecule.phosphate": [{
+			"custom": { "fluid": "molecule.phosphate" }
+		}],
+		"molecule.cyanide": [{
+			"custom": { "fluid": "molecule.cyanide" }
+		}],
+		"molecule.carbonate": [{
+			"custom": { "fluid": "molecule.carbonate" }
+		}],
+		"molecule.nitrate": [{
+			"custom": { "fluid": "molecule.nitrate" }
+		}],
+		"molecule.sodalite": [{
+			"custom": { "fluid": "molecule.sodalite" }
+		}],
+		"molecule.noselite": [{
+			"custom": { "fluid": "molecule.noselite" }
+		}],
+		"molecule.sulfate": [{
+			"custom": { "fluid": "molecule.sulfate" }
+		}],
+		"molecule.nepheline": [{
+			"custom": { "fluid": "molecule.nepheline" }
+		}],
+		"molecule.pyrite": [{
+			"custom": { "fluid": "molecule.pyrite" }
+		}],
+		"molecule.calcicpyroxene": [{
+			"custom": { "fluid": "molecule.calcicpyroxene" }
+		}],
+		"molecule.silicondioxide": [{
+			"custom": { "fluid": "molecule.silicondioxide" }
+		}],
+		"molecule.tnt": [{
+			"custom": { "fluid": "molecule.tnt" }
+		}],
+		"molecule.potassiumnitrate": [{
+			"custom": { "fluid": "molecule.potassiumnitrate" }
+		}],
+		"molecule.toluene": [{
+			"custom": { "fluid": "molecule.toluene" }
+		}],
+		"molecule.nitrogendioxide": [{
+			"custom": { "fluid": "molecule.nitrogendioxide" }
+		}],
+		"molecule.carbondioxide": [{
+			"custom": { "fluid": "molecule.carbondioxide" }
+		}],
+		"molecule.cellulose": [{
+			"custom": { "fluid": "molecule.cellulose" }
+		}]
+	}
+}

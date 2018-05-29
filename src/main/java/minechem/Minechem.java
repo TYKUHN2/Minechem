@@ -1,145 +1,196 @@
 package minechem;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.ModMetadata;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import minechem.handler.AchievementHandler;
-import minechem.handler.ElementHandler;
-import minechem.handler.GuiHandler;
-import minechem.handler.ResearchHandler;
-import minechem.handler.MessageHandler;
-import minechem.handler.MoleculeHandler;
-import minechem.helper.LogHelper;
+import minechem.fluid.FluidChemicalDispenser;
+import minechem.fluid.reaction.ChemicalFluidReactionHandler;
+import minechem.init.ModBlocks;
+import minechem.init.ModConfig;
+import minechem.init.ModFluids;
+import minechem.init.ModGlobals;
+import minechem.init.ModGlobals.MetaData;
+import minechem.init.ModItems;
+import minechem.init.ModLogger;
+import minechem.init.ModNetworking;
+import minechem.init.ModRecipes;
+import minechem.init.ModWorldGen;
+import minechem.item.blueprint.MinechemBlueprint;
+import minechem.item.element.ElementEnum;
+import minechem.item.molecule.MoleculeEnum;
+import minechem.item.polytool.PolytoolEventHandler;
+import minechem.item.polytool.types.PolytoolTypeIron;
+import minechem.potion.PharmacologyEffectRegistry;
+import minechem.potion.PotionCoatingRecipe;
+import minechem.potion.PotionCoatingSubscribe;
+import minechem.potion.PotionEnchantmentCoated;
 import minechem.proxy.CommonProxy;
-import minechem.registry.AugmentRegistry;
-import minechem.registry.BlockRegistry;
-import minechem.registry.CreativeTabRegistry;
-import minechem.registry.ItemRegistry;
-import minechem.registry.JournalRegistry;
-import minechem.registry.RecipeRegistry;
+import minechem.recipe.RecipePotionSpiking;
+import minechem.recipe.handler.RecipeHandlerDecomposer;
+import minechem.utils.MinechemUtil;
+import minechem.utils.RecipeUtil;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ModMetadata;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = Compendium.Naming.id, name = Compendium.Naming.name, version = Compendium.Version.full, useMetadata = false, guiFactory = "minechem.proxy.client.gui.GuiFactory", acceptedMinecraftVersions = "[1.7.10,)", dependencies = "required-after:Forge@[10.13.2.1291,)")
-public class Minechem
-{
-//    compile already
-//    i would like to go to bed
-//    compile failed: see log
+@Mod(modid = ModGlobals.ID, name = ModGlobals.NAME, version = ModGlobals.VERSION, useMetadata = false, acceptedMinecraftVersions = "[1.12.2]", dependencies = "required-after:forge@[14.23.2.2638,);")
+public class Minechem {
+	public static boolean isCoFHAAPILoaded;
 
-    public static boolean isCoFHAAPILoaded;
+	// Instancing
+	@Mod.Instance(value = ModGlobals.ID)
+	public static Minechem INSTANCE;
 
-    // Instancing
-    @Instance(value = Compendium.Naming.id)
-    public static Minechem INSTANCE;
+	// Public extra data about our mod that Forge uses in the mods listing page for more information.
+	@Mod.Metadata(ModGlobals.ID)
+	public static ModMetadata metadata;
 
-    // Public extra data about our mod that Forge uses in the mods listing page for more information.
-    @Mod.Metadata(Compendium.Naming.id)
-    public static ModMetadata metadata;
+	@SidedProxy(clientSide = "minechem.proxy.ClientProxy", serverSide = "minechem.proxy.CommonProxy")
+	public static CommonProxy PROXY;
 
-    @SidedProxy(clientSide = "minechem.proxy.client.ClientProxy", serverSide = "minechem.proxy.CommonProxy")
-    public static CommonProxy proxy;
+	static {
+		FluidRegistry.enableUniversalBucket();
+	}
 
-    public static ElementHandler elementHandler;
+	@Mod.EventHandler
+	public void preInit(FMLPreInitializationEvent event) {
+		// Register instance.
+		INSTANCE = this;
 
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
-    {
-        // Register instance.
-        INSTANCE = this;
+		try {
+			Class.forName("cofh.api.energy.IEnergyHandler");
+			isCoFHAAPILoaded = true;
+		}
+		catch (Exception e) {
+			isCoFHAAPILoaded = false;
+		}
 
-        try
-        {
-            // Shouldn't we be using Loader.isModLoaded here?
-            Class.forName("cofh.api.energy.IEnergyHandler");
-            isCoFHAAPILoaded = true;
-        } catch (Exception e)
-        {
-            isCoFHAAPILoaded = false;
-        }
+		// Load configuration.
+		ModLogger.debug("Loading configuration...");
+		ModConfig.init(event.getSuggestedConfigurationFile());
+		MinecraftForge.EVENT_BUS.register(new ModConfig());
 
-        // Load configuration.
-        LogHelper.debug("Loading configuration...");
-        Config.init();
-        FMLCommonHandler.instance().bus().register(new Config());
+		ModLogger.debug("Registering Packets...");
+		ModNetworking.init();
 
-        LogHelper.debug("Registering Packets...");
-        MessageHandler.init();
+		ModLogger.debug("Setting up ModMetaData");
+		MetaData.init(metadata);
 
-        LogHelper.debug("Setting up ModMetaData");
-        metadata = Compendium.MetaData.init(metadata);
+		// Register items and blocks.
+		ModLogger.debug("Registering Items...");
+		ModItems.init();
 
-        // Register Elements and Molecules before constructing items
-        LogHelper.debug("Registering Elements...");
-        ElementHandler.init();
+		ModLogger.debug("Registering Blocks...");
+		ModBlocks.registerBlocks();
 
-        LogHelper.debug("Registering Molecules...");
-        MoleculeHandler.init();
+		ModLogger.debug("Registering Elements & Molecules...");
+		ElementEnum.init();
+		MoleculeEnum.init();
 
-        // Register items and blocks.
-        LogHelper.debug("Registering Items...");
-        ItemRegistry.init();
+		ModLogger.debug("Registering Fluids...");
+		ModFluids.init();
+		if (FMLCommonHandler.instance().getSide().isClient()) {
+			ModFluids.initModels();
+		}
 
-        LogHelper.debug("Registering Blocks...");
-        BlockRegistry.init();
+		ModLogger.debug("Registering Blueprints...");
+		MinechemBlueprint.registerBlueprints();
 
-        LogHelper.debug("Registering Augments...");
-        AugmentRegistry.init();
+		//GameRegistry.registerFuelHandler(new MinechemFuelHandler());
+		PROXY.registerTickHandlers();
+		//ResourceUtils.registerReloadListener(manager -> RenderUtil.getModelCache().clear());
+		//FMLInterModComms.sendMessage("OpenBlocks", "donateUrl", "http://jakimfett.com/patreon/");
+	}
 
-        LogHelper.debug("Registering CreativeTabs...");
-        CreativeTabRegistry.init();
+	@Mod.EventHandler
+	public void init(FMLInitializationEvent event) {
+		ModLogger.debug("Registering OreDict Compatability...");
+		ModItems.registerToOreDictionary();
 
-        // Register Event Handlers
-        LogHelper.debug("Registering Event Handlers...");
-        proxy.registerEventHandlers();
+		ModLogger.debug("Registering Chemical Effects...");
+		MinecraftForge.EVENT_BUS.register(new PotionCoatingSubscribe());
 
-        LogHelper.debug("Registering Journal...");
-        JournalRegistry.init();
-    }
+		ModLogger.debug("Registering Polytool Event Handler...");
+		MinecraftForge.EVENT_BUS.register(new PolytoolEventHandler());
 
-    @EventHandler
-    public void init(FMLInitializationEvent event)
-    {
-        LogHelper.debug("Registering Recipes...");
-        RecipeRegistry.getInstance().init();
+		ModLogger.debug("Matching Pharmacology Effects to Chemicals...");
+		//CraftingManager.REGISTRY.register(0,new ResourceLocation(ModGlobals.ID, "potion_coating"), new PotionCoatingRecipe());
+		ForgeRegistries.RECIPES.register(new PotionCoatingRecipe().setRegistryName(new ResourceLocation(ModGlobals.ID, "potion_coating")));
 
-        LogHelper.debug("Registering GUI and Container handlers...");
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+		ModLogger.debug("Registering FoodSpiking Recipes...");
+		//CraftingManager.getInstance().getRecipeList().add(new PotionSpikingRecipe());
+		ForgeRegistries.RECIPES.register(new RecipePotionSpiking().setRegistryName(new ResourceLocation(ModGlobals.ID, "potion_spiking")));
 
-        LogHelper.debug("Registering Renderers...");
-        proxy.registerRenderers();
+		ModLogger.debug("Registering Ore Generation...");
+		GameRegistry.registerWorldGenerator(new ModWorldGen(), 0);
 
-        LogHelper.debug("Registering Fonts...");
-        proxy.registerFonts();
+		ModLogger.debug("Registering Fluid Containers...");
+		//ModItems.registerFluidContainers();
 
-        LogHelper.debug("Registering Achievements...");
-        AchievementHandler.init();
-    }
+		ModLogger.debug("Register Tick Events for chemical effects tracking...");
+		PROXY.registerTickHandlers();
 
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event)
-    {
-        proxy.registerResourcesListener();
+		ModLogger.debug("Registering ClientProxy Rendering Hooks...");
+		PROXY.registerRenderers();
 
-        LogHelper.info("Minechem has loaded");
-    }
+		ModLogger.debug("Registering Fluid Reactions...");
+		FluidChemicalDispenser.init();
+		ChemicalFluidReactionHandler.initReaction();
 
-    @EventHandler
-    public void onServerStarted(FMLServerStartedEvent event)
-    {
-        ResearchHandler.readPlayerResearch();
-    }
+		//TODO
+		/*
+		if (Loader.isModLoaded("MineTweaker3"))
+		{
+		    LogHelper.debug("Loading MineTweaker Classes...");
+		    MineTweakerAPI.registerClass(Chemicals.class);
+		    MineTweakerAPI.registerClass(Decomposer.class);
+		    MineTweakerAPI.registerClass(Synthesiser.class);
+		    MineTweakerAPI.registerClass(Fuels.class);
+		}
+		*/
+	}
 
-    @EventHandler
-    public void onServerStopping(FMLServerStoppingEvent event)
-    {
-        ResearchHandler.saveResearch();
-    }
+	@Mod.EventHandler
+	public void postInit(FMLPostInitializationEvent event) {
+		MinechemUtil.populateBlacklists();
+
+		ModLogger.debug("Registering Recipes...");
+		ModRecipes.getInstance().RegisterRecipes();
+		ModRecipes.getInstance().registerFluidRecipes();
+		//MinechemBucketHandler.getInstance().registerBucketRecipes();
+
+		ModLogger.debug("Adding effects to molecules...");
+		PharmacologyEffectRegistry.init();
+
+		ModLogger.debug("Activating Chemical Effect Layering (Coatings)...");
+		PotionEnchantmentCoated.registerCoatings();
+
+		ModLogger.debug("Registering Mod Ores for PolyTool...");
+		PolytoolTypeIron.getOres();
+
+		ModLogger.debug("Overriding bucket dispenser...");
+		//MinechemBucketReceiver.init();
+
+		ModLogger.info("Minechem has loaded");
+	}
+
+	@Mod.EventHandler
+	public void onLoadComplete(FMLLoadCompleteEvent event) {
+		ModLogger.debug("Registering Mod Recipes...");
+		ModRecipes.getInstance().RegisterModRecipes();
+
+		Long start = System.currentTimeMillis();
+		ModLogger.info("Registering other Mod Recipes...");
+		ModRecipes.getInstance().registerOreDictOres();
+		RecipeUtil.init();
+		RecipeHandlerDecomposer.recursiveRecipes();
+		ModLogger.info((System.currentTimeMillis() - start) + "ms spent registering Recipes");
+	}
 }
