@@ -146,6 +146,49 @@ public final class RenderUtil {
 		tess.draw();
 	}
 
+	public static void renderQuadsColored(List<BakedQuad> quads, int color, float alphaOverride) {
+		Tessellator tess = Tessellator.getInstance();
+		BufferBuilder buffer = tess.getBuffer();
+		buffer.begin(0x07, DefaultVertexFormats.ITEM);
+
+		int alpha = (int) (alphaOverride * 255F) & 0xFF;
+		for (BakedQuad quad : quads) {
+			color |= (alpha << 24);
+			boolean doParty = false;
+			Minecraft mc = Minecraft.getMinecraft();
+			World world = mc.world;
+			EntityPlayer player = mc.player;
+			BlockPos pos = player.getPosition();
+			int distance = 2;
+			for (int x = -distance; x < distance; x++) {
+				for (int y = -distance; y < distance; y++) {
+					for (int z = -distance; z < distance; z++) {
+						BlockPos checkingPos = pos.add(x, y, z);
+						if (world.getBlockState(checkingPos).getBlock() == Blocks.JUKEBOX) {
+							IBlockState state = world.getBlockState(checkingPos);
+							if (state.getValue(BlockJukebox.HAS_RECORD).booleanValue()) {
+								doParty = true;
+								break;
+							}
+						}
+					}
+				}
+			}
+			if (doParty) {
+				Random rand = world.rand;
+				int red = rand.nextInt(255);
+				int green = rand.nextInt(255);
+				int blue = rand.nextInt(255);
+				color = (color << 8) + red;
+				color = (color << 8) + green;
+				color = (color << 8) + blue;
+			}
+			LightUtil.renderQuadColor(buffer, quad, color);
+		}
+
+		tess.draw();
+	}
+
 	public static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, int color, ItemStack stack) {
 		boolean flag = (color == -1) && (!stack.isEmpty());
 		int i = 0;

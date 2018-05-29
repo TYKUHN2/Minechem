@@ -33,7 +33,6 @@ import net.minecraftforge.common.model.TRSRTransformation;
  */
 public class ElementItemRenderer extends TileEntityItemStackRenderer {
 
-	public static PerspectiveAwareBakedModel model;
 	public static TransformType transformType;
 	public static Map<Integer, PerspectiveAwareBakedModel[]> ELEMENT_MODEL_CACHE = new HashMap<>();
 
@@ -48,74 +47,41 @@ public class ElementItemRenderer extends TileEntityItemStackRenderer {
 			float duration = 1500;
 			float t = Minecraft.getSystemTime() % duration;
 			int frame = 0;
+			boolean isSolid = true;
 			switch (element.roomState()) {
 			case LIQUID:
+				isSolid = false;
 				frame = (int) translateValue(t, 0, duration, 0, 7);
 				break;
 			case GAS:
+				isSolid = false;
 				frame = (int) translateValue(t, 0, duration, 0, 7);
 				break;
 			default:
 			}
-			model = getModelForElement(MinechemUtil.getElement(stack), frame);
+			PerspectiveAwareBakedModel model = getModelForElement(MinechemUtil.getElement(stack), frame);
 			if (model != null) {
 				model.handlePerspective(transformType);
 			}
 			if (transformType == TransformType.GUI) {
 				RenderHelper.disableStandardItemLighting();
 			}
-			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			//GlStateManager.pushMatrix();
-			RenderUtil.render(getModelForElement(element, frame));//getModelForElement(element, frame));
-			//GlStateManager.popMatrix();
-			/*
-			ElementEnum chemicalBase = MinechemUtil.getElement(stack);
-			List<ILayer> layers = new LinkedList<ILayer>();
-			float duration = 1500;
-			float t = Minecraft.getSystemTime() % duration;
-			int frame;
-
-			switch (chemicalBase.roomState()) {
-			case SOLID:
-				layers.add(new IconLayer(Textures.Sprite.SOLID_STATE, true, stack));
-				break;
-			case LIQUID:
-				frame = (int) translateValue(t, 0, duration, 0, 7);
-				layers.add(new IconLayer(Textures.Sprite.LIQUID_STATES[frame], true, stack, false));
-				break;
-			case GAS:
-				frame = (int) translateValue(t, 0, duration, 0, 7);
-				layers.add(new IconLayer(Textures.Sprite.GAS_STATES[frame], true, stack, false));
-				break;
-
-			case PLASMA:
-			layers.add(new IconLayer(item.tube, false));
-			frame = (int) MathHelper.translateValue(t, 0, duration, 0, item.plasma.length);
-			layers.add(new IconLayer(item.plasma[frame], true));
-			break;
-
-			}
-
-			layers.add(new IconLayer(Textures.Sprite.FILLED_TUBE, true, stack));
-			layers.add(new TextLayer(chemicalBase.name()));
-			//GlStateManager.pushMatrix();
 			GlStateManager.translate(1.0, 0, 1.0);
 			GlStateManager.rotate(180.0f, 0, 1.0f, 0);
-			//RenderHelper.disableStandardItemLighting();
-			layers.get(1).render(0xFFFFFFFF);
-			//GlStateManager.enableLighting();
-			layers.get(0).render(RenderUtil.getColorForElement(chemicalBase));
-			layers.get(1).render(0xFFFFFFFF);
-			layers.get(2).render();
-			//RenderHelper.enableStandardItemLighting();
-			GlStateManager.translate(-1.0, 0, -1.0);
-			//GlStateManager.popMatrix();
+			Map<LayerType, List<BakedQuad>> quadsLayered = getQuadsForElement(element, frame);
+			int color = RenderUtil.getColorForElement(element);
+			if (!isSolid) {
+				color = color & 0xCBFFFFFF;
+			}
+			RenderUtil.renderQuadsColored(quadsLayered.get(LayerType.ELEMENT), color, 0.0F);
+			RenderUtil.renderQuadsColored(quadsLayered.get(LayerType.TUBE), 0xFFFFFFFF, 1.0F);
+			GlStateManager.pushMatrix();
+			RenderUtil.renderQuadsColored(quadsLayered.get(LayerType.SYMBOL), 0xFFFFFFFF, 1.0F);
+			GlStateManager.popMatrix();
 			if (transformType == TransformType.GUI) {
 				RenderHelper.enableStandardItemLighting();
-				*/
+			}
 		}
-
-		//}
 	}
 
 	private static ResourceLocation[] getSpritesForElement(ElementEnum element) {
@@ -137,29 +103,46 @@ public class ElementItemRenderer extends TileEntityItemStackRenderer {
 		return getModelsForElement(element)[frame];
 	}
 
+	public static List<BakedQuad> getAllQuadsForElement(ElementEnum element, int frame) {
+		List<BakedQuad> quadList = new LinkedList<>();
+		Map<LayerType, List<BakedQuad>> quadListMap = getQuadsForElement(element, frame);
+		quadList.addAll(quadListMap.get(LayerType.ELEMENT));
+		quadList.addAll(quadListMap.get(LayerType.TUBE));
+		quadList.addAll(quadListMap.get(LayerType.SYMBOL));
+		return quadList;
+	}
+
+	public static Map<LayerType, List<BakedQuad>> getQuadsForElement(ElementEnum element, int frame) {
+		Map<LayerType, List<BakedQuad>> elementQuadsMap = new HashMap<>();
+		List<BakedQuad> elementQuads = new LinkedList<BakedQuad>();
+		List<BakedQuad> tubeQuads = new LinkedList<BakedQuad>();
+		List<BakedQuad> symbolQuads = new LinkedList<BakedQuad>();
+		ResourceLocation[] sprites = getSpritesForElement(element);
+		elementQuads.addAll(ItemLayerModel.getQuadsForSprite(0, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(sprites[frame].toString()), DefaultVertexFormats.ITEM, Optional.of(TRSRTransformation.identity())));
+		tubeQuads.addAll(ItemLayerModel.getQuadsForSprite(0, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(Textures.Sprite.FILLED_TUBE.toString()), DefaultVertexFormats.ITEM, Optional.of(TRSRTransformation.identity())));
+		symbolQuads.addAll(TextLayer.getQuadsForString(element.name()));
+		elementQuadsMap.put(LayerType.ELEMENT, elementQuads);
+		elementQuadsMap.put(LayerType.TUBE, tubeQuads);
+		elementQuadsMap.put(LayerType.SYMBOL, symbolQuads);
+		return elementQuadsMap;
+	}
+
 	public static PerspectiveAwareBakedModel[] getModelsForElement(ElementEnum element) {
 		if (!ELEMENT_MODEL_CACHE.containsKey(element.atomicNumber())) {
 			PerspectiveAwareBakedModel[] newModels = new PerspectiveAwareBakedModel[1];
-			ResourceLocation[] sprites = getSpritesForElement(element);
+			List<BakedQuad> quads = getAllQuadsForElement(element, 0);
 			boolean isSolid = true;
 			if (element.roomState() != MatterState.SOLID) {
 				isSolid = false;
 			}
 			if (isSolid) {
-				List<BakedQuad> quads = new LinkedList<BakedQuad>();
-				quads.addAll(ItemLayerModel.getQuadsForSprite(0, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(sprites[0].toString()), DefaultVertexFormats.ITEM, Optional.of(TRSRTransformation.identity())));
-				quads.addAll(ItemLayerModel.getQuadsForSprite(0, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(Textures.Sprite.FILLED_TUBE.toString()), DefaultVertexFormats.ITEM, Optional.of(TRSRTransformation.identity())));
-				quads.addAll(TextLayer.getQuadsForString(element.name()));
 				PerspectiveAwareBakedModel newModel = new PerspectiveAwareBakedModel(quads, Transforms.DEFAULT_ITEM, ModelProperties.DEFAULT_ITEM);
 				newModels[0] = newModel;
 			}
 			else {
 				newModels = new PerspectiveAwareBakedModel[7];
 				for (int i = 0; i < 7; i++) {
-					List<BakedQuad> quads = new LinkedList<BakedQuad>();
-					quads.addAll(ItemLayerModel.getQuadsForSprite(0, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(sprites[i].toString()), DefaultVertexFormats.ITEM, Optional.of(TRSRTransformation.identity())));
-					quads.addAll(ItemLayerModel.getQuadsForSprite(0, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(Textures.Sprite.FILLED_TUBE.toString()), DefaultVertexFormats.ITEM, Optional.of(TRSRTransformation.identity())));
-					quads.addAll(TextLayer.getQuadsForString(element.name()));
+					quads = getAllQuadsForElement(element, i);
 					PerspectiveAwareBakedModel newModel = new PerspectiveAwareBakedModel(quads, Transforms.DEFAULT_ITEM, ModelProperties.DEFAULT_ITEM);
 					newModels[i] = newModel;
 				}
@@ -174,6 +157,10 @@ public class ElementItemRenderer extends TileEntityItemStackRenderer {
 		float rightRange = rightMax - rightMin;
 		float valueScaled = (value - leftMin) / leftRange;
 		return rightMin + (valueScaled * rightRange);
+	}
+
+	public static enum LayerType {
+			TUBE, ELEMENT, SYMBOL;
 	}
 
 }

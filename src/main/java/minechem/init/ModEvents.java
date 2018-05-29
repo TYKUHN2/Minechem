@@ -8,7 +8,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import minechem.api.IOreDictionaryHandler;
 import minechem.client.model.generated.CharacterSprite;
-import minechem.client.model.generated.PerspectiveAwareBakedModel;
 import minechem.client.render.EffectsRenderer;
 import minechem.client.render.ElementItemRenderer;
 import minechem.event.RadiationDecayEvent;
@@ -122,19 +121,12 @@ public class ModEvents {
 		for (Pair<ModelResourceLocation, IBakedModel> pair : ModRendering.getParticleModels()) {
 			event.getModelRegistry().putObject(pair.getKey(), pair.getValue());
 		}
-		IBakedModel tmpModel = event.getModelRegistry().getObject(ModRendering.ITEM_ELEMENT_LOC);
-		if (tmpModel instanceof PerspectiveAwareBakedModel) {
-			//ElementItemRenderer.model = new ItemLayerWrapper(event.getModelRegistry().getObject(ModRendering.ITEM_ELEMENT_LOC));
-			event.getModelRegistry().putObject(ModRendering.ITEM_ELEMENT_LOC, event.getModelRegistry().getObject(ModRendering.ITEM_ELEMENT_LOC));
-		}
 	}
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onModelRegister(ModelRegistryEvent event) {
 		for (ElementEnum element : ElementEnum.elements.values()) {
-			//ModelLoader.setCustomModelResourceLocation(ModItems.element, element.atomicNumber(), ModRendering.ITEM_ELEMENT_LOC);
-			//ModelRegistryHelper.registerItemRenderer(this, new ElementItemRenderer());
 			ModRendering.setItemTEISR(ModItems.element, new ElementItemRenderer(), element.atomicNumber(), ModRendering.ITEM_ELEMENT_LOC);
 		}
 	}
