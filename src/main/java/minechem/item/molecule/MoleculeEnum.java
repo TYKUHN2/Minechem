@@ -299,6 +299,20 @@ public class MoleculeEnum extends MinechemChemicalType {
 		this(name, id, getRandomColor(name.hashCode()), getRandomColor(name.hashCode() * 2), getRandomColor(name.hashCode() * 3), getRandomColor(name.hashCode() * 4), getRandomColor(name.hashCode() * 5), getRandomColor(name.hashCode() * 6), roomState, -1, chemicals);
 	}
 
+	public int getColor1() {
+		int color = (int) (255.0F / red);
+		color = (color << 8) + (int) (255.0F / green);
+		color = (color << 8) + (int) (255.0F / blue);
+		return color;
+	}
+
+	public int getColor2() {
+		int color = (int) (255.0F / red2);
+		color = (color << 8) + (int) (255.0F / green2);
+		color = (color << 8) + (int) (255.0F / blue2);
+		return color;
+	}
+
 	public static MoleculeEnum addMolecule(String name, int id, float colorRed, float colorGreen, float colorBlue, float colorRed2, float colorGreen2, float colorBlue2, MatterState roomState, PotionChemical... chemicals) {
 		return addMolecule(name, id, colorRed, colorGreen, colorBlue, colorRed2, colorGreen2, colorBlue2, roomState, -1, chemicals);
 	}

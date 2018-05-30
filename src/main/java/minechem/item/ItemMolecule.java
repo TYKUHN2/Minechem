@@ -10,7 +10,6 @@ import org.lwjgl.input.Keyboard;
 
 import minechem.api.RadiationInfo;
 import minechem.block.tile.RadiationFluidTileEntity;
-import minechem.client.render.MoleculeItemRenderer;
 import minechem.init.ModConfig;
 import minechem.init.ModCreativeTab;
 import minechem.init.ModFluids;
@@ -44,6 +43,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -71,8 +71,8 @@ public class ItemMolecule extends ItemBase {
 		for (int i = 0; i < MoleculeEnum.molecules.values().size(); i++) {
 			MoleculeEnum molecule = MoleculeEnum.molecules.get(i);
 			if (molecule != null) {
-				//ModelLoader.setCustomModelResourceLocation(this, molecule.id(), new ModelResourceLocation(getRegistryName(), "inventory"));
-				ModRendering.setItemTEISR(this, new MoleculeItemRenderer(), i, ModRendering.ITEM_ELEMENT_LOC);
+				ModelLoader.setCustomModelResourceLocation(this, molecule.id(), ModRendering.ITEM_MOLECULE_LOC);
+				//ModRendering.setItemTEISR(this, new MoleculeItemRenderer(), i, ModRendering.ITEM_ELEMENT_LOC);
 			}
 		}
 

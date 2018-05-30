@@ -34,6 +34,7 @@ public class ModRendering {
 
 	private static final ModelResourceLocation TEISR_LOC = new ModelResourceLocation(new ResourceLocation(ModGlobals.ID, "teisr"), "inventory");
 	public static final ModelResourceLocation ITEM_ELEMENT_LOC = new ModelResourceLocation(new ResourceLocation(ModGlobals.ID, "tube_filled"), "inventory");
+	public static final ModelResourceLocation ITEM_MOLECULE_LOC = new ModelResourceLocation(new ResourceLocation(ModGlobals.ID, "molecule"), "inventory");
 	private static List<Pair<ModelResourceLocation, IBakedModel>> particleModels = new LinkedList<Pair<ModelResourceLocation, IBakedModel>>();
 
 	public static void setItemTEISR(Item item, TileEntityItemStackRenderer renderer) {

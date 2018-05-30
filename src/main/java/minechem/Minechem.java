@@ -145,6 +145,8 @@ public class Minechem {
 		FluidChemicalDispenser.init();
 		ChemicalFluidReactionHandler.initReaction();
 
+		PROXY.init(event);
+
 		//TODO
 		/*
 		if (Loader.isModLoaded("MineTweaker3"))

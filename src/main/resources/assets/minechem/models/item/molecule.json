@@ -1,6 +1,8 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "minechem:items/molecule"
-    }
+	"parent": "item/handheld",
+	"textures": {
+		"layer0": "minechem:items/molecule",
+		"layer1": "minechem:items/molecule_pass1",
+		"layer2": "minechem:items/molecule_pass2"
+	}
 }
