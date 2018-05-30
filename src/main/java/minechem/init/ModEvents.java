@@ -6,8 +6,13 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.google.common.collect.ImmutableList;
+
 import minechem.api.IOreDictionaryHandler;
 import minechem.client.model.generated.CharacterSprite;
+import minechem.client.model.generated.ItemLayerWrapper;
+import minechem.client.model.generated.ModelProperties.PerspectiveProperties;
+import minechem.client.model.generated.PerspectiveAwareBakedModel;
 import minechem.client.render.EffectsRenderer;
 import minechem.client.render.ElementItemRenderer;
 import minechem.event.RadiationDecayEvent;
@@ -121,6 +126,8 @@ public class ModEvents {
 		for (Pair<ModelResourceLocation, IBakedModel> pair : ModRendering.getParticleModels()) {
 			event.getModelRegistry().putObject(pair.getKey(), pair.getValue());
 		}
+		ElementItemRenderer.model = new ItemLayerWrapper(new PerspectiveAwareBakedModel(ImmutableList.of(), PerspectiveProperties.DEFAULT_ITEM));
+		event.getModelRegistry().putObject(ModRendering.ITEM_ELEMENT_LOC, ElementItemRenderer.model);
 	}
 
 	@SubscribeEvent
@@ -128,6 +135,7 @@ public class ModEvents {
 	public void onModelRegister(ModelRegistryEvent event) {
 		for (ElementEnum element : ElementEnum.elements.values()) {
 			ModRendering.setItemTEISR(ModItems.element, new ElementItemRenderer(), element.atomicNumber(), ModRendering.ITEM_ELEMENT_LOC);
+			//ModelLoader.setCustomModelResourceLocation(ModItems.element, element.atomicNumber(), ModRendering.ITEM_ELEMENT_LOC);
 		}
 	}
 

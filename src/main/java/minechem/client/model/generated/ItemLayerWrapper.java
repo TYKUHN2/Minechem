@@ -21,7 +21,7 @@ import net.minecraft.util.EnumFacing;
  */
 public class ItemLayerWrapper implements IBakedModel {
 
-	private final IBakedModel internal;
+	private IBakedModel internal;
 
 	public ItemLayerWrapper(IBakedModel internal) {
 		this.internal = internal;
@@ -44,6 +44,10 @@ public class ItemLayerWrapper implements IBakedModel {
 
 	public IBakedModel getInternal() {
 		return internal;
+	}
+
+	public void setInternal(IBakedModel model) {
+		internal = model;
 	}
 
 	@Override

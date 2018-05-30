@@ -12,7 +12,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import minechem.client.model.generated.ModelProperties.PerspectiveProperties;
-import minechem.client.render.ElementItemRenderer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -56,10 +55,6 @@ public class PerspectiveAwareBakedModel extends AbstractBakedPropertiesModel {
 		this.generalQuads = ImmutableList.copyOf(generalQuads);
 	}
 
-	public PerspectiveAwareBakedModel(PerspectiveAwareBakedModel baseModel) {
-		this(baseModel.faceQuads, baseModel.generalQuads, new PerspectiveProperties(Transforms.DEFAULT_ITEM, baseModel.properties));
-	}
-
 	@Override
 	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
 		if (side == null) {
@@ -80,7 +75,6 @@ public class PerspectiveAwareBakedModel extends AbstractBakedPropertiesModel {
 
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-		ElementItemRenderer.transformType = cameraTransformType;
 		return ForgeHooksClient.handlePerspective(this, cameraTransformType);
 	}
 }

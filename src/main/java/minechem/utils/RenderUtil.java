@@ -475,7 +475,7 @@ public final class RenderUtil {
 			builder.add(buildQuad(format, transform, EnumFacing.NORTH, sprite, tint, 0 + horizontalPixelPos, 0, 7.5f / 16f, sprite.getMinU(), sprite.getMaxV(), 0 + horizontalPixelPos, 1, 7.5f / 16f, sprite.getMinU(), sprite.getMinV(), 1 + horizontalPixelPos, 1, 7.5f / 16f, sprite.getMaxU(), sprite.getMinV(), 1 + horizontalPixelPos, 0, 7.5f / 16f, sprite.getMaxU(), sprite.getMaxV()));
 			// back
 			builder.add(buildQuad(format, transform, EnumFacing.SOUTH, sprite, tint, 0 + horizontalPixelPos, 0, 8.5f / 16f, sprite.getMinU(), sprite.getMaxV(), 1 + horizontalPixelPos, 0, 8.5f / 16f, sprite.getMaxU(), sprite.getMaxV(), 1 + horizontalPixelPos, 1, 8.5f / 16f, sprite.getMaxU(), sprite.getMinV(), 0 + horizontalPixelPos, 1, 8.5f / 16f, sprite.getMinU(), sprite.getMinV()));
-			horizontalPixelPos += 0.75F;
+			horizontalPixelPos += 0.37F;
 		}
 		return builder.build();
 	}

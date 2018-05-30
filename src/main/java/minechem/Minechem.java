@@ -105,6 +105,7 @@ public class Minechem {
 
 		//GameRegistry.registerFuelHandler(new MinechemFuelHandler());
 		PROXY.registerTickHandlers();
+		//PROXY.preInit(event);
 		//ResourceUtils.registerReloadListener(manager -> RenderUtil.getModelCache().clear());
 		//FMLInterModComms.sendMessage("OpenBlocks", "donateUrl", "http://jakimfett.com/patreon/");
 	}

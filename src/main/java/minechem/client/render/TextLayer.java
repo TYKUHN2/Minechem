@@ -58,17 +58,17 @@ public class TextLayer implements ILayer {
 	}
 
 	public static List<BakedQuad> getQuadsForString(String str) {
-		if (!STRING_QUAD_CACHE.containsKey(str)) {
-			char[] chars = str.toCharArray();
-			TextureAtlasSprite[] sprites = new TextureAtlasSprite[chars.length];
-			for (int i = 0; i < chars.length; i++) {
-				sprites[i] = CharacterSprite.getSpriteForChar(chars[i]);
-			}
-			STRING_QUAD_CACHE.put(str, RenderUtil.getQuadsForSprites(DefaultVertexFormats.ITEM, Optional.of(TRSRTransformation.identity()), sprites));
+		//if (!STRING_QUAD_CACHE.containsKey(str)) {
+		char[] chars = str.toCharArray();
+		TextureAtlasSprite[] sprites = new TextureAtlasSprite[chars.length];
+		for (int i = 0; i < chars.length; i++) {
+			sprites[i] = CharacterSprite.getSpriteForChar(chars[i]);
 		}
+		STRING_QUAD_CACHE.put(str, RenderUtil.getQuadsForSprites(DefaultVertexFormats.ITEM, Optional.of(TRSRTransformation.identity()), sprites));
+		//}
 		return STRING_QUAD_CACHE.get(str);
 	}
-	/*(
+	/*
 		private static IBakedModel getModelForString(String str) {
 			for (String currentString : BAKED_MODEL_CACHE.keySet()) {
 				if (currentString.equals(str)) {

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import minechem.client.model.generated.ItemLayerWrapper;
 import minechem.client.model.generated.ModelProperties;
 import minechem.client.model.generated.PerspectiveAwareBakedModel;
 import minechem.client.model.generated.Transforms;
@@ -33,6 +34,7 @@ import net.minecraftforge.common.model.TRSRTransformation;
  */
 public class ElementItemRenderer extends TileEntityItemStackRenderer {
 
+	public static ItemLayerWrapper model;
 	public static TransformType transformType;
 	public static Map<Integer, PerspectiveAwareBakedModel[]> ELEMENT_MODEL_CACHE = new HashMap<>();
 
@@ -59,27 +61,68 @@ public class ElementItemRenderer extends TileEntityItemStackRenderer {
 				break;
 			default:
 			}
-			PerspectiveAwareBakedModel model = getModelForElement(MinechemUtil.getElement(stack), frame);
+			model.setInternal(getModelForElement(MinechemUtil.getElement(stack), frame));
 			if (model != null) {
 				model.handlePerspective(transformType);
 			}
 			if (transformType == TransformType.GUI) {
 				RenderHelper.disableStandardItemLighting();
 			}
-			GlStateManager.translate(1.0, 0, 1.0);
-			GlStateManager.rotate(180.0f, 0, 1.0f, 0);
+			if (transformType == TransformType.FIXED) {
+				GlStateManager.translate(1.0, 0, 1.0);
+				GlStateManager.rotate(180.0f, 0, 1.0f, 0);
+			}
 			Map<LayerType, List<BakedQuad>> quadsLayered = getQuadsForElement(element, frame);
 			int color = RenderUtil.getColorForElement(element);
 			if (!isSolid) {
 				color = color & 0xCBFFFFFF;
 			}
+			if (transformType == TransformType.THIRD_PERSON_LEFT_HAND || transformType == TransformType.THIRD_PERSON_RIGHT_HAND) {
+				GlStateManager.scale(0.5F, 0.5F, 0.5F);
+				GlStateManager.translate(0.2F, 0.9F, 0.6F);
+			}
+			if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
+				GlStateManager.translate(0.5F, 0.0F, -0.6F);
+			}
+			if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
+				GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-0.2F, -0.08F, -0.6F);
+			}
+			if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
+				GlStateManager.rotate(-30.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(0.2F, -0.08F, -0.6F);
+			}
+			if (transformType == TransformType.FIXED || transformType == TransformType.GUI) {
+				GlStateManager.translate(0.1F, 0.0F, 0.0F);
+			}
+
 			RenderUtil.renderQuadsColored(quadsLayered.get(LayerType.ELEMENT), color, 0.0F);
-			RenderUtil.renderQuadsColored(quadsLayered.get(LayerType.TUBE), 0xFFFFFFFF, 1.0F);
+			RenderUtil.renderQuadsColored(quadsLayered.get(LayerType.TUBE), 0xFFFFFFFF, 0.0F);
+			GlStateManager.translate(-0.1F, 0.0F, 0.0F);
 			GlStateManager.pushMatrix();
-			RenderUtil.renderQuadsColored(quadsLayered.get(LayerType.SYMBOL), 0xFFFFFFFF, 1.0F);
+			float scale = 0.70F;
+			GlStateManager.scale(scale, scale, 1.0F);
+			GlStateManager.translate(0.0F, scale - 0.3, 0.0F);
+			RenderUtil.renderQuadsColored(quadsLayered.get(LayerType.SYMBOL), 0xFFFFFFFF, 0.0F);
+			//Minecraft.getMinecraft().getRenderItem().renderItem(stack, model.getInternal());
+			GlStateManager.scale(-scale * scale, -scale * scale, -scale * scale);
 			GlStateManager.popMatrix();
 			if (transformType == TransformType.GUI) {
 				RenderHelper.enableStandardItemLighting();
+			}
+			if (transformType == TransformType.FIXED || transformType == TransformType.GUI) {
+				GlStateManager.translate(-0.1F, 0.0F, 0.0F);
+			}
+			if (transformType == TransformType.THIRD_PERSON_LEFT_HAND || transformType == TransformType.THIRD_PERSON_RIGHT_HAND) {
+				GlStateManager.scale(-0.5F, -0.5F, -0.5F);
+			}
+			if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
+				GlStateManager.rotate(-30.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(0.2F, 0.08F, 0.6F);
+			}
+			if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
+				GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-0.2F, 0.08F, 0.6F);
 			}
 		}
 	}
