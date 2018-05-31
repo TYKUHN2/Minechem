@@ -9,7 +9,6 @@ import minechem.client.render.RenderDecomposer.ItemRenderDecomposer;
 import minechem.init.ModCreativeTab;
 import minechem.init.ModGlobals.Textures;
 import minechem.init.ModRendering;
-import minechem.proxy.CommonProxy;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -88,7 +87,7 @@ public class BlockDecomposer extends BlockSimpleContainer {
 
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
-		return EnumBlockRenderType.values()[CommonProxy.RENDER_ID];
+		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override

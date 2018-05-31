@@ -2,7 +2,7 @@ package minechem.potion;
 
 import minechem.init.ModConfig;
 import minechem.item.ItemMolecule;
-import minechem.item.molecule.MoleculeEnum;
+import minechem.utils.MinechemUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -14,6 +14,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.RecipeSorter;
 
+@SuppressWarnings("deprecation")
 public class PotionCoatingRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 
 	static {
@@ -29,7 +30,7 @@ public class PotionCoatingRecipe extends net.minecraftforge.registries.IForgeReg
 					for (int j = 0; j < inv.getSizeInventory(); j++) {
 						ItemStack s2 = inv.getStackInSlot(j);
 						if (!s2.isEmpty() && s2.getItem() instanceof ItemMolecule) {
-							if (PharmacologyEffectRegistry.hasEffect(MoleculeEnum.getById(s2.getItemDamage()))) {
+							if (PharmacologyEffectRegistry.hasEffect(MinechemUtil.getMolecule(s2))) {
 								return true;
 							}
 						}
@@ -47,13 +48,14 @@ public class PotionCoatingRecipe extends net.minecraftforge.registries.IForgeReg
 			if (!s.isEmpty() && s.getItem() instanceof ItemSword) {
 				for (int j = 0; j < inv.getSizeInventory(); j++) {
 					ItemStack s2 = inv.getStackInSlot(j);
-					if (!s2.isEmpty() && s2.getItem() instanceof ItemMolecule && PharmacologyEffectRegistry.hasEffect(MoleculeEnum.getById(s2.getItemDamage()))) {
+					if (!s2.isEmpty() && s2.getItem() instanceof ItemMolecule && PharmacologyEffectRegistry.hasEffect(MinechemUtil.getMolecule(s2))) {
 						NBTTagList l = s2.getEnchantmentTagList();
 						int level = 0;
-						if (l != null) {
+						if (l != null && !l.hasNoTags()) {
 							for (int k = 0; k < l.tagCount(); k++) {
 								NBTTagCompound tag = l.getCompoundTagAt(k);
-								if (tag.getShort("id") == Enchantment.getEnchantmentID(PotionEnchantmentCoated.chemLookup.get(MoleculeEnum.getById(s2.getItemDamage())))) {
+								Enchantment ench = PotionEnchantmentCoated.POTION_COATED_REGISTRY.get(MinechemUtil.getMolecule(s2));
+								if (tag.getShort("id") == Enchantment.getEnchantmentID(ench)) {
 									level = tag.getShort("lvl");
 									ItemStack result = s.copy();
 									result.getEnchantmentTagList().getCompoundTagAt(k).setInteger("lvl", level + 1);
@@ -61,7 +63,7 @@ public class PotionCoatingRecipe extends net.minecraftforge.registries.IForgeReg
 							}
 						}
 						ItemStack result = s.copy();
-						result.addEnchantment(PotionEnchantmentCoated.chemLookup.get(MoleculeEnum.getById(s2.getItemDamage())), 1);
+						result.addEnchantment(PotionEnchantmentCoated.POTION_COATED_REGISTRY.get(MinechemUtil.getMolecule(s2)), 1);
 						return result;
 					}
 				}

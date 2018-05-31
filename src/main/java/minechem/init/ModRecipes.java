@@ -16,6 +16,7 @@ import minechem.item.element.ElementEnum;
 import minechem.item.molecule.Molecule;
 import minechem.item.molecule.MoleculeEnum;
 import minechem.potion.PotionChemical;
+import minechem.potion.PotionCoatingRecipe;
 import minechem.recipe.RecipeCloneChemistJournal;
 import minechem.recipe.RecipeDecomposer;
 import minechem.recipe.RecipeDecomposerChance;
@@ -23,6 +24,7 @@ import minechem.recipe.RecipeDecomposerFluid;
 import minechem.recipe.RecipeDecomposerFluidSelect;
 import minechem.recipe.RecipeDecomposerSelect;
 import minechem.recipe.RecipeDecomposerSuper;
+import minechem.recipe.RecipePotionSpiking;
 import minechem.recipe.RecipeSynthesis;
 import minechem.utils.MinechemUtil;
 import net.minecraft.block.Block;
@@ -32,6 +34,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -41,6 +44,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistry;
 
 public class ModRecipes {
 
@@ -4368,6 +4372,9 @@ public class ModRecipes {
 		return new Molecule(var1, 1);
 	}
 
-	// END
+	public static void registerCustomRecipes(IForgeRegistry<IRecipe> registry) {
+		registry.register(new PotionCoatingRecipe().setRegistryName(new ResourceLocation(ModGlobals.ID, "potion_coating")));
+		registry.register(new RecipePotionSpiking().setRegistryName(new ResourceLocation(ModGlobals.ID, "potion_spiking")));
+	}
 
-} // EOF
+}

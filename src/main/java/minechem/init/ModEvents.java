@@ -26,6 +26,7 @@ import minechem.item.ItemElement;
 import minechem.item.element.ElementEnum;
 import minechem.item.molecule.MoleculeEnum;
 import minechem.potion.PharmacologyEffectRegistry;
+import minechem.potion.PotionEnchantmentCoated;
 import minechem.utils.MinechemUtil;
 import minechem.utils.TimeHelper;
 import net.minecraft.block.material.Material;
@@ -36,13 +37,16 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -64,8 +68,11 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -135,7 +142,6 @@ public class ModEvents {
 	public void onModelRegister(ModelRegistryEvent event) {
 		for (ElementEnum element : ElementEnum.elements.values()) {
 			ModRendering.setItemTEISR(ModItems.element, new ElementItemRenderer(), element.atomicNumber(), ModRendering.ITEM_ELEMENT_LOC);
-			//ModelLoader.setCustomModelResourceLocation(ModItems.element, element.atomicNumber(), ModRendering.ITEM_ELEMENT_LOC);
 		}
 	}
 
@@ -238,17 +244,22 @@ public class ModEvents {
 
 	@SubscribeEvent
 	public void onSoundRegister(RegistryEvent.Register<SoundEvent> event) {
-		event.getRegistry().register(ModSounds.BLUEPRINT_PROJECTOR);
+		ModSounds.registerSounds(event.getRegistry());
 	}
 
 	@SubscribeEvent
-	public void onPotionTypeRegister(RegistryEvent.Register<PotionType> event) {
+	public void onRecipeRegister(RegistryEvent.Register<IRecipe> event) {
+		ModRecipes.registerCustomRecipes(event.getRegistry());
+	}
 
+	@SubscribeEvent
+	public void onEnchantmentRegister(RegistryEvent.Register<Enchantment> event) {
+		ModEnchantments.register(event.getRegistry());
 	}
 
 	@SubscribeEvent
 	public void onPotionRegister(RegistryEvent.Register<Potion> event) {
-		event.getRegistry().register(ModPotions.atropineHigh);
+		ModPotions.registerPotions(event.getRegistry());
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -396,6 +407,40 @@ public class ModEvents {
 		if (burnTime > 0) {
 			event.setBurnTime(burnTime);
 		}
+	}
+
+	@SubscribeEvent
+	public void onConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
+		if (event.getModID().equalsIgnoreCase(ModGlobals.ID)) {
+			ModConfig.loadConfig();
+		}
+	}
+
+	@SubscribeEvent
+	public void onAttack(LivingAttackEvent event) {
+		if (event.getSource().getTrueSource() instanceof EntityLivingBase) {
+			EntityLivingBase entity = (EntityLivingBase) event.getSource().getTrueSource();
+			ItemStack weapon = entity.getActiveItemStack();
+			if (weapon.isEmpty()) {
+				return;
+			}
+			NBTTagList list = weapon.getEnchantmentTagList();
+			if (list == null) {
+				return;
+			}
+			for (int i = 0; i < list.tagCount(); i++) {
+				NBTTagCompound enchantmentTag = list.getCompoundTagAt(i);
+				Enchantment enchant = Enchantment.getEnchantmentByID(enchantmentTag.getShort("id"));
+				if (enchant instanceof PotionEnchantmentCoated) {
+					((PotionEnchantmentCoated) enchant).applyEffect(event.getEntityLiving());
+				}
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public void onTooltip(ItemTooltipEvent event) {
+
 	}
 
 }

@@ -23,6 +23,7 @@ import minechem.utils.MinechemUtil;
 import minechem.utils.TimeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -67,7 +68,6 @@ public class ItemMolecule extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	public void registerRenderer() {
 		//ModelRegistryHelper.registerItemRenderer(this, new MoleculeItemRenderer());
-
 		for (int i = 0; i < MoleculeEnum.molecules.values().size(); i++) {
 			MoleculeEnum molecule = MoleculeEnum.molecules.get(i);
 			if (molecule != null) {
@@ -75,7 +75,23 @@ public class ItemMolecule extends ItemBase {
 				//ModRendering.setItemTEISR(this, new MoleculeItemRenderer(), i, ModRendering.ITEM_ELEMENT_LOC);
 			}
 		}
+	}
 
+	public IItemColor getColorHandler() {
+		return (stack, tintIndex) -> {
+			MoleculeEnum molecule = MinechemUtil.getMolecule(stack);
+			if (molecule == null) {
+				return -1;
+			}
+			int color = 0xFFFFFFFF;
+			if (tintIndex == 1) {
+				color = molecule.getColor1();
+			}
+			if (tintIndex == 2) {
+				color = molecule.getColor2();
+			}
+			return color;
+		};
 	}
 
 	@Override

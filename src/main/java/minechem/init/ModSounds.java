@@ -2,6 +2,7 @@ package minechem.init;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.registries.IForgeRegistry;
 
 /**
  * @author p455w0rd
@@ -13,8 +14,11 @@ public class ModSounds {
 
 	private static SoundEvent setupSound(String soundName) {
 		ResourceLocation registryName = new ResourceLocation(ModGlobals.ID, soundName);
-		SoundEvent se = new SoundEvent(registryName).setRegistryName(registryName);
-		return se;
+		return new SoundEvent(registryName).setRegistryName(registryName);
+	}
+
+	public static void registerSounds(IForgeRegistry<SoundEvent> registry) {
+		registry.register(BLUEPRINT_PROJECTOR);
 	}
 
 }

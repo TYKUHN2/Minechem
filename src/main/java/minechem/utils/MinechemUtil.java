@@ -352,9 +352,7 @@ public final class MinechemUtil {
 	public static void populateBlacklists() {
 		ModConfig.decomposerBlacklist = new ArrayList<ItemStack>();
 		ModConfig.synthesisBlacklist = new ArrayList<ItemStack>();
-
 		ModConfig.decomposerBlacklist.add(ModItems.emptyTube);
-
 		ArrayList<String> registeredItems = new ArrayList<String>();
 		for (ResourceLocation key : Item.REGISTRY.getKeys()) {
 			registeredItems.add(key.toString());

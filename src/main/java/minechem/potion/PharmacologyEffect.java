@@ -15,6 +15,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.TextFormatting;
 
 public abstract class PharmacologyEffect {
+
 	private String colour;
 
 	PharmacologyEffect(TextFormatting colour) {
@@ -28,6 +29,7 @@ public abstract class PharmacologyEffect {
 	}
 
 	public static class Food extends PharmacologyEffect {
+
 		private int level;
 		private float saturation;
 
@@ -62,6 +64,7 @@ public abstract class PharmacologyEffect {
 	}
 
 	public static class Burn extends PharmacologyEffect {
+
 		private int duration;
 
 		public Burn(int duration) {
@@ -144,6 +147,7 @@ public abstract class PharmacologyEffect {
 	}
 
 	public static class Damage extends PharmacologyEffect {
+
 		private float damage;
 
 		public Damage(float damage) {
@@ -227,4 +231,5 @@ public abstract class PharmacologyEffect {
 			return false;
 		}
 	}
+
 }

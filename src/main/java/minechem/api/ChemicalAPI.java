@@ -11,6 +11,10 @@ import java.util.Map;
  *
  * @author yushijinhun
  */
+@SuppressWarnings({
+		"unchecked",
+		"rawtypes"
+})
 public class ChemicalAPI {
 
 	/**
@@ -37,10 +41,8 @@ public class ChemicalAPI {
 		if (!MinechemClassesAccess.isMinechemInstalled) {
 			return false;
 		}
-
 		List<Object> chemicals = toChemicalsWithAmount(molecule);
 		Object roomstatus = getRoomStatus(roomStatus);
-
 		try {
 			Method addMolecule = MinechemClassesAccess.classMoleculeEnum.getDeclaredMethod("addMolecule", String.class, int.class, float.class, float.class, float.class, float.class, float.class, float.class, MinechemClassesAccess.classChemicalRoomStateEnum, MinechemClassesAccess.classArrayPotionChemical);
 			addMolecule.invoke(null, name, id, colorRed, colorGreen, colorBlue, colorRed2, colorGreen2, colorBlue2, roomstatus, chemicals.toArray((Object[]) Array.newInstance(MinechemClassesAccess.classPotionChemical, chemicals.size())));
@@ -49,7 +51,6 @@ public class ChemicalAPI {
 			e.printStackTrace();
 			return false;
 		}
-
 		return true;
 	}
 
@@ -71,10 +72,8 @@ public class ChemicalAPI {
 		if (!MinechemClassesAccess.isMinechemInstalled) {
 			return false;
 		}
-
 		List<Object> chemicals = toChemicalsWithAmount(molecule);
 		Object roomstatus = getRoomStatus(roomStatus);
-
 		try {
 			Method addMolecule = MinechemClassesAccess.classMoleculeEnum.getDeclaredMethod("addMolecule", String.class, int.class, MinechemClassesAccess.classChemicalRoomStateEnum, MinechemClassesAccess.classArrayPotionChemical);
 			addMolecule.invoke(null, name, id, roomstatus, chemicals.toArray((Object[]) Array.newInstance(MinechemClassesAccess.classPotionChemical, chemicals.size())));
@@ -83,7 +82,6 @@ public class ChemicalAPI {
 			e.printStackTrace();
 			return false;
 		}
-
 		return true;
 	}
 
@@ -100,15 +98,10 @@ public class ChemicalAPI {
 	 * @param outputChemicals the chemicals of it outputs
 	 * @return Add the reaction successfully?
 	 */
-	@SuppressWarnings({
-			"unchecked",
-			"rawtypes"
-	})
 	public static boolean registerFluidChemicalReaction(String chemicalA, String chemicalB, float explosionLevel, String... outputChemicals) {
 		if (!MinechemClassesAccess.isMinechemInstalled) {
 			return false;
 		}
-
 		try {
 			List<Object> chemicals = toChemicals(outputChemicals);
 			Object rule = MinechemClassesAccess.classChemicalFluidReactionRule.getConstructor(MinechemClassesAccess.classMinechemChemicalType, MinechemClassesAccess.classMinechemChemicalType).newInstance(getChemicalType(chemicalA), getChemicalType(chemicalB));
@@ -157,14 +150,12 @@ public class ChemicalAPI {
 			if (element != null) {
 				return element;
 			}
-
 			Method getByNameMolecule = MinechemClassesAccess.classMoleculeEnum.getDeclaredMethod("getByName", String.class);
 			return getByNameMolecule.invoke(null, name);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return null;
 	}
 
@@ -180,7 +171,6 @@ public class ChemicalAPI {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return null;
 	}
 
@@ -191,7 +181,6 @@ public class ChemicalAPI {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return null;
 	}
 }
