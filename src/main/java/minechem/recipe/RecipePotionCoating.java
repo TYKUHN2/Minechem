@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.oredict.RecipeSorter;
 
 @SuppressWarnings("deprecation")
@@ -43,34 +44,84 @@ public class RecipePotionCoating extends net.minecraftforge.registries.IForgeReg
 		return false;
 	}
 
+	public boolean doesItemContainEnchantment(ItemStack stack, Enchantment enchantment) {
+		NBTTagList enchNBTList = stack.getEnchantmentTagList();
+		int enchID = Enchantment.getEnchantmentID(enchantment);
+		if (enchNBTList.hasNoTags()) {
+			return false;
+		}
+		else {
+			for (int i = 0; i < enchNBTList.tagCount(); i++) {
+				NBTTagCompound tag = enchNBTList.getCompoundTagAt(i);
+				if (!tag.hasNoTags() && tag.hasKey("id", Constants.NBT.TAG_SHORT)) {
+					if (tag.getShort("id") == enchID) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	private int getCurrentEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+		NBTTagList enchNBTList = stack.getEnchantmentTagList();
+		int enchID = Enchantment.getEnchantmentID(enchantment);
+		if (!enchNBTList.hasNoTags()) {
+			for (int i = 0; i < enchNBTList.tagCount(); i++) {
+				NBTTagCompound tag = enchNBTList.getCompoundTagAt(i);
+				if (!tag.hasNoTags() && tag.hasKey("id", Constants.NBT.TAG_SHORT)) {
+					if (tag.getShort("id") == enchID) {
+						return tag.getShort("lvl");
+					}
+				}
+			}
+		}
+		return -1;
+	}
+
+	/**
+	 * @return true on success
+	 */
+	private boolean incEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+		int maxLevel = enchantment.getMaxLevel();
+		int currentLevel = getCurrentEnchantmentLevel(stack, enchantment);
+		if (currentLevel < maxLevel) {
+			NBTTagList enchNBTList = stack.getEnchantmentTagList();
+			int enchID = Enchantment.getEnchantmentID(enchantment);
+			if (!enchNBTList.hasNoTags()) {
+				for (int i = 0; i < enchNBTList.tagCount(); i++) {
+					NBTTagCompound tag = enchNBTList.getCompoundTagAt(i);
+					if (!tag.hasNoTags() && tag.hasKey("id", Constants.NBT.TAG_SHORT)) {
+						if (tag.getShort("id") == enchID) {
+							tag.setShort("lvl", (short) (tag.getShort("lvl") + 1));
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv) {
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack s = inv.getStackInSlot(i);
-			ItemStack result = s.copy();
 			if (!s.isEmpty() && s.getItem() instanceof ItemSword) {
+				ItemStack result = s.copy();
 				for (int j = 0; j < inv.getSizeInventory(); j++) {
 					ItemStack s2 = inv.getStackInSlot(j);
 					if (!s2.isEmpty() && s2.getItem() instanceof ItemMolecule && PharmacologyEffectRegistry.hasEffect(MinechemUtil.getMolecule(s2))) {
-						NBTTagList l = s.getEnchantmentTagList();
-						short level = 0;
-						if (l != null && !l.hasNoTags()) {
-							for (int k = 0; k < l.tagCount(); k++) {
-								NBTTagCompound tag = l.getCompoundTagAt(k);
-								Enchantment ench = PotionEnchantmentCoated.POTION_COATED_REGISTRY.get(MinechemUtil.getMolecule(s2));
-								if (tag.getShort("id") == Enchantment.getEnchantmentID(ench)) {
-									level = tag.getShort("lvl");
-									if (level >= 10) {
-										return ItemStack.EMPTY;
-									}
-									result.getEnchantmentTagList().getCompoundTagAt(k).setShort("lvl", (short) (level + 1));
-								}
+						PotionEnchantmentCoated ench = PotionEnchantmentCoated.POTION_COATED_REGISTRY.get(MinechemUtil.getMolecule(s2));
+						if (doesItemContainEnchantment(s, ench)) {
+							if (incEnchantmentLevel(result, ench)) {
+								return result;
 							}
 						}
 						else {
 							result.addEnchantment(PotionEnchantmentCoated.POTION_COATED_REGISTRY.get(MinechemUtil.getMolecule(s2)), 1);
+							return result;
 						}
-						return result;
 					}
 				}
 			}
