@@ -43,6 +43,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -420,7 +421,13 @@ public class ModEvents {
 	public void onAttack(LivingAttackEvent event) {
 		if (event.getSource().getTrueSource() instanceof EntityLivingBase) {
 			EntityLivingBase entity = (EntityLivingBase) event.getSource().getTrueSource();
-			ItemStack weapon = entity.getActiveItemStack();
+			ItemStack weapon = ItemStack.EMPTY;
+			Iterable<ItemStack> weapons = entity.getHeldEquipment();
+			for (ItemStack stack : weapons) {
+				if (stack.getItem() instanceof ItemSword) {
+					weapon = stack.copy();
+				}
+			}
 			if (weapon.isEmpty()) {
 				return;
 			}

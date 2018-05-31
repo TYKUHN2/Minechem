@@ -11,7 +11,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class ModEnchantments {
 
 	public static void register(IForgeRegistry<Enchantment> registry) {
-		PotionEnchantmentCoated.registerForge(registry);
+		PotionEnchantmentCoated.register(registry);
 	}
 
 }

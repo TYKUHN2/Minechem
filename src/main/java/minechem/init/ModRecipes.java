@@ -16,7 +16,6 @@ import minechem.item.element.ElementEnum;
 import minechem.item.molecule.Molecule;
 import minechem.item.molecule.MoleculeEnum;
 import minechem.potion.PotionChemical;
-import minechem.potion.PotionCoatingRecipe;
 import minechem.recipe.RecipeCloneChemistJournal;
 import minechem.recipe.RecipeDecomposer;
 import minechem.recipe.RecipeDecomposerChance;
@@ -24,6 +23,7 @@ import minechem.recipe.RecipeDecomposerFluid;
 import minechem.recipe.RecipeDecomposerFluidSelect;
 import minechem.recipe.RecipeDecomposerSelect;
 import minechem.recipe.RecipeDecomposerSuper;
+import minechem.recipe.RecipePotionCoating;
 import minechem.recipe.RecipePotionSpiking;
 import minechem.recipe.RecipeSynthesis;
 import minechem.utils.MinechemUtil;
@@ -4373,7 +4373,7 @@ public class ModRecipes {
 	}
 
 	public static void registerCustomRecipes(IForgeRegistry<IRecipe> registry) {
-		registry.register(new PotionCoatingRecipe().setRegistryName(new ResourceLocation(ModGlobals.ID, "potion_coating")));
+		registry.register(new RecipePotionCoating().setRegistryName(new ResourceLocation(ModGlobals.ID, "potion_coating")));
 		registry.register(new RecipePotionSpiking().setRegistryName(new ResourceLocation(ModGlobals.ID, "potion_spiking")));
 	}
 

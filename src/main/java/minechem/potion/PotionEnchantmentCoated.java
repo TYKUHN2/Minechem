@@ -65,23 +65,7 @@ public class PotionEnchantmentCoated extends Enchantment {
 		}
 	}
 
-	/*
-		public static void registerCoatings() {
-			for (MoleculeEnum molecule : MoleculeEnum.molecules.values()) {
-				if (molecule != null && PharmacologyEffectRegistry.hasEffect(molecule)) {
-					for (Enchantment ench : Enchantment.REGISTRY) {
-						if (ench != null) {
-							PotionEnchantmentCoated newEnch = new PotionEnchantmentCoated(molecule, Enchantment.getEnchantmentID(ench));
-							newEnch.setName(molecule.getUnlocalizedName() + ".coated");
-							PotionEnchantmentCoated.POTION_COATED_REGISTRY.put(molecule, newEnch);
-							break;
-						}
-					}
-				}
-			}
-		}
-	*/
-	public static void registerForge(IForgeRegistry<Enchantment> registry) {
+	public static void register(IForgeRegistry<Enchantment> registry) {
 		for (MoleculeEnum molecule : MoleculeEnum.molecules.values()) {
 			if (molecule != null && PharmacologyEffectRegistry.hasEffect(molecule)) {
 				for (Enchantment ench : Enchantment.REGISTRY) {
