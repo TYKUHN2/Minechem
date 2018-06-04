@@ -222,7 +222,7 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 			recipe = RecipeDecomposer.get(tank.getFluid());
 		}
 		if (recipe != null) {
-			NonNullList<ItemStack> recipeList = MinechemUtil.convertChemicalsIntoItemStacks(recipe.getOutput());
+			NonNullList<ItemStack> recipeList = MinechemUtil.convertChemicalsIntoItemStacks(recipe.getOutputAsArray());
 			for (ItemStack currentStack : recipeList) {
 				for (int i = 0; i < outputInventory.getSizeInventory(); i++) {
 					ItemStack tmpStack = outputInventory.getStackInSlot(i);
@@ -354,12 +354,12 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 		return 1.0D;
 	}
 
-	private ArrayList<PotionChemical> getBrokenOutput(ArrayList<PotionChemical> output, double mult) {
+	private PotionChemical[] getBrokenOutput(ArrayList<PotionChemical> output, double mult) {
 		if (mult == 1) {
-			return output;
+			return output.toArray(new PotionChemical[output.size()]);
 		}
 		if (mult <= 0) {
-			return new ArrayList<PotionChemical>();
+			return new PotionChemical[0];
 		}
 		ArrayList<PotionChemical> result = new ArrayList<PotionChemical>();
 		for (PotionChemical chemical : output) {
@@ -367,7 +367,7 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 			addChemical.amount *= mult;
 			result.add(addChemical);
 		}
-		return result;
+		return result.toArray(new PotionChemical[result.size()]);
 	}
 
 	public int[] getAccessibleSlotsFromSide(int var1) {

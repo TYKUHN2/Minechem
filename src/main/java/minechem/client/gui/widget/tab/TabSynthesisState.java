@@ -1,8 +1,6 @@
 package minechem.client.gui.widget.tab;
 
 import minechem.block.tile.TileSynthesis;
-import minechem.init.ModConfig;
-import minechem.recipe.RecipeSynthesis;
 import net.minecraft.client.gui.Gui;
 
 public class TabSynthesisState extends GuiTabState {
@@ -17,6 +15,7 @@ public class TabSynthesisState extends GuiTabState {
 	@Override
 	public void update() {
 		super.update();
+		/*
 		TileSynthesis synthesis = (TileSynthesis) tileEntity;
 		RecipeSynthesis recipe = synthesis.getCurrentRecipe();
 		if (recipe == null) {
@@ -46,7 +45,7 @@ public class TabSynthesisState extends GuiTabState {
 				}
 			}
 		}
-
+		*/
 		overlayColor = state.color;
 	}
 

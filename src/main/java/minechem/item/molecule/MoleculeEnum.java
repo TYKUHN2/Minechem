@@ -51,7 +51,7 @@ import minechem.item.element.Element;
 import minechem.potion.PotionChemical;
 import minechem.radiation.RadiationEnum;
 import minechem.recipe.RecipeDecomposer;
-import minechem.recipe.RecipeSynthesis;
+import minechem.recipe.RecipeSynthesisShapeless;
 import net.minecraft.item.ItemStack;
 
 public class MoleculeEnum extends MinechemChemicalType {
@@ -357,13 +357,13 @@ public class MoleculeEnum extends MinechemChemicalType {
 		PotionChemical[] var6 = var5.toArray(new PotionChemical[var5.size()]);
 		ItemStack var7 = new ItemStack(ModItems.molecule, 1, molecule.id());
 		RecipeDecomposer.add(new RecipeDecomposer(var7, var6));
-		RecipeSynthesis.add(new RecipeSynthesis(var7, true, ModRecipes.COST_ITEM, var6));
+		RecipeSynthesisShapeless.add(new RecipeSynthesisShapeless(var7, true, ModRecipes.COST_ITEM, var6));
 	}
 
 	public static void unregisterMolecule(MoleculeEnum molecule) {
 		removeMapping(molecule);
 		RecipeDecomposer.remove(new ItemStack(ModItems.molecule, 1, molecule.id()));
-		RecipeSynthesis.remove(new ItemStack(ModItems.molecule, 1, molecule.id()));
+		RecipeSynthesisShapeless.remove(new ItemStack(ModItems.molecule, 1, molecule.id()));
 	}
 
 	private static float getRandomColor(long seed) {

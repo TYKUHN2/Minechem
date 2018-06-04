@@ -2,7 +2,6 @@ package minechem.block.tile;
 
 import javax.annotation.Nullable;
 
-// import cofh.api.energy.IEnergyReceiver;
 import minechem.init.ModConfig;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -10,29 +9,17 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
-// @Optional.Interface(iface = "cofh.api.energy.IEnergyReceiver", modid =
-// "CoFHAPI|energy")
-public abstract class TileMinechemEnergyBase extends TileMinechemBase //implements IEnergyReceiver
-{
+public abstract class TileMinechemEnergyBase extends TileMinechemBase {
 	/**
 	 * Determines amount of energy we are allowed to input into the machine with a given update.
 	 */
-	private static int MAX_ENERGY_RECEIVED = ModConfig.energyPacketSize;
-
-	/**
-	 * Determines total amount of energy that this machine can store.
-	 */
-	private int MAX_ENERGY_STORED;
-
-	/**
-	 * Amount of energy stored
-	 */
+	private static int maxEnergyReceived = ModConfig.energyPacketSize;
+	private int maxEnergy;
 	private int energyStored;
-	//protected int oldEnergyStored;
 
 	public TileMinechemEnergyBase(int maxEnergy) {
 		super();
-		MAX_ENERGY_STORED = maxEnergy;
+		this.maxEnergy = maxEnergy;
 		energyStored = 0;
 	}
 
@@ -48,8 +35,8 @@ public abstract class TileMinechemEnergyBase extends TileMinechemBase //implemen
 
 			@Override
 			public int receiveEnergy(int maxReceive, boolean simulate) {
-				int received = (maxReceive <= MAX_ENERGY_RECEIVED ? maxReceive : MAX_ENERGY_RECEIVED);
-				received = (energyStored + received > MAX_ENERGY_STORED ? MAX_ENERGY_STORED - energyStored : received);
+				int received = (maxReceive <= maxEnergyReceived ? maxReceive : maxEnergyReceived);
+				received = (energyStored + received > maxEnergy ? maxEnergy - energyStored : received);
 				if (!simulate) {
 					energyStored += received;
 					shouldUpdate = true;
@@ -69,7 +56,7 @@ public abstract class TileMinechemEnergyBase extends TileMinechemBase //implemen
 
 			@Override
 			public int getMaxEnergyStored() {
-				return MAX_ENERGY_STORED;
+				return maxEnergy;
 			}
 
 			@Override

@@ -14,7 +14,7 @@ import minechem.init.ModGlobals.ModResources;
 import minechem.recipe.RecipeDecomposer;
 import minechem.recipe.RecipeDecomposerChance;
 import minechem.recipe.RecipeDecomposerSelect;
-import minechem.recipe.RecipeSynthesis;
+import minechem.recipe.RecipeSynthesisShapeless;
 import minechem.recipe.handler.RecipeHandlerDecomposer;
 import minechem.recipe.handler.RecipeHandlerSynthesis;
 import minechem.utils.MinechemUtil;
@@ -141,14 +141,14 @@ public class GuiMicroscope extends GuiContainerTabbed {
 	}
 
 	private void drawSynthesisRecipe(ItemStack inputstack, int x, int y) {
-		RecipeSynthesis recipe = RecipeHandlerSynthesis.instance.getRecipeFromOutput(inputstack);
+		RecipeSynthesisShapeless recipe = RecipeHandlerSynthesis.instance.getRecipeFromOutput(inputstack);
 		if (recipe != null) {
 			drawSynthesisRecipeMatrix(recipe, x, y);
 			drawSynthesisRecipeCost(recipe, x, y);
 		}
 	}
 
-	private void drawSynthesisRecipeMatrix(RecipeSynthesis recipe, int x, int y) {
+	private void drawSynthesisRecipeMatrix(RecipeSynthesisShapeless recipe, int x, int y) {
 		isShapedRecipe = recipe.isShaped();
 		NonNullList<ItemStack> shapedRecipe = MinechemUtil.convertChemicalArrayIntoItemStackArray(isShapedRecipe ? recipe.getShapedRecipe() : recipe.getShapelessRecipe());
 		int slot = 2;
@@ -162,7 +162,7 @@ public class GuiMicroscope extends GuiContainerTabbed {
 		}
 	}
 
-	private void drawSynthesisRecipeCost(RecipeSynthesis recipe, int x, int y) {
+	private void drawSynthesisRecipeCost(RecipeSynthesisShapeless recipe, int x, int y) {
 		if (!recipeSwitch.isMoverOver()) {
 			String cost = String.format("%d Energy", recipe.energyCost());
 			fontRenderer.drawString(cost, x + 100, y + 85, 0x000000);

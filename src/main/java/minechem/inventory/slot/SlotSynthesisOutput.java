@@ -8,11 +8,12 @@ import net.minecraft.item.ItemStack;
 
 public class SlotSynthesisOutput extends Slot {
 
-	private TileSynthesis synthesis;
+	private final TileSynthesis synthesis;
+	private boolean locked = false;
 
-	public SlotSynthesisOutput(IInventory par1iInventory, int par2, int par3, int par4) {
-		super(par1iInventory, par2, par3, par4);
-		synthesis = (TileSynthesis) par1iInventory;
+	public SlotSynthesisOutput(IInventory inv, int id, int x, int y) {
+		super(inv, id, x, y);
+		synthesis = (TileSynthesis) inv;
 	}
 
 	@Override
@@ -22,7 +23,12 @@ public class SlotSynthesisOutput extends Slot {
 
 	@Override
 	public boolean canTakeStack(EntityPlayer par1EntityPlayer) {
-		return synthesis.canTakeOutputStack(false);
+		return !locked;//synthesis.canTakeOutputStack(false);
+	}
+
+	public SlotSynthesisOutput setLocked(boolean doLock) {
+		locked = doLock;
+		return this;
 	}
 
 }

@@ -18,7 +18,7 @@ import minechem.potion.PotionChemical;
 import minechem.recipe.RecipeDecomposer;
 import minechem.recipe.RecipeDecomposerChance;
 import minechem.recipe.RecipeDecomposerSelect;
-import minechem.recipe.RecipeSynthesis;
+import minechem.recipe.RecipeSynthesisShapeless;
 import minechem.recipe.handler.RecipeHandlerDecomposer;
 import minechem.recipe.handler.RecipeHandlerSynthesis;
 import minechem.utils.MinechemUtil;
@@ -48,7 +48,7 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 	private int slideShowTimer = 0;
 	private int currentSlide = 0;
 	public ItemStack currentItemStack;
-	RecipeSynthesis currentSynthesisRecipe;
+	RecipeSynthesisShapeless currentSynthesisRecipe;
 	RecipeDecomposer currentDecomposerRecipe;
 	ItemStack journalStack;
 	List<ItemStack> itemList;
@@ -141,7 +141,7 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 		ChemistJournalActiveItemMessage message = new ChemistJournalActiveItemMessage(itemstack, player);
 		ModNetworking.INSTANCE.sendToServer(message);
 
-		RecipeSynthesis synthesisRecipe = RecipeHandlerSynthesis.instance.getRecipeFromOutput(itemstack);
+		RecipeSynthesisShapeless synthesisRecipe = RecipeHandlerSynthesis.instance.getRecipeFromOutput(itemstack);
 		RecipeDecomposer decomposerRecipe = RecipeHandlerDecomposer.instance.getRecipe(itemstack);
 		synthesisSlots = new GuiFakeSlot[9];
 		decomposerSlots = new GuiFakeSlot[9];
@@ -157,7 +157,7 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 		}
 	}
 
-	public void showSynthesisRecipe(RecipeSynthesis recipe) {
+	public void showSynthesisRecipe(RecipeSynthesisShapeless recipe) {
 		NonNullList<ItemStack> ingredients = MinechemUtil.convertChemicalArrayIntoItemStackArray(recipe.isShaped() ? recipe.getShapedRecipe() : recipe.getShapelessRecipe());
 		showIngredients(ingredients, synthesisSlots, SYNTHESIS_X, SYNTHESIS_Y);
 	}

@@ -107,7 +107,7 @@ public class ModGlobals {
 			public static final String TAB_RIGHT = GUI_DIR + "tab_right.png";
 			public static final String DECOMPOSER = GUI_DIR + "chemicaldecomposergui.png";
 			public static final String MICROSCOPE = GUI_DIR + "MicroscopeGUI.png";
-			public static final String SYNTHESIS = GUI_DIR + "synthesisgui.png";
+			public static final String SYNTHESIS = GUI_DIR + "synthesisgui_new.png";
 			public static final String FUSION = GUI_DIR + "fusionchambergui.png";
 			public static final String PROJECTOR = GUI_DIR + "projectorgui.png";
 			public static final String LEADED_CHEST = GUI_DIR + "leadedchestgui.png";

@@ -6,7 +6,7 @@ import minechem.init.ModItems;
 import minechem.inventory.InventoryBounded;
 import minechem.item.ItemChemistJournal;
 import minechem.recipe.RecipeDecomposer;
-import minechem.recipe.RecipeSynthesis;
+import minechem.recipe.RecipeSynthesisShapeless;
 import minechem.recipe.handler.RecipeHandlerDecomposer;
 import minechem.recipe.handler.RecipeHandlerSynthesis;
 import minechem.utils.Transactor;
@@ -37,7 +37,7 @@ public class TileMicroscope extends TileMinechemBase implements IInventory {
 	}
 
 	public void onInspectItemStack(ItemStack itemstack) {
-		RecipeSynthesis synthesisRecipe = RecipeHandlerSynthesis.instance.getRecipeFromOutput(itemstack);
+		RecipeSynthesisShapeless synthesisRecipe = RecipeHandlerSynthesis.instance.getRecipeFromOutput(itemstack);
 		RecipeDecomposer decomposerRecipe = RecipeHandlerDecomposer.instance.getRecipe(itemstack);
 		if (!inventory.get(1).isEmpty() && (synthesisRecipe != null || decomposerRecipe != null)) {
 			ModItems.journal.addItemStackToJournal(itemstack, inventory.get(1), world);

@@ -14,7 +14,7 @@ import net.minecraft.util.NonNullList;
 
 public class ContainerWithFakeSlots extends Container {
 
-	private static int MOUSE_LEFT = 0;
+	public static int MOUSE_LEFT = 0;
 
 	@Override
 	public boolean canInteractWith(EntityPlayer var1) {
@@ -58,7 +58,8 @@ public class ContainerWithFakeSlots extends Container {
 			return ItemStack.EMPTY;
 		}
 		else {
-			return superSlotClick(slotNum, mouseButton, clickType, entityPlayer);
+			return super.slotClick(slotNum, mouseButton, clickType, entityPlayer);//superSlotClick(slotNum, mouseButton, clickType, entityPlayer);
+			//return superSlotClick(slotNum, mouseButton, clickType, entityPlayer);
 		}
 	}
 
@@ -378,7 +379,7 @@ public class ContainerWithFakeSlots extends Container {
 		return itemstack;
 	}
 
-	private void addStackToSlot(ItemStack stackOnMouse, Slot slot, int amount) {
+	protected void addStackToSlot(ItemStack stackOnMouse, Slot slot, int amount) {
 		ItemStack stackInSlot = slot.inventory.getStackInSlot(slot.slotNumber);
 		if (!stackInSlot.isEmpty()) {
 			stackInSlot.setCount(Math.min(stackInSlot.getCount() + amount, slot.inventory.getInventoryStackLimit()));

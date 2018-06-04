@@ -1,17 +1,20 @@
 package minechem.recipe.handler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import javax.annotation.Nonnull;
 
+import minechem.init.ModGlobals;
 import minechem.potion.PotionChemical;
-import minechem.recipe.RecipeSynthesis;
+import minechem.recipe.RecipeSynthesisShaped;
+import minechem.recipe.RecipeSynthesisShapeless;
 import minechem.utils.MapKey;
 import minechem.utils.MinechemUtil;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper.ShapedPrimer;
+import net.minecraftforge.registries.GameData;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class RecipeHandlerSynthesis {
 
@@ -21,16 +24,16 @@ public class RecipeHandlerSynthesis {
 
 	}
 
-	public RecipeSynthesis getRecipeFromOutput(@Nonnull ItemStack output) {
+	public RecipeSynthesisShapeless getRecipeFromOutput(@Nonnull ItemStack output) {
 		MapKey key = MapKey.getKey(output);
 		if (key == null) {
 			return null;
 		}
-		return RecipeSynthesis.recipes.get(key);
+		return RecipeSynthesisShapeless.recipes.get(key);
 	}
 
-	public RecipeSynthesis getRecipeFromInput(NonNullList<ItemStack> input) {
-		for (RecipeSynthesis recipe : RecipeSynthesis.recipes.values()) {
+	public RecipeSynthesisShapeless getRecipeFromInput(NonNullList<ItemStack> input) {
+		for (RecipeSynthesisShapeless recipe : RecipeSynthesisShapeless.recipes.values()) {
 			if (itemStacksMatchesRecipe(input, recipe)) {
 				return recipe;
 			}
@@ -38,11 +41,11 @@ public class RecipeHandlerSynthesis {
 		return null;
 	}
 
-	public boolean itemStacksMatchesRecipe(NonNullList<ItemStack> stacks, RecipeSynthesis recipe) {
+	public boolean itemStacksMatchesRecipe(NonNullList<ItemStack> stacks, RecipeSynthesisShapeless recipe) {
 		return itemStacksMatchesRecipe(stacks, recipe, 1);
 	}
 
-	public boolean itemStacksMatchesRecipe(NonNullList<ItemStack> stacks, RecipeSynthesis recipe, int factor) {
+	public boolean itemStacksMatchesRecipe(NonNullList<ItemStack> stacks, RecipeSynthesisShapeless recipe, int factor) {
 		if (recipe.isShaped()) {
 			return itemStacksMatchesShapedRecipe(stacks, recipe, factor);
 		}
@@ -51,9 +54,21 @@ public class RecipeHandlerSynthesis {
 		}
 	}
 
-	private boolean itemStacksMatchesShapelessRecipe(NonNullList<ItemStack> stacks, RecipeSynthesis recipe, int factor) {
-		ArrayList<ItemStack> stacksList = new ArrayList<ItemStack>();
-		NonNullList<ItemStack> shapelessRecipe = MinechemUtil.convertChemicalsIntoItemStacks(new ArrayList<PotionChemical>(Arrays.asList(recipe.getShapelessRecipe())));
+	private boolean itemStacksMatchesShapelessRecipe(NonNullList<ItemStack> stacks, RecipeSynthesisShapeless recipe, int factor) {
+		NonNullList<ItemStack> stacksCopy = MinechemUtil.copyStackList(stacks);
+		//ArrayList<ItemStack> stacksList = new ArrayList<ItemStack>();
+		NonNullList<ItemStack> shapelessRecipe = MinechemUtil.convertChemicalsIntoItemStacks(recipe.getShapelessRecipe());
+		for (int i = 0; i < shapelessRecipe.size(); i++) {
+			if (ItemStack.areItemStacksEqual(stacksCopy.get(i), shapelessRecipe.get(i))) {
+				shapelessRecipe.set(i, ItemStack.EMPTY);
+				stacksCopy.set(i, ItemStack.EMPTY);
+			}
+		}
+		if (MinechemUtil.isStackListEmpty(shapelessRecipe) && MinechemUtil.isStackListEmpty(stacksCopy)) {
+			return true;
+		}
+		return false;
+		/*
 		for (ItemStack itemstack : stacks) {
 			if (!itemstack.isEmpty()) {
 				stacksList.add(itemstack.copy());
@@ -75,10 +90,21 @@ public class RecipeHandlerSynthesis {
 			}
 		}
 		return isRecipeListEmpty;
+		*/
 	}
 
-	private boolean itemStacksMatchesShapedRecipe(NonNullList<ItemStack> stacks, RecipeSynthesis recipe, int factor) {
+	private static <K extends IForgeRegistryEntry<K>> K register(K object) {
+		return GameData.register_impl(object);
+	}
+
+	public static void addShapedRecipe(String name, int energyCost, ItemStack result, Object... recipe) {
+		ShapedPrimer primer = RecipeSynthesisShaped.parseShaped(recipe);
+		register(new RecipeSynthesisShaped(primer.width, primer.height, energyCost, primer.input, result).setRegistryName(new ResourceLocation(ModGlobals.ID, name)));
+	}
+
+	private boolean itemStacksMatchesShapedRecipe(NonNullList<ItemStack> stacks, RecipeSynthesisShapeless recipe, int factor) {
 		PotionChemical[] chemicals = recipe.getShapedRecipe();
+
 		for (int i = 0; i < chemicals.length; i++) {
 			if (stacks.get(i).isEmpty() && chemicals[i] == null) {
 				continue;
@@ -106,7 +132,7 @@ public class RecipeHandlerSynthesis {
 	/**
 	 * Clears the crafting inventory.
 	 */
-	public static boolean takeFromCraftingInventory(RecipeSynthesis recipe, final IInventory inv) {
+	public static boolean takeFromCraftingInventory(RecipeSynthesisShapeless recipe, final IInventory inv) {
 		for (int slot = 0; slot < inv.getSizeInventory(); slot++) {
 			inv.setInventorySlotContents(slot, ItemStack.EMPTY);
 		}

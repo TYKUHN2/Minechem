@@ -135,6 +135,10 @@ public class RecipeDecomposer {
 		return result;
 	}
 
+	public PotionChemical[] getOutputAsArray() {
+		return output.values().toArray(new PotionChemical[output.values().size()]);
+	}
+
 	public ArrayList<PotionChemical> getPartialOutputRaw(int f) {
 		ArrayList<PotionChemical> raw = getOutput();
 		ArrayList<PotionChemical> result = new ArrayList<PotionChemical>();

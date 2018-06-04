@@ -12,15 +12,17 @@ import minechem.utils.MapKey;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class RecipeSynthesis {
-	public static Map<MapKey, RecipeSynthesis> recipes = new HashMap<MapKey, RecipeSynthesis>();
+public class RecipeSynthesisShapeless {
+	public static Map<MapKey, RecipeSynthesisShapeless> recipes = new HashMap<MapKey, RecipeSynthesisShapeless>();
 	private ItemStack output = ItemStack.EMPTY;
 	private PotionChemical[] shapedRecipe;
 	private ArrayList<PotionChemical> unshapedRecipe = new ArrayList<PotionChemical>();
 	private int energyCost;
 	private boolean isShaped;
+	public int width = 3;
+	public int height = 3;
 
-	public static RecipeSynthesis add(RecipeSynthesis recipe) {
+	public static RecipeSynthesisShapeless add(RecipeSynthesisShapeless recipe) {
 		if (!recipe.getOutput().isEmpty() && recipe.getOutput().getItem() != null) {
 			if (isBlacklisted(recipe.getOutput())) {
 				return null;
@@ -43,35 +45,35 @@ public class RecipeSynthesis {
 				val[(i + entry) % 9] = chemicals[i];
 			}
 			ItemStack ore = itr.next();
-			RecipeSynthesis.add(new RecipeSynthesis(new ItemStack(ore.getItem(), 1, ore.getItemDamage()), true, energyCost, val));
+			RecipeSynthesisShapeless.add(new RecipeSynthesisShapeless(new ItemStack(ore.getItem(), 1, ore.getItemDamage()), true, energyCost, val));
 		}
 	}
 
 	public static void remove(ItemStack itemStack) {
-		ArrayList<RecipeSynthesis> recipes = RecipeSynthesis.search(itemStack);
+		ArrayList<RecipeSynthesisShapeless> recipes = RecipeSynthesisShapeless.search(itemStack);
 
-		for (RecipeSynthesis recipe : recipes) {
-			RecipeSynthesis.recipes.remove(MapKey.getKey(recipe.output));
+		for (RecipeSynthesisShapeless recipe : recipes) {
+			RecipeSynthesisShapeless.recipes.remove(MapKey.getKey(recipe.output));
 		}
 	}
 
 	public static void removeRecipeSafely(String item) {
 		for (ItemStack i : OreDictionary.getOres(item)) {
-			RecipeSynthesis.remove(i);
+			RecipeSynthesisShapeless.remove(i);
 		}
 	}
 
-	public static RecipeSynthesis remove(String string) {
+	public static RecipeSynthesisShapeless remove(String string) {
 		if (recipes.containsKey(string)) {
 			return recipes.remove(string);
 		}
 		return null;
 	}
 
-	public static ArrayList<RecipeSynthesis> search(ItemStack itemStack) {
-		ArrayList<RecipeSynthesis> results = new ArrayList<RecipeSynthesis>();
+	public static ArrayList<RecipeSynthesisShapeless> search(ItemStack itemStack) {
+		ArrayList<RecipeSynthesisShapeless> results = new ArrayList<RecipeSynthesisShapeless>();
 
-		for (RecipeSynthesis recipe : RecipeSynthesis.recipes.values()) {
+		for (RecipeSynthesisShapeless recipe : RecipeSynthesisShapeless.recipes.values()) {
 			if (itemStack.isItemEqual(recipe.output)) {
 				results.add(recipe);
 			}
@@ -81,7 +83,7 @@ public class RecipeSynthesis {
 
 	}
 
-	public RecipeSynthesis(ItemStack output, boolean isShaped, int energyCost, PotionChemical... recipe) {
+	public RecipeSynthesisShapeless(ItemStack output, boolean isShaped, int energyCost, PotionChemical... recipe) {
 		this.output = output;
 		this.isShaped = isShaped;
 		this.energyCost = energyCost;
@@ -96,7 +98,24 @@ public class RecipeSynthesis {
 		}
 	}
 
-	public RecipeSynthesis(ItemStack output, boolean shaped, int energyCost, ArrayList<PotionChemical> recipe) {
+	public RecipeSynthesisShapeless(ItemStack output, boolean isShaped, int energyCost, int width, int height, PotionChemical... recipe) {
+		this.output = output;
+		this.isShaped = isShaped;
+		this.energyCost = energyCost;
+		if (isShaped) {
+			shapedRecipe = recipe;
+		}
+		unshapedRecipe = new ArrayList<PotionChemical>();
+		for (PotionChemical chemical : recipe) {
+			if (chemical != null) {
+				unshapedRecipe.add(chemical);
+			}
+		}
+		this.width = width;
+		this.height = height;
+	}
+
+	public RecipeSynthesisShapeless(ItemStack output, boolean shaped, int energyCost, ArrayList<PotionChemical> recipe) {
 		this.output = output;
 		isShaped = shaped;
 		this.energyCost = energyCost;
@@ -144,7 +163,7 @@ public class RecipeSynthesis {
 		return false;
 	}
 
-	public static RecipeSynthesis get(MapKey key) {
+	public static RecipeSynthesisShapeless get(MapKey key) {
 		return recipes.get(key);
 	}
 

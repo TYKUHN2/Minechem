@@ -425,12 +425,16 @@ public final class MinechemUtil {
 		return itemlist;
 	}
 
-	public static NonNullList<ItemStack> convertChemicalsIntoItemStacks(ArrayList<PotionChemical> potionChemicals) {
-		if (potionChemicals != null) {
-			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(potionChemicals.size(), ItemStack.EMPTY);
-			if (potionChemicals != null && potionChemicals.size() > 0) {
-				for (int i = 0; i < potionChemicals.size(); i++) {
-					PotionChemical potionChemical = potionChemicals.get(i);
+	public static NonNullList<ItemStack> convertChemicalsIntoItemStacks(List<PotionChemical> potionChemicals) {
+		return convertChemicalsIntoItemStacks(potionChemicals.toArray(new PotionChemical[potionChemicals.size()]));
+	}
+
+	public static NonNullList<ItemStack> convertChemicalsIntoItemStacks(PotionChemical[] potionChemicals) {
+		if (potionChemicals != null && potionChemicals.length > 0) {
+			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(potionChemicals.length, ItemStack.EMPTY);
+			if (potionChemicals != null && potionChemicals.length > 0) {
+				for (int i = 0; i < potionChemicals.length; i++) {
+					PotionChemical potionChemical = potionChemicals[i];
 					//for (PotionChemical potionChemical : potionChemicals) {
 					if (potionChemical instanceof Element && ((Element) potionChemical).element != null) {
 						stacks.set(i, new ItemStack(ModItems.element, potionChemical.amount, ((Element) potionChemical).element.atomicNumber()));
@@ -443,6 +447,23 @@ public final class MinechemUtil {
 			return stacks;
 		}
 		return NonNullList.<ItemStack>create();
+	}
+
+	public static NonNullList<ItemStack> copyStackList(NonNullList<ItemStack> stackList) {
+		NonNullList<ItemStack> newStackList = NonNullList.<ItemStack>create();
+		for (ItemStack stack : stackList) {
+			newStackList.add(stack.copy());
+		}
+		return newStackList;
+	}
+
+	public static boolean isStackListEmpty(NonNullList<ItemStack> stackList) {
+		for (ItemStack stack : stackList) {
+			if (!stack.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static NonNullList<ItemStack> pushTogetherStacks(NonNullList<ItemStack> stacks) {

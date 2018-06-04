@@ -167,6 +167,7 @@ public class BlockSynthesis extends BlockSimpleContainer {
 	@Override
 	public void addStacksDroppedOnBlockBreak(TileEntity tileEntity, ArrayList<ItemStack> itemStacks) {
 		TileSynthesis synthesizer = (TileSynthesis) tileEntity;
+		/*
 		for (int slot : TileSynthesis.kRealSlots) {
 			if (synthesizer.isRealItemSlot(slot)) {
 				ItemStack itemstack = synthesizer.getStackInSlot(slot);
@@ -175,6 +176,7 @@ public class BlockSynthesis extends BlockSimpleContainer {
 				}
 			}
 		}
+		*/
 	}
 
 	@Override

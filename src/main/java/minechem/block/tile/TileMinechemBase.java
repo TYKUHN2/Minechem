@@ -15,7 +15,7 @@ import net.minecraft.util.NonNullList;
 public abstract class TileMinechemBase extends TileEntity implements ITickable, IInventory {
 
 	protected long ticks = 0;
-	protected boolean shouldUpdate = false;
+	public boolean shouldUpdate = false;
 
 	public void setBlockType(Block block) {
 		blockType = block;

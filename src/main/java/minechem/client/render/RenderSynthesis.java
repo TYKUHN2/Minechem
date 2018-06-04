@@ -5,7 +5,6 @@ import org.lwjgl.opengl.GL11;
 import minechem.block.tile.TileSynthesis;
 import minechem.client.model.ModelSynthesis;
 import minechem.init.ModGlobals.ModResources;
-import minechem.recipe.RecipeSynthesis;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -50,11 +49,11 @@ public class RenderSynthesis extends TileEntitySpecialRenderer<TileSynthesis> {/
 			}
 
 			// Animate the machine if it has power and something to work on.
-			RecipeSynthesis currentRecipe = synthesis.getCurrentRecipe();
+			//RecipeSynthesis currentRecipe = synthesis.getCurrentRecipe();
 
-			if (currentRecipe != null && !synthesis.canAffordRecipe(currentRecipe) && synthesis.hasEnoughPowerForCurrentRecipe()) {
-				model.updateArm();
-			}
+			//if (currentRecipe != null && !synthesis.canAffordRecipe(currentRecipe) && synthesis.hasEnoughPowerForCurrentRecipe()) {
+			//	model.updateArm();
+			//}
 
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(x + 0.5D, y + 1.5D, z + 0.5D);
@@ -74,37 +73,37 @@ public class RenderSynthesis extends TileEntitySpecialRenderer<TileSynthesis> {/
 		public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
 			return new ArrayList<BakedQuad>();
 		}
-
+	
 		@Override
 		public boolean isAmbientOcclusion() {
 			return false;
 		}
-
+	
 		@Override
 		public boolean isGui3d() {
 			return false;
 		}
-
+	
 		@Override
 		public boolean isBuiltInRenderer() {
 			return true;
 		}
-
+	
 		@Override
 		public TextureAtlasSprite getParticleTexture() {
 			return null;
 		}
-
+	
 		@Override
 		public ItemCameraTransforms getItemCameraTransforms() {
 			return ItemCameraTransforms.DEFAULT;
 		}
-
+	
 		@Override
 		public ItemOverrideList getOverrides() {
 			return ItemOverrideList.NONE;
 		}
-
+	
 		@Override
 		public void renderItem(ItemStack item, TransformType cameraTransformType) {
 			RenderHelper.enableStandardItemLighting();
@@ -120,7 +119,7 @@ public class RenderSynthesis extends TileEntitySpecialRenderer<TileSynthesis> {/
 			GlStateManager.translate(-0.5D, -1.5D, -0.5D);
 			GlStateManager.popMatrix();
 		}
-
+	
 		@Override
 		public IModelState getTransforms() {
 			return TransformUtils.DEFAULT_BLOCK;
