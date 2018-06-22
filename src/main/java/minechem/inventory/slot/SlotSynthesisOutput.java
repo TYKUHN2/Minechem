@@ -3,17 +3,17 @@ package minechem.inventory.slot;
 import minechem.block.tile.TileSynthesis;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 
-public class SlotSynthesisOutput extends Slot {
+public class SlotSynthesisOutput extends SlotCrafting {
 
 	private final TileSynthesis synthesis;
 	private boolean locked = false;
 
-	public SlotSynthesisOutput(IInventory inv, int id, int x, int y) {
-		super(inv, id, x, y);
-		synthesis = (TileSynthesis) inv;
+	public SlotSynthesisOutput(TileSynthesis inv, EntityPlayer player, int id, int x, int y) {
+		super(player, inv.getFakeCraftingInv(), inv, id, x, y);
+		synthesis = inv;
 	}
 
 	@Override

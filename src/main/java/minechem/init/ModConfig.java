@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.LanguageMap;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -80,8 +81,8 @@ public class ModConfig {
 	//Blacklisting
 	public static String[] DecomposerBlacklist = {};
 	public static String[] SynthesisMachineBlacklist = {};
-	public static ArrayList<ItemStack> decomposerBlacklist;
-	public static ArrayList<ItemStack> synthesisBlacklist;
+	public static NonNullList<ItemStack> decomposerBlacklist = NonNullList.create();
+	public static NonNullList<ItemStack> synthesisBlacklist = NonNullList.create();
 
 	public static boolean displayMoleculeEffects = true;
 

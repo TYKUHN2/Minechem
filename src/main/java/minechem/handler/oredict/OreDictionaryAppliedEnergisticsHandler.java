@@ -6,7 +6,7 @@ import minechem.item.molecule.Molecule;
 import minechem.item.molecule.MoleculeEnum;
 import minechem.potion.PotionChemical;
 import minechem.recipe.RecipeDecomposer;
-import minechem.recipe.RecipeSynthesisShapeless;
+import minechem.recipe.handler.RecipeHandlerSynthesis;
 
 public class OreDictionaryAppliedEnergisticsHandler implements IOreDictionaryHandler {
 
@@ -124,27 +124,27 @@ public class OreDictionaryAppliedEnergisticsHandler implements IOreDictionaryHan
 	public void handle(String oreName) {
 		if (oreName.equals("dustCertusQuartz")) {
 			RecipeDecomposer.createAndAddRecipeSafely(oreName, certusQuartzDecompositionFormula);
-			RecipeSynthesisShapeless.createAndAddRecipeSafely(oreName, true, 30000, certusQuartzDustSynthesisFormula);
+			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, 30000, certusQuartzDustSynthesisFormula);
 		}
 		else if (oreName.equals("crystalCertusQuartz")) {
 			RecipeDecomposer.createAndAddRecipeSafely(oreName, certusQuartzDecompositionFormula);
-			RecipeSynthesisShapeless.createAndAddRecipeSafely(oreName, true, 30000, certusQuartzCrystalSynthesisFormula);
+			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, 30000, certusQuartzCrystalSynthesisFormula);
 		}
 		else if (oreName.equals("crystalChargedCertusQuartz")) {
 			RecipeDecomposer.createAndAddRecipeSafely(oreName, chargedCertusQuartzDecompositionFormula);
-			RecipeSynthesisShapeless.createAndAddRecipeSafely(oreName, true, 30000, chargedCertusQuartzCrystalSynthesisFormula);
+			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, 30000, chargedCertusQuartzCrystalSynthesisFormula);
 		}
 		else if (oreName.equals("crystalFluix")) {
 			RecipeDecomposer.createAndAddRecipeSafely(oreName, fluixCertusQuartzDecompositionFormula);
-			RecipeSynthesisShapeless.createAndAddRecipeSafely(oreName, true, 30000, fluixQuartzCrystalSynthesisFormula);
+			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, 30000, fluixQuartzCrystalSynthesisFormula);
 		}
 		else if (oreName.equals("dustFluix")) {
 			RecipeDecomposer.createAndAddRecipeSafely(oreName, fluixQuartzDustDecompositionFormula);
-			RecipeSynthesisShapeless.createAndAddRecipeSafely(oreName, true, 30000, fluixQuartzDustSynthesisFormula);
+			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, 30000, fluixQuartzDustSynthesisFormula);
 		}
 		else if (oreName.equals("pearlFluix")) {
 			RecipeDecomposer.createAndAddRecipeSafely(oreName, fluixQuartzPearlDecompositionFormula);
-			RecipeSynthesisShapeless.createAndAddRecipeSafely(oreName, true, 30000, fluixQuartzPearlSynthesisFormula);
+			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, 30000, fluixQuartzPearlSynthesisFormula);
 		}
 		else {
 			ModLogger.debug("Unknown type of AE2 item : " + oreName);

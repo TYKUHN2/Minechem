@@ -18,14 +18,16 @@ import minechem.potion.PotionChemical;
 import minechem.recipe.RecipeDecomposer;
 import minechem.recipe.RecipeDecomposerChance;
 import minechem.recipe.RecipeDecomposerSelect;
-import minechem.recipe.RecipeSynthesisShapeless;
+import minechem.recipe.RecipeSynthesisShaped;
 import minechem.recipe.handler.RecipeHandlerDecomposer;
 import minechem.recipe.handler.RecipeHandlerSynthesis;
 import minechem.utils.MinechemUtil;
+import minechem.utils.RecipeUtil;
 import minechem.utils.RenderUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 
 public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalScrollContainer {
@@ -48,7 +50,7 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 	private int slideShowTimer = 0;
 	private int currentSlide = 0;
 	public ItemStack currentItemStack;
-	RecipeSynthesisShapeless currentSynthesisRecipe;
+	IRecipe currentSynthesisRecipe;
 	RecipeDecomposer currentDecomposerRecipe;
 	ItemStack journalStack;
 	List<ItemStack> itemList;
@@ -141,7 +143,7 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 		ChemistJournalActiveItemMessage message = new ChemistJournalActiveItemMessage(itemstack, player);
 		ModNetworking.INSTANCE.sendToServer(message);
 
-		RecipeSynthesisShapeless synthesisRecipe = RecipeHandlerSynthesis.instance.getRecipeFromOutput(itemstack);
+		IRecipe synthesisRecipe = RecipeHandlerSynthesis.getRecipeFromOutput(itemstack);
 		RecipeDecomposer decomposerRecipe = RecipeHandlerDecomposer.instance.getRecipe(itemstack);
 		synthesisSlots = new GuiFakeSlot[9];
 		decomposerSlots = new GuiFakeSlot[9];
@@ -157,8 +159,8 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 		}
 	}
 
-	public void showSynthesisRecipe(RecipeSynthesisShapeless recipe) {
-		NonNullList<ItemStack> ingredients = MinechemUtil.convertChemicalArrayIntoItemStackArray(recipe.isShaped() ? recipe.getShapedRecipe() : recipe.getShapelessRecipe());
+	public void showSynthesisRecipe(IRecipe recipe) {
+		NonNullList<ItemStack> ingredients = RecipeUtil.getRecipeAsStackList(recipe);
 		showIngredients(ingredients, synthesisSlots, SYNTHESIS_X, SYNTHESIS_Y);
 	}
 
@@ -278,7 +280,7 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 		mc.renderEngine.bindTexture(ModResources.Gui.JOURNAL);
 
 		drawTexturedModalRect(197 / 2, 41 / 2, 51 / 2, 192 / 2, 54 / 2, 54 / 2);
-		if (currentSynthesisRecipe != null && currentSynthesisRecipe.isShaped()) {
+		if (currentSynthesisRecipe != null && currentSynthesisRecipe instanceof RecipeSynthesisShaped) {
 			drawTexturedModalRect(197 / 2, 121 / 2, 104 / 2, 192 / 2, 54 / 2, 54 / 2);
 		}
 		else {
@@ -309,7 +311,7 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 
 		fontRenderer.drawString(MinechemUtil.getLocalString("gui.journal.synthesis"), 175, 100, 0x884400);
 		if (currentSynthesisRecipe != null) {
-			int energyCost = currentSynthesisRecipe.energyCost();
+			int energyCost = RecipeHandlerSynthesis.getEnergyCost(currentSynthesisRecipe);
 			fontRenderer.drawString(String.format("%d " + MinechemUtil.getLocalString("tab.tooltip.energy"), energyCost), 175, 110, 0x555555);
 		}
 	}

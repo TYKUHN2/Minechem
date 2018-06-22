@@ -13,7 +13,6 @@ import minechem.client.model.generated.CharacterSprite;
 import minechem.client.model.generated.ItemLayerWrapper;
 import minechem.client.model.generated.ModelProperties.PerspectiveProperties;
 import minechem.client.model.generated.PerspectiveAwareBakedModel;
-import minechem.client.render.EffectsRenderer;
 import minechem.client.render.ElementItemRenderer;
 import minechem.event.RadiationDecayEvent;
 import minechem.fluid.FluidElement;
@@ -222,12 +221,6 @@ public class ModEvents {
 			table.getPool("main").addEntry(new LootEntryItem(ModItems.blueprint, 1, 1, new LootFunction[0], new LootCondition[0], "blueprint2"));
 			tablesLoaded = true;
 		}
-	}
-
-	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	public void onPreRender(RenderGameOverlayEvent.Pre e) {
-		EffectsRenderer.renderEffects();
 	}
 
 	@SubscribeEvent

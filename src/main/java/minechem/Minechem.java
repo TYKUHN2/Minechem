@@ -1,18 +1,7 @@
 package minechem;
 
-import minechem.fluid.FluidChemicalDispenser;
-import minechem.fluid.reaction.ChemicalFluidReactionHandler;
 import minechem.init.ModGlobals;
-import minechem.init.ModItems;
-import minechem.init.ModRecipes;
-import minechem.init.ModWorldGen;
-import minechem.item.polytool.PolytoolEventHandler;
-import minechem.item.polytool.types.PolytoolTypeIron;
 import minechem.proxy.CommonProxy;
-import minechem.recipe.handler.RecipeHandlerDecomposer;
-import minechem.utils.MinechemUtil;
-import minechem.utils.RecipeUtil;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModMetadata;
@@ -40,36 +29,23 @@ public class Minechem {
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		INSTANCE = this;
+		//INSTANCE = this;
 		PROXY.preInit(event);
-		PROXY.registerTickHandlers();
 	}
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
-		ModItems.registerToOreDictionary();
-		MinecraftForge.EVENT_BUS.register(new PolytoolEventHandler());
-		ModWorldGen.init();
-		PROXY.registerRenderers();
-		FluidChemicalDispenser.init();
-		ChemicalFluidReactionHandler.initReaction();
 		PROXY.init(event);
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		MinechemUtil.populateBlacklists();
-		ModRecipes.getInstance().RegisterRecipes();
-		ModRecipes.getInstance().registerFluidRecipes();
-		PolytoolTypeIron.getOres();
+		PROXY.postInit(event);
 	}
 
 	@Mod.EventHandler
-	public void onLoadComplete(FMLLoadCompleteEvent event) {
-		ModRecipes.getInstance().RegisterModRecipes();
-		ModRecipes.getInstance().registerOreDictOres();
-		RecipeUtil.init();
-		RecipeHandlerDecomposer.recursiveRecipes();
+	public void loadComplete(FMLLoadCompleteEvent event) {
+		PROXY.loadComplete(event);
 	}
 
 }

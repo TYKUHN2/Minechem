@@ -11,7 +11,7 @@ import minechem.init.ModRecipes;
 import minechem.oredictionary.OreDictionaryBaseOreEnum;
 import minechem.potion.PotionChemical;
 import minechem.recipe.RecipeDecomposer;
-import minechem.recipe.RecipeSynthesisShapeless;
+import minechem.recipe.handler.RecipeHandlerSynthesis;
 
 public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 
@@ -72,7 +72,7 @@ public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 		case ingot:
 			RecipeDecomposer.createAndAddRecipeSafely(oreName, ore.getComposition());
 			if (!haveSeen(ore, EnumOrePrefix.dust) && !haveSeen(ore, EnumOrePrefix.dustSmall)) {
-				RecipeSynthesisShapeless.createAndAddRecipeSafely(oreName, false, ModRecipes.COST_INGOT, ore.getComposition());
+				RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, false, ModRecipes.COST_INGOT, ore.getComposition());
 				registeredIngots.put(ore, oreName);
 			}
 			break;
@@ -82,8 +82,8 @@ public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 			break;
 		case dust:
 			RecipeDecomposer.createAndAddRecipeSafely(oreName, ore.getComposition());
-			unregisterIngot(ore);
-			RecipeSynthesisShapeless.createAndAddRecipeSafely(oreName, true, ModRecipes.COST_INGOT, startAtRow(2, ore.getComposition()));
+			//unregisterIngot(ore);
+			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, ModRecipes.COST_INGOT, startAtRow(2, ore.getComposition()));
 			break;
 		case dustDirty:
 			RecipeDecomposer.createAndAddRecipeSafely(oreName, scaleFloor(ore.getComposition(), 0.75d));
@@ -93,13 +93,13 @@ public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 			break;
 		case dustSmall:
 			RecipeDecomposer.createAndAddRecipeSafely(oreName, scaleFloor(ore.getComposition(), 0.25d));
-			unregisterIngot(ore);
-			RecipeSynthesisShapeless.createAndAddRecipeSafely(oreName, false, ModRecipes.COST_INGOT / 4, scaleCeil(ore.getComposition(), 0.25d));
+			//unregisterIngot(ore);
+			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, false, ModRecipes.COST_INGOT / 4, scaleCeil(ore.getComposition(), 0.25d));
 			break;
 		case crystal:
 		case gem:
 			RecipeDecomposer.createAndAddRecipeSafely(oreName, ore.getComposition());
-			RecipeSynthesisShapeless.createAndAddRecipeSafely(oreName, true, ModRecipes.COST_GEM, startAtRow(2, ore.getComposition()));
+			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, ModRecipes.COST_GEM, startAtRow(2, ore.getComposition()));
 			break;
 		default:
 			ModLogger.debug(OreDictionaryDefaultHandler.class.getSimpleName() + " : Invalid ore dictionary type.");
@@ -121,13 +121,14 @@ public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 		return array;
 	}
 
-	private void unregisterIngot(OreDictionaryBaseOreEnum ore) {
-		if (registeredIngots.containsKey(ore)) {
-			RecipeSynthesisShapeless.remove(registeredIngots.get(ore));
-			registeredIngots.remove(ore);
+	/*
+		private void unregisterIngot(OreDictionaryBaseOreEnum ore) {
+			if (registeredIngots.containsKey(ore)) {
+				RecipeSynthesisOld.remove(registeredIngots.get(ore));
+				registeredIngots.remove(ore);
+			}
 		}
-	}
-
+	*/
 	private PotionChemical[] scaleCeil(PotionChemical[] composition, double factor) {
 		ArrayList<PotionChemical> newComposition = new ArrayList<PotionChemical>();
 

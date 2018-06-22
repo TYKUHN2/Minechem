@@ -7,6 +7,7 @@ import minechem.api.INoDecay;
 import minechem.api.IRadiationShield;
 import minechem.block.tile.TileSynthesis;
 import minechem.init.ModItems;
+import minechem.inventory.slot.SlotChemical;
 import minechem.inventory.slot.SlotChemistJournal;
 import minechem.inventory.slot.SlotFake;
 import minechem.inventory.slot.SlotSynthesisOutput;
@@ -23,10 +24,10 @@ public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadia
 	public ContainerSynthesis(InventoryPlayer inventoryPlayer, TileSynthesis synthesis) {
 		this.synthesis = synthesis;
 		addSlotToContainer(new SlotChemistJournal(synthesis, TileSynthesis.SLOT_ID_CHEMISTS_JOURNAL, 26, 36));
-		addSlotToContainer(new SlotSynthesisOutput(synthesis, TileSynthesis.SLOT_ID_OUTPUT_JOURNAL, 80, 84).setLocked(true));
-		addSlotToContainer(new SlotSynthesisOutput(synthesis, TileSynthesis.SLOT_ID_OUTPUT_MATRIX, 133, 36));
+		addSlotToContainer(new SlotSynthesisOutput(synthesis, inventoryPlayer.player, TileSynthesis.SLOT_ID_OUTPUT_JOURNAL, 80, 84).setLocked(true));
+		addSlotToContainer(new SlotSynthesisOutput(synthesis, inventoryPlayer.player, TileSynthesis.SLOT_ID_OUTPUT_MATRIX, 133, 36));
 		bindRecipeMatrixSlots();
-		//bindStorageSlots();
+		bindStorageSlots();
 
 		bindPlayerInventory(inventoryPlayer);
 	}
@@ -58,17 +59,16 @@ public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadia
 		}
 	}
 
-	/*
-			private void bindStorageSlots() {
-				int slot = 0;
-				for (int row = 0; row < 2; row++) {
-					for (int col = 0; col < 9; col++) {
-						addSlotToContainer(new SlotChemical(synthesis, TileSynthesis.kStartStorage + slot, 8 + (col * 18), 84 + (row * 18)));
-						slot++;
-					}
-				}
+	private void bindStorageSlots() {
+		int slot = 0;
+		for (int row = 0; row < 2; row++) {
+			for (int col = 0; col < 9; col++) {
+				addSlotToContainer(new SlotChemical(synthesis, TileSynthesis.SLOT_IDS_STORAGE_BUFFER[0] + slot, 8 + (col * 18), 114 + (row * 18)));
+				slot++;
 			}
-		*/
+		}
+	}
+
 	@Override
 	public boolean canInteractWith(EntityPlayer var1) {
 		return synthesis.isUsableByPlayer(var1);
@@ -87,7 +87,7 @@ public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadia
 					addStackToSlot(stackOnMouse, slot, stackOnMouse.getCount());
 				}
 				else {
-					addStackToSlot(stackOnMouse, slot, 16);
+					addStackToSlot(stackOnMouse, slot, 1);
 				}
 			}
 			else {
@@ -158,13 +158,19 @@ public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadia
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer entityPlayer, int slot) {
-		/*
+
 		Slot slotObject = inventorySlots.get(slot);
 		ItemStack stack = ItemStack.EMPTY;
-		
+
 		if (slotObject != null && slotObject.getHasStack()) {
 			ItemStack stackInSlot = slotObject.getStack();
 			stack = stackInSlot.copy();
+			if (slot >= TileSynthesis.SLOT_IDS_STORAGE_BUFFER[0] && slot < TileSynthesis.SLOT_IDS_STORAGE_BUFFER[TileSynthesis.SLOT_IDS_STORAGE_BUFFER.length - 1]) {
+				if (!mergeItemStack(stackInSlot, synthesis.getSizeInventory(), inventorySlots.size(), true)) {
+					return ItemStack.EMPTY;
+				}
+			}
+			/*
 			if (slot != TileSynthesis.kStartJournal && stack.getItem() == ModItems.journal && !getSlot(TileSynthesis.kStartJournal).getHasStack()) {
 				ItemStack copystack = slotObject.decrStackSize(1);
 				getSlot(TileSynthesis.kStartJournal).putStack(copystack);
@@ -199,7 +205,7 @@ public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadia
 					return ItemStack.EMPTY;
 				}
 			}
-		
+
 			if (stackInSlot.getCount() == 0) {
 				slotObject.putStack(ItemStack.EMPTY);
 			}
@@ -210,8 +216,9 @@ public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadia
 				return ItemStack.EMPTY;
 			}
 			slotObject.onTake(entityPlayer, stackInSlot);
+			}
+			*/
 		}
-		*/
 		return ItemStack.EMPTY;//stack;
 	}
 

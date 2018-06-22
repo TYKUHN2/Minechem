@@ -11,7 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Lists;
+
 import minechem.init.ModLogger;
+import minechem.potion.PotionChemical;
 import minechem.recipe.RecipeDecomposer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -20,12 +23,16 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.minecraftforge.registries.GameData;
+import net.minecraftforge.registries.RegistryManager;
 
 public class RecipeUtil {
 
@@ -314,6 +321,37 @@ public class RecipeUtil {
 			}
 		}
 		return result + 1;
+	}
+
+	public static void removeRecipe(ResourceLocation recipe) {
+		removeRecipes(Lists.newArrayList(recipe));
+	}
+
+	public static void removeRecipes(List<ResourceLocation> removingRecipes) {
+		removingRecipes.forEach(recipe -> RegistryManager.ACTIVE.getRegistry(GameData.RECIPES).remove(recipe));
+	}
+
+	public static Ingredient getIngredient(Object obj) {
+		if (obj instanceof PotionChemical) {
+			PotionChemical chemical = (PotionChemical) obj;
+			return CraftingHelper.getIngredient(MinechemUtil.chemicalToItemStack(chemical, chemical.amount));
+		}
+		return CraftingHelper.getIngredient(obj);
+	}
+
+	public static NonNullList<ItemStack> getRecipeAsStackList(IRecipe recipe) {
+		return ingredientListToStackList(recipe.getIngredients());
+	}
+
+	public static NonNullList<ItemStack> ingredientListToStackList(List<Ingredient> ingredients) {
+		NonNullList<ItemStack> stackList = NonNullList.withSize(9, ItemStack.EMPTY);
+		for (int i = 0; i < ingredients.size(); i++) {
+			ItemStack[] matchingStacks = ingredients.get(i).getMatchingStacks();
+			if (matchingStacks != null && matchingStacks.length > 0) {
+				stackList.set(i, matchingStacks[0]);
+			}
+		}
+		return stackList;
 	}
 
 }

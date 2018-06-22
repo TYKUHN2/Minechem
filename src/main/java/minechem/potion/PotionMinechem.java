@@ -1,6 +1,7 @@
 package minechem.potion;
 
 import minechem.init.ModGlobals;
+import net.minecraft.client.Minecraft;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
@@ -11,17 +12,22 @@ public class PotionMinechem extends Potion {
 
 	public PotionMinechem(boolean isBadEffectIn, int liquidColorIn) {
 		super(isBadEffectIn, liquidColorIn);
-		// this is fucking stupid..why can we not just have access to Potion.class
+	}
+
+	public PotionMinechem(boolean isBadEffectIn, int liquidColorIn, String name) {
+		super(isBadEffectIn, liquidColorIn);
+		setPotionName(name);
+		setRegistryName(PotionMinechem.getRegName(name));
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderInventoryEffect(int x, int y, PotionEffect effect, net.minecraft.client.Minecraft mc) {
+	public void renderInventoryEffect(int x, int y, PotionEffect effect, Minecraft mc) {
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderHUDEffect(int x, int y, PotionEffect effect, net.minecraft.client.Minecraft mc, float alpha) {
+	public void renderHUDEffect(int x, int y, PotionEffect effect, Minecraft mc, float alpha) {
 	}
 
 	public static ResourceLocation getRegName(String name) {

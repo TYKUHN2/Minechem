@@ -14,15 +14,16 @@ import minechem.init.ModGlobals.ModResources;
 import minechem.recipe.RecipeDecomposer;
 import minechem.recipe.RecipeDecomposerChance;
 import minechem.recipe.RecipeDecomposerSelect;
-import minechem.recipe.RecipeSynthesisShapeless;
 import minechem.recipe.handler.RecipeHandlerDecomposer;
 import minechem.recipe.handler.RecipeHandlerSynthesis;
 import minechem.utils.MinechemUtil;
+import minechem.utils.RecipeUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 
 public class GuiMicroscope extends GuiContainerTabbed {
@@ -141,16 +142,16 @@ public class GuiMicroscope extends GuiContainerTabbed {
 	}
 
 	private void drawSynthesisRecipe(ItemStack inputstack, int x, int y) {
-		RecipeSynthesisShapeless recipe = RecipeHandlerSynthesis.instance.getRecipeFromOutput(inputstack);
+		IRecipe recipe = RecipeHandlerSynthesis.getRecipeFromOutput(inputstack);
 		if (recipe != null) {
 			drawSynthesisRecipeMatrix(recipe, x, y);
 			drawSynthesisRecipeCost(recipe, x, y);
 		}
 	}
 
-	private void drawSynthesisRecipeMatrix(RecipeSynthesisShapeless recipe, int x, int y) {
-		isShapedRecipe = recipe.isShaped();
-		NonNullList<ItemStack> shapedRecipe = MinechemUtil.convertChemicalArrayIntoItemStackArray(isShapedRecipe ? recipe.getShapedRecipe() : recipe.getShapelessRecipe());
+	private void drawSynthesisRecipeMatrix(IRecipe recipe, int x, int y) {
+		//isShapedRecipe = recipe instanceof RecipeSynthesisShaped;
+		NonNullList<ItemStack> shapedRecipe = RecipeUtil.getRecipeAsStackList(recipe);
 		int slot = 2;
 		for (ItemStack itemstack : shapedRecipe) {
 			inventorySlots.putStackInSlot(slot, itemstack);
@@ -162,9 +163,9 @@ public class GuiMicroscope extends GuiContainerTabbed {
 		}
 	}
 
-	private void drawSynthesisRecipeCost(RecipeSynthesisShapeless recipe, int x, int y) {
+	private void drawSynthesisRecipeCost(IRecipe recipe, int x, int y) {
 		if (!recipeSwitch.isMoverOver()) {
-			String cost = String.format("%d Energy", recipe.energyCost());
+			String cost = String.format("%d Energy", RecipeHandlerSynthesis.getEnergyCost(recipe));
 			fontRenderer.drawString(cost, x + 100, y + 85, 0x000000);
 		}
 	}

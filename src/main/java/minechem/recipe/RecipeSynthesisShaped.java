@@ -27,20 +27,15 @@ public class RecipeSynthesisShaped extends ShapedRecipes {
 	private int energyCost = 0;
 
 	/**
-	 * @param group
 	 * @param width
 	 * @param height
 	 * @param energyCost
 	 * @param ingredients
 	 * @param result
 	 */
-	public RecipeSynthesisShaped(String group, int width, int height, int energyCost, NonNullList<Ingredient> ingredients, ItemStack result) {
-		super(group, width, height, ingredients, result);
-		this.energyCost = energyCost;
-	}
-
 	public RecipeSynthesisShaped(int width, int height, int energyCost, NonNullList<Ingredient> ingredients, ItemStack result) {
-		this(GROUP, width, height, energyCost, ingredients, result);
+		super(GROUP, width, height, ingredients, result);
+		this.energyCost = energyCost;
 	}
 
 	public static ShapedPrimer parseShaped(Object... recipe) {

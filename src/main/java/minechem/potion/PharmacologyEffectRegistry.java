@@ -124,7 +124,7 @@ public class PharmacologyEffectRegistry {
 			addEffect(MoleculeEnum.amphetamine, new PharmacologyEffect.Damage(4));
 			addEffect(MoleculeEnum.amphetamine, new PharmacologyEffect.Magic("confusion", 5, 20));
 			addEffect(MoleculeEnum.amphetamine, new PharmacologyEffect.Magic("speed", 15, 30));
-			addEffect(MoleculeEnum.amphetamine, new PharmacologyEffect.Magic(ModPotions.atropineHigh.getRegistryName().toString(), 15, 30));
+			addEffect(MoleculeEnum.amphetamine, new PharmacologyEffect.Magic(ModPotions.ATROPINE_HIGH.getRegistryName().toString(), 15, 30));
 			addEffect(MoleculeEnum.cocaine, new PharmacologyEffect.Damage(4));
 			addEffect(MoleculeEnum.cocaine, new PharmacologyEffect.Magic("confusion", 5, 120));
 			addEffect(MoleculeEnum.cocaine, new PharmacologyEffect.Magic("speed", 12, 120));
@@ -160,7 +160,7 @@ public class PharmacologyEffectRegistry {
 		addEffect(MoleculeEnum.caulerpenyne, new PharmacologyEffect.Magic("confusion", 4, 2));
 		addEffect(MoleculeEnum.latropine, new PharmacologyEffect.Damage(4));
 		addEffect(MoleculeEnum.latropine, new PharmacologyEffect.Magic("confusion", 2, 12));
-		addEffect(MoleculeEnum.latropine, new PharmacologyEffect.Magic("Delirium", 1, 18));
+		addEffect(MoleculeEnum.latropine, new PharmacologyEffect.Magic("delirium", 1, 18));
 		addEffect(MoleculeEnum.latropine, new PharmacologyEffect.Magic("moveSlowdown", 2, 45));
 	}
 }

@@ -278,7 +278,7 @@ public final class MinechemUtil {
 		return string;
 	}
 
-	public static void addDisabledStacks(String[] stringInputs, ArrayList<ItemStack> decomposerBlacklist, ArrayList<String> ids) {
+	public static void addDisabledStacks(String[] stringInputs, NonNullList<ItemStack> decomposerBlacklist, ArrayList<String> ids) {
 		for (String string : stringInputs) {
 			if (string == null || string.equals("")) {
 				continue;
@@ -350,8 +350,8 @@ public final class MinechemUtil {
 	}
 
 	public static void populateBlacklists() {
-		ModConfig.decomposerBlacklist = new ArrayList<ItemStack>();
-		ModConfig.synthesisBlacklist = new ArrayList<ItemStack>();
+		//ModConfig.decomposerBlacklist = new ArrayList<ItemStack>();
+		//ModConfig.synthesisBlacklist = new ArrayList<ItemStack>();
 		ModConfig.decomposerBlacklist.add(ModItems.emptyTube);
 		ArrayList<String> registeredItems = new ArrayList<String>();
 		for (ResourceLocation key : Item.REGISTRY.getKeys()) {
@@ -641,6 +641,14 @@ public final class MinechemUtil {
 		return ItemStack.EMPTY;
 	}
 
+	public static PotionChemical[] stackListToChemicalArray(List<ItemStack> stackList) {
+		PotionChemical[] chemicalList = new PotionChemical[stackList.size()];
+		for (int i = 0; i < stackList.size(); i++) {
+			chemicalList[i] = itemStackToChemical(stackList.get(i));
+		}
+		return chemicalList;
+	}
+
 	public static PotionChemical itemStackToChemical(@Nonnull ItemStack itemstack) {
 		if (isStackAnElement(itemstack)) {
 			if (itemstack.getItemDamage() == 0) {
@@ -752,10 +760,19 @@ public final class MinechemUtil {
 	}
 
 	public static boolean stacksAreSameKind(ItemStack is1, ItemStack is2) {
+		boolean damageMatters = false;
+		if (MinechemUtil.isStackAnElement(is1) && MinechemUtil.isStackAnElement(is2)) {
+			damageMatters = true;
+		}
 		int dmg1 = is1.getItemDamage();
 		int dmg2 = is2.getItemDamage();
-		NBTTagCompound nbt1 = is1.getTagCompound();
-		NBTTagCompound nbt2 = is2.getTagCompound();
+		if (damageMatters) {
+			if (dmg1 != dmg2) {
+				return false;
+			}
+		}
+		NBTTagCompound nbt1 = is1.serializeNBT();
+		NBTTagCompound nbt2 = is2.serializeNBT();
 		boolean sameNBT = true;
 		if (nbt1 != null && nbt2 != null) {
 			sameNBT = nbt1.equals(nbt2);
