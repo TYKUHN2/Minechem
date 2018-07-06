@@ -9,7 +9,6 @@ import minechem.init.ModConfig;
 import minechem.init.ModItems;
 import minechem.inventory.InventoryBounded;
 import minechem.item.ItemChemistJournal;
-import minechem.recipe.RecipeSynthesisOld;
 import minechem.utils.MinechemUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,7 +25,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
-public class OldTileSynthesis extends TileMinechemEnergyBase implements ISidedInventory {
+public class TileSynthesisOld extends TileMinechemEnergyBase implements ISidedInventory {
 
 	/**
 	 * Output slot for completed item the machine will create.
@@ -94,7 +93,7 @@ public class OldTileSynthesis extends TileMinechemEnergyBase implements ISidedIn
 	/**
 	 * Holds the current result for whatever the crafting matrix contains. This can change as the player moves the items around.
 	 */
-	private RecipeSynthesisOld currentRecipe;
+	//private RecipeSynthesisOld currentRecipe;
 
 	/**
 	 * Holds the maximum number of input slots on the crafting matrix. Same as a crafting table in vanilla Minecraft.
@@ -157,7 +156,7 @@ public class OldTileSynthesis extends TileMinechemEnergyBase implements ISidedIn
 	 */
 	//private final Transactor journalTransactor = new Transactor(journalInventory, 1);
 
-	public OldTileSynthesis() {
+	public TileSynthesisOld() {
 		super(ModConfig.maxSynthesizerStorage);
 
 		// Creates internal inventory that will represent all of the needed slots that makeup the machine.
@@ -471,6 +470,30 @@ public class OldTileSynthesis extends TileMinechemEnergyBase implements ISidedIn
 		return true;*/
 	}
 
+	private boolean takeStackFromStorage(@Nonnull ItemStack ingredient, NonNullList<ItemStack> storage) {
+		if (ingredient.isEmpty()) {
+			return true;
+		}
+		int ingredientAmountLeft = ingredient.getCount();
+		for (int slot = 0; slot < storage.size(); slot++) {
+			ItemStack storageItem = storage.get(slot);
+			if (!storageItem.isEmpty() && MinechemUtil.stacksAreSameKind(storageItem, ingredient) && storageItem.getItemDamage() == ingredient.getItemDamage()) {
+				int amountToTake = Math.min(storageItem.getCount(), ingredientAmountLeft);
+				ingredientAmountLeft -= amountToTake;
+				storageItem.shrink(amountToTake);
+
+				if (storageItem.getCount() <= 0) {
+					storage.set(slot, ItemStack.EMPTY);
+				}
+
+				if (ingredientAmountLeft <= 0) {
+					break;
+				}
+			}
+		}
+		return ingredientAmountLeft == 0;
+	}
+
 	@Override
 	public void update() {
 		super.update();
@@ -569,9 +592,9 @@ public class OldTileSynthesis extends TileMinechemEnergyBase implements ISidedIn
 	/**
 	 * Determines if there is enough energy in the machines internal reserve to allow the creation of this item.
 	 */
-	public boolean canAffordRecipe(RecipeSynthesisOld recipe) {
-		return !ModConfig.powerUseEnabled || getEnergyStored() >= recipe.energyCost();
-	}
+	//public boolean canAffordRecipe(RecipeSynthesisOld recipe) {
+	//	return !ModConfig.powerUseEnabled || getEnergyStored() >= recipe.energyCost();
+	//}
 
 	/**
 	 * Returns the current recipe result for whatever is in the crafting matrix.
@@ -610,30 +633,6 @@ public class OldTileSynthesis extends TileMinechemEnergyBase implements ISidedIn
 		}
 		shouldUpdate = true;
 	}*/
-
-	private boolean takeStackFromStorage(@Nonnull ItemStack ingredient, NonNullList<ItemStack> storage) {
-		if (ingredient.isEmpty()) {
-			return true;
-		}
-		int ingredientAmountLeft = ingredient.getCount();
-		for (int slot = 0; slot < storage.size(); slot++) {
-			ItemStack storageItem = storage.get(slot);
-			if (!storageItem.isEmpty() && MinechemUtil.stacksAreSameKind(storageItem, ingredient) && storageItem.getItemDamage() == ingredient.getItemDamage()) {
-				int amountToTake = Math.min(storageItem.getCount(), ingredientAmountLeft);
-				ingredientAmountLeft -= amountToTake;
-				storageItem.shrink(amountToTake);
-
-				if (storageItem.getCount() <= 0) {
-					storage.set(slot, ItemStack.EMPTY);
-				}
-
-				if (ingredientAmountLeft <= 0) {
-					break;
-				}
-			}
-		}
-		return ingredientAmountLeft == 0;
-	}
 
 	private boolean takeInputStacks() {
 		if (takeStacksFromStorage(false)) {
@@ -693,6 +692,7 @@ public class OldTileSynthesis extends TileMinechemEnergyBase implements ISidedIn
 	/**
 	 * Sets ghost items that will make the crafting recipe from currently selected item in chemists journal if located in that slot.
 	 */
+	/*
 	public void setRecipe(RecipeSynthesisOld recipe) {
 		clearRecipeMatrix();
 		if (recipe != null) {
@@ -709,7 +709,7 @@ public class OldTileSynthesis extends TileMinechemEnergyBase implements ISidedIn
 		}
 		shouldUpdate = true;
 	}
-
+	*/
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		// Strangely every item is always valid in the crafting matrix according to this, even though slot code prevents anything but elements of molecules.

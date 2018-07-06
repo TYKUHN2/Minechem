@@ -32,10 +32,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class ModGuiHandler implements IGuiHandler {
 
 	public static final int GUI_ID_TILEENTITY = 0;
@@ -43,6 +40,7 @@ public class ModGuiHandler implements IGuiHandler {
 	public static final int GUI_TABLE = 2;
 
 	public static final int GUI_ID_POLYTOOL = 3;
+	public static final int GUI_ID_SYNTHESIS = 4;
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
@@ -169,6 +167,16 @@ public class ModGuiHandler implements IGuiHandler {
 
 	public Object getClientGuiForJournal(EntityPlayer player, World world) {
 		return new GuiTableOfElements(player);
+	}
+
+	public static enum GUIType {
+
+			GUI_ID_TILEENTITY, GUI_ID_JOURNAL, GUI_TABLE, GUI_ID_POLYTOOL, GUI_ID_SYNTHESIS;
+
+		public int getID() {
+			return ordinal();
+		}
+
 	}
 
 }

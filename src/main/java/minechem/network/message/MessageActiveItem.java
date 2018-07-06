@@ -10,14 +10,14 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class ChemistJournalActiveItemMessage implements IMessage, IMessageHandler<ChemistJournalActiveItemMessage, IMessage> {
+public class MessageActiveItem implements IMessage, IMessageHandler<MessageActiveItem, IMessage> {
 	private int itemID, itemDMG, slot;
 
-	public ChemistJournalActiveItemMessage() {
+	public MessageActiveItem() {
 
 	}
 
-	public ChemistJournalActiveItemMessage(ItemStack activeStack, EntityPlayer player) {
+	public MessageActiveItem(ItemStack activeStack, EntityPlayer player) {
 		itemID = Item.getIdFromItem(activeStack.getItem());
 		itemDMG = activeStack.getItemDamage();
 		slot = player.inventory.currentItem;
@@ -38,7 +38,7 @@ public class ChemistJournalActiveItemMessage implements IMessage, IMessageHandle
 	}
 
 	@Override
-	public IMessage onMessage(ChemistJournalActiveItemMessage message, MessageContext ctx) {
+	public IMessage onMessage(MessageActiveItem message, MessageContext ctx) {
 		ItemStack journal = ctx.getServerHandler().player.inventory.mainInventory.get(message.slot);
 		if (!journal.isEmpty() && journal.getItem() instanceof ItemChemistJournal) {
 			ItemStack activeStack = new ItemStack(Item.getItemById(message.itemID), 1, message.itemDMG);

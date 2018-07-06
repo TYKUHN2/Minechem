@@ -1,5 +1,6 @@
 package minechem;
 
+import minechem.init.ModEvents;
 import minechem.init.ModGlobals;
 import minechem.proxy.CommonProxy;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -25,6 +26,7 @@ public class Minechem {
 
 	static {
 		FluidRegistry.enableUniversalBucket();
+		ModEvents.init();
 	}
 
 	@Mod.EventHandler

@@ -1,40 +1,39 @@
 package minechem.recipe;
 
+import minechem.api.recipe.ISynthesisRecipe;
 import minechem.init.ModGlobals;
 import minechem.recipe.handler.RecipeHandlerSynthesis;
-import minechem.utils.RecipeUtil;
-import net.minecraft.client.util.RecipeItemHelper;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
  * @author p455w0rd
  *
  */
-public class RecipeSynthesisShapeless extends ShapelessRecipes {
+public class RecipeSynthesisShapeless extends IForgeRegistryEntry.Impl<ISynthesisRecipe> implements ISynthesisRecipe {
 
 	public static final String GROUP = ModGlobals.ID + ":synthesis_shapeless";
 	private int energyCost = 0;
 	private final boolean isSimple;
-	private final NonNullList<ItemStack> recipeStacks;
+	private final ItemStack recipeOutput;
+	public final NonNullList<Ingredient> vanillaIngredients = NonNullList.<Ingredient>create();
+	public final NonNullList<SingleItemStackBasedIngredient> recipeItems;
 
-	/**
-	 * @param group
-	 * @param output
-	 * @param ingredients
-	 */
-	public RecipeSynthesisShapeless(ItemStack output, int energyCost, NonNullList<Ingredient> ingredients) {
-		super(GROUP, output, ingredients);
+	public RecipeSynthesisShapeless(ItemStack output, int energyCost, NonNullList<SingleItemStackBasedIngredient> ingredients) {
 		this.energyCost = energyCost;
+		recipeItems = ingredients;
+		recipeOutput = output;
+		for (SingleItemStackBasedIngredient ingredient : ingredients) {
+			vanillaIngredients.add(ingredient);
+		}
 		boolean simple = true;
-		for (Ingredient i : ingredients) {
+		for (SingleItemStackBasedIngredient i : ingredients) {
 			simple &= i.isSimple();
 		}
-		recipeStacks = RecipeUtil.ingredientListToStackList(ingredients);
 		isSimple = simple;
 	}
 
@@ -43,10 +42,20 @@ public class RecipeSynthesisShapeless extends ShapelessRecipes {
 	}
 
 	@Override
+	public NonNullList<SingleItemStackBasedIngredient> getSingleIngredients() {
+		return recipeItems;
+	}
+
+	@Override
+	public String getGroup() {
+		return GROUP;
+	}
+
+	@Override
 	public boolean matches(InventoryCrafting inv, World worldIn) {
 		int ingredientCount = 0;
-		RecipeItemHelper recipeItemHelper = new RecipeItemHelper();
-		NonNullList<ItemStack> inputs = NonNullList.withSize(9, ItemStack.EMPTY);
+		//RecipeHandlerSynthesis recipeItemHelper = new RecipeHandlerSynthesis();
+		NonNullList<ItemStack> inputs = NonNullList.create();
 
 		for (int i = 0; i < inv.getHeight(); ++i) {
 			for (int j = 0; j < inv.getWidth(); ++j) {
@@ -55,11 +64,11 @@ public class RecipeSynthesisShapeless extends ShapelessRecipes {
 				if (!itemstack.isEmpty()) {
 					++ingredientCount;
 					if (isSimple) {
-						recipeItemHelper.accountStack(itemstack);
+						//recipeItemHelper.accountStack(itemstack);
 					}
-					else {
-						inputs.add(itemstack);
-					}
+					//else {
+					inputs.add(itemstack);
+					//}
 				}
 			}
 		}
@@ -69,11 +78,25 @@ public class RecipeSynthesisShapeless extends ShapelessRecipes {
 		}
 
 		if (isSimple) {
-			return recipeItemHelper.canCraft(this, null);
+			//return recipeItemHelper.canCraft(this, null);
 		}
 
-		//return net.minecraftforge.common.util.RecipeMatcher.findMatches(inputs, this.recipeItems) != null;
 		return RecipeHandlerSynthesis.itemStacksMatchesShapelessRecipe(inputs, this, 1);
+	}
+
+	@Override
+	public ItemStack getCraftingResult(InventoryCrafting inv) {
+		return getRecipeOutput().copy();
+	}
+
+	@Override
+	public boolean canFit(int width, int height) {
+		return (width >= 1 && width <= 3) && (height >= 1 && height <= 3);
+	}
+
+	@Override
+	public ItemStack getRecipeOutput() {
+		return recipeOutput;
 	}
 
 }

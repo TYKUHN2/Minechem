@@ -1,12 +1,13 @@
 package minechem.proxy;
 
+import minechem.Minechem;
 import minechem.fluid.FluidChemicalDispenser;
 import minechem.fluid.reaction.ChemicalFluidReactionHandler;
 import minechem.init.ModBlocks;
 import minechem.init.ModConfig;
-import minechem.init.ModEvents;
 import minechem.init.ModFluids;
 import minechem.init.ModGlobals.MetaData;
+import minechem.init.ModGuiHandler;
 import minechem.init.ModItems;
 import minechem.init.ModNetworking;
 import minechem.init.ModRecipes;
@@ -25,6 +26,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 public class CommonProxy {
 
@@ -39,8 +41,6 @@ public class CommonProxy {
 		ModFluids.init();
 		PharmacologyEffectRegistry.init();
 		MinechemBlueprint.registerBlueprints();
-		ModEvents.init();
-
 		ModRecipes.getInstance().RegisterRecipes();
 		ModRecipes.getInstance().registerFluidRecipes();
 		ModRecipes.getInstance().RegisterModRecipes();
@@ -58,7 +58,7 @@ public class CommonProxy {
 
 	public void postInit(FMLPostInitializationEvent event) {
 		MinechemUtil.populateBlacklists();
-
+		NetworkRegistry.INSTANCE.registerGuiHandler(Minechem.INSTANCE, new ModGuiHandler());
 		PolytoolTypeIron.getOres();
 	}
 

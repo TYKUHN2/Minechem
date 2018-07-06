@@ -2,6 +2,7 @@ package minechem.block.tile;
 
 import javax.annotation.Nullable;
 
+import minechem.api.recipe.ISynthesisRecipe;
 import minechem.init.ModItems;
 import minechem.inventory.InventoryBounded;
 import minechem.item.ItemChemistJournal;
@@ -12,7 +13,6 @@ import minechem.utils.Transactor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 
@@ -37,7 +37,7 @@ public class TileMicroscope extends TileMinechemBase implements IInventory {
 	}
 
 	public void onInspectItemStack(ItemStack itemstack) {
-		IRecipe synthesisRecipe = RecipeHandlerSynthesis.getRecipeFromOutput(itemstack);
+		ISynthesisRecipe synthesisRecipe = RecipeHandlerSynthesis.getRecipeFromOutput(itemstack);
 		RecipeDecomposer decomposerRecipe = RecipeHandlerDecomposer.instance.getRecipe(itemstack);
 		if (!inventory.get(1).isEmpty() && (synthesisRecipe != null || decomposerRecipe != null)) {
 			ModItems.journal.addItemStackToJournal(itemstack, inventory.get(1), world);

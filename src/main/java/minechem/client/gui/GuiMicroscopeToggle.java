@@ -23,4 +23,9 @@ public class GuiMicroscopeToggle extends GuiTogglable {
 		buttons.put(0, buttonSynthesis);
 		buttons.put(1, buttonDecomposer);
 	}
+
+	@Override
+	public void mouseClicked(int x, int y, int mouseButton) {
+		super.mouseClicked(x, y, mouseButton);
+	}
 }

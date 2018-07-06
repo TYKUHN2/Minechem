@@ -46,7 +46,7 @@ public class ContainerWithFakeSlots extends Container {
 			ItemStack stackOnMouse = entityPlayer.inventory.getItemStack();
 			if (!stackOnMouse.isEmpty() && slot.isItemValid(stackOnMouse)) {
 				if (mouseButton == MOUSE_LEFT) {
-					addStackToSlot(stackOnMouse, slot, stackOnMouse.getCount());
+					addStackToSlot(stackOnMouse, slot, stackOnMouse.getCount(), true);
 				}
 				else {
 					addStackToSlot(stackOnMouse, slot, 1);
@@ -380,8 +380,12 @@ public class ContainerWithFakeSlots extends Container {
 	}
 
 	protected void addStackToSlot(ItemStack stackOnMouse, Slot slot, int amount) {
+		addStackToSlot(stackOnMouse, slot, amount, false);
+	}
+
+	protected void addStackToSlot(ItemStack stackOnMouse, Slot slot, int amount, boolean override) {
 		ItemStack stackInSlot = slot.inventory.getStackInSlot(slot.slotNumber);
-		if (!stackInSlot.isEmpty()) {
+		if (!stackInSlot.isEmpty() && !override) {
 			stackInSlot.setCount(Math.min(stackInSlot.getCount() + amount, slot.inventory.getInventoryStackLimit()));
 		}
 		else {

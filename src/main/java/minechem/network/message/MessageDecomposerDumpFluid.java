@@ -9,14 +9,14 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class DecomposerDumpFluidMessage implements IMessage, IMessageHandler<DecomposerDumpFluidMessage, IMessage>
+public class MessageDecomposerDumpFluid implements IMessage, IMessageHandler<MessageDecomposerDumpFluid, IMessage>
 {
     int posX,posY,posZ;
 
-    public DecomposerDumpFluidMessage()
+    public MessageDecomposerDumpFluid()
     {}
 
-    public DecomposerDumpFluidMessage(TileDecomposer tile)
+    public MessageDecomposerDumpFluid(TileDecomposer tile)
     {
         this.posX = tile.getPos().getX();
         this.posY = tile.getPos().getY();
@@ -40,7 +40,7 @@ public class DecomposerDumpFluidMessage implements IMessage, IMessageHandler<Dec
     }
 
     @Override
-    public IMessage onMessage(DecomposerDumpFluidMessage message, MessageContext ctx)
+    public IMessage onMessage(MessageDecomposerDumpFluid message, MessageContext ctx)
     {
         TileEntity tileEntity = FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld().getTileEntity(new BlockPos(message.posX, message.posY, message.posZ));
         if (tileEntity instanceof TileDecomposer)

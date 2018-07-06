@@ -85,6 +85,7 @@ public abstract class TileMinechemBase extends TileEntity implements ITickable, 
 
 				itemstack = inventory.get(slot);
 				inventory.set(slot, ItemStack.EMPTY);
+				markDirty();
 				return itemstack;
 			}
 			else {
@@ -92,6 +93,7 @@ public abstract class TileMinechemBase extends TileEntity implements ITickable, 
 				if (inventory.get(slot).getCount() == 0) {
 					inventory.set(slot, ItemStack.EMPTY);
 				}
+				markDirty();
 				return itemstack;
 			}
 		}
@@ -118,5 +120,6 @@ public abstract class TileMinechemBase extends TileEntity implements ITickable, 
 			itemstack.setCount(getInventoryStackLimit());
 		}
 		inventory.set(slot, itemstack);
+		markDirty();
 	}
 }

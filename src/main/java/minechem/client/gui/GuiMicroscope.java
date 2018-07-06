@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
 
+import minechem.api.recipe.ISynthesisRecipe;
 import minechem.block.tile.TileMicroscope;
 import minechem.client.gui.renderitem.RenderItemMicroscope;
 import minechem.client.gui.widget.tab.TabHelp;
@@ -19,11 +20,12 @@ import minechem.recipe.handler.RecipeHandlerSynthesis;
 import minechem.utils.MinechemUtil;
 import minechem.utils.RecipeUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 
 public class GuiMicroscope extends GuiContainerTabbed {
@@ -48,7 +50,6 @@ public class GuiMicroscope extends GuiContainerTabbed {
 		this.microscope = microscope;
 		xSize = guiWidth;
 		ySize = guiHeight;
-		//itemRender = renderItem;
 		recipeSwitch = new GuiMicroscopeToggle(this);
 		addTab(new TabHelp(this, MinechemUtil.getLocalString("help.microscope")));
 		//addTab(new GuiTabPatreon(this));
@@ -135,6 +136,27 @@ public class GuiMicroscope extends GuiContainerTabbed {
 		}
 	}
 
+	@Override
+	protected void drawSlotCustom(Slot slotIn) {
+		int x = slotIn.xPos;
+		int y = slotIn.yPos;
+		ItemStack stack = slotIn.getStack();
+		if (slotIn.slotNumber == 0) {
+			if (!stack.isEmpty()) {
+				zLevel = 200.0F;
+				renderItem.zLevel = 200.0F;
+				GlStateManager.enableDepth();
+				RenderHelper.enableGUIStandardItemLighting();
+				renderItem.renderItemAndEffectIntoGUI(stack, x, y);
+				//GlStateManager.enableDepth();
+				zLevel = 0.0F;
+				renderItem.zLevel = 0.0F;
+				return;
+			}
+		}
+		super.drawSlotCustom(slotIn);
+	}
+
 	private void clearRecipeMatrix() {
 		for (int slot = 2; slot < 2 + 9; slot++) {
 			inventorySlots.putStackInSlot(slot, ItemStack.EMPTY);
@@ -142,15 +164,17 @@ public class GuiMicroscope extends GuiContainerTabbed {
 	}
 
 	private void drawSynthesisRecipe(ItemStack inputstack, int x, int y) {
-		IRecipe recipe = RecipeHandlerSynthesis.getRecipeFromOutput(inputstack);
+		ISynthesisRecipe recipe = RecipeHandlerSynthesis.getRecipeFromOutput(inputstack);
 		if (recipe != null) {
 			drawSynthesisRecipeMatrix(recipe, x, y);
 			drawSynthesisRecipeCost(recipe, x, y);
+			drawRecipeType(recipe, x, y);
+			isShapedRecipe = recipe.isShaped();
 		}
+
 	}
 
-	private void drawSynthesisRecipeMatrix(IRecipe recipe, int x, int y) {
-		//isShapedRecipe = recipe instanceof RecipeSynthesisShaped;
+	private void drawSynthesisRecipeMatrix(ISynthesisRecipe recipe, int x, int y) {
 		NonNullList<ItemStack> shapedRecipe = RecipeUtil.getRecipeAsStackList(recipe);
 		int slot = 2;
 		for (ItemStack itemstack : shapedRecipe) {
@@ -158,12 +182,19 @@ public class GuiMicroscope extends GuiContainerTabbed {
 			slot++;
 			if (slot >= 11) {
 				break;
-
 			}
 		}
 	}
 
-	private void drawSynthesisRecipeCost(IRecipe recipe, int x, int y) {
+	private void drawRecipeType(ISynthesisRecipe recipe, int x, int y) {
+		if (!recipeSwitch.isMoverOver()) {
+			String type = RecipeHandlerSynthesis.isShaped(recipe) ? "Shaped" : "Shapeless";
+			String cost = String.format("%s", type);
+			fontRenderer.drawString(cost, x + 100, y + 95, 0x000000);
+		}
+	}
+
+	private void drawSynthesisRecipeCost(ISynthesisRecipe recipe, int x, int y) {
 		if (!recipeSwitch.isMoverOver()) {
 			String cost = String.format("%d Energy", RecipeHandlerSynthesis.getEnergyCost(recipe));
 			fontRenderer.drawString(cost, x + 100, y + 85, 0x000000);
@@ -228,36 +259,28 @@ public class GuiMicroscope extends GuiContainerTabbed {
 
 	@Override
 	protected void drawStack(ItemStack stack, int x, int y, String altText) {
-		super.drawStack(stack, x, y, altText);
 		Slot slot = inventorySlots.inventorySlots.get(0);
-		if (slot.getStack() == stack || isMouseInMicroscope()) {
-			//GlStateManager.scale(16.0F * 3.0F, 16.0F * 3.0F, 16.0F);
+		zLevel = 200.0F;
+		itemRender.zLevel = 200.0F;
+		FontRenderer font = null;
+		if (!stack.isEmpty()) {
+			font = stack.getItem().getFontRenderer(stack);
 		}
-		//super.drawItemStack(stack, x, y, altText);
-		/*
-				zLevel = 200.0F;
-				itemRender.zLevel = 200.0F;
-				FontRenderer font = null;
-				if (stack != null) {
-					font = stack.getItem().getFontRenderer(stack);
-				}
-				if (font == null) {
-					font = mc.fontRenderer;
-				}
-				boolean shouldRenderHeldZoomed = false;
-				Slot slot = inventorySlots.inventorySlots.get(0);
-				//shouldRenderHeldZoomed = isPointInRegion(slot.xPos, slot.yPos, 16, 16, x, x);
-				//if (stack == inventoryPlayer.getItemStack() && stack == returningStack && isMouseInMicroscope() && slot.getStack() == stack) {
-				//renderItem.renderItemAndEffectIntoGUI(stack, x, y);
-				//GlStateManager.enableDepth();
-				//}
-				//else {
-				//itemRender.renderItemAndEffectIntoGUI(stack, x, y);
-				//}
-				//GlStateManager.enableDepth();
-				//itemRender.renderItemOverlayIntoGUI(font, stack, x, y - (draggedStack.isEmpty() ? 0 : 8), altText);
-				zLevel = 0.0F;
-				itemRender.zLevel = 0.0F;
-		*/
+		if (font == null) {
+			font = mc.fontRenderer;
+		}
+		boolean shouldRenderHeldZoomed = false;
+		shouldRenderHeldZoomed = isMouseInMicroscope();//sPointInRegion(slot.xPos - 20, slot.yPos - 20, 52, 52, mouseX, mouseY);
+		if (shouldRenderHeldZoomed) {
+			renderItem.renderItemAndEffectIntoGUI(stack, x, y);
+			GlStateManager.enableDepth();
+		}
+		else {
+			itemRender.renderItemAndEffectIntoGUI(stack, x, y);
+		}
+		itemRender.renderItemOverlayIntoGUI(font, stack, x, y - (draggedStack.isEmpty() ? 0 : 8), altText);
+		zLevel = 0.0F;
+		itemRender.zLevel = 0.0F;
 	}
+
 }

@@ -1,7 +1,10 @@
 package minechem.client.gui.widget.tab;
 
+import minechem.api.recipe.ISynthesisRecipe;
 import minechem.block.tile.TileSynthesis;
+import minechem.init.ModConfig;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.item.ItemStack;
 
 public class TabSynthesisState extends GuiTabState {
 	private int lastKnownEnergyCost;
@@ -15,17 +18,18 @@ public class TabSynthesisState extends GuiTabState {
 	@Override
 	public void update() {
 		super.update();
-		/*
+
 		TileSynthesis synthesis = (TileSynthesis) tileEntity;
-		RecipeSynthesis recipe = synthesis.getCurrentRecipe();
+		ISynthesisRecipe recipe = synthesis.getCurrentRecipe();
 		if (recipe == null) {
 			state = TabState.norecipe;
 		}
 		else {
+			ItemStack outputStack = synthesis.getStackInSlot(TileSynthesis.SLOT_ID_OUTPUT_MATRIX);
 			if (ModConfig.powerUseEnabled) {
-				lastKnownEnergyCost = recipe.energyCost();
-				if (synthesis.hasEnoughPowerForCurrentRecipe()) {
-					if (!synthesis.canTakeOutputStack(false)) {
+				lastKnownEnergyCost = recipe.getEnergyCost();
+				if (synthesis.hasEnoughPower()) {
+					if (outputStack.isEmpty()) {
 						state = TabState.noingredients;
 					}
 					else {
@@ -37,7 +41,7 @@ public class TabSynthesisState extends GuiTabState {
 				}
 			}
 			else {
-				if (!synthesis.canTakeOutputStack(false)) {
+				if (outputStack.isEmpty()) {
 					state = TabState.noingredients;
 				}
 				else {
@@ -45,7 +49,7 @@ public class TabSynthesisState extends GuiTabState {
 				}
 			}
 		}
-		*/
+
 		overlayColor = state.color;
 	}
 

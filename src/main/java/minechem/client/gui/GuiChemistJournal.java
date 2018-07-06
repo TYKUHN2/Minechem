@@ -8,12 +8,13 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import minechem.api.IVerticalScrollContainer;
+import minechem.api.recipe.ISynthesisRecipe;
 import minechem.container.ChemistJournalContainer;
 import minechem.init.ModGlobals;
 import minechem.init.ModGlobals.ModResources;
 import minechem.init.ModItems;
 import minechem.init.ModNetworking;
-import minechem.network.message.ChemistJournalActiveItemMessage;
+import minechem.network.message.MessageActiveItem;
 import minechem.potion.PotionChemical;
 import minechem.recipe.RecipeDecomposer;
 import minechem.recipe.RecipeDecomposerChance;
@@ -27,8 +28,8 @@ import minechem.utils.RenderUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.TextFormatting;
 
 public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalScrollContainer {
 
@@ -50,7 +51,7 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 	private int slideShowTimer = 0;
 	private int currentSlide = 0;
 	public ItemStack currentItemStack;
-	IRecipe currentSynthesisRecipe;
+	ISynthesisRecipe currentSynthesisRecipe;
 	RecipeDecomposer currentDecomposerRecipe;
 	ItemStack journalStack;
 	List<ItemStack> itemList;
@@ -66,7 +67,7 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 		xSize = GUI_WIDTH;
 		ySize = GUI_HEIGHT;
 		scrollBar = new GuiVerticalScrollBar(this, 128, 14, 157, xSize, ySize);
-		searchBar = new GuiTextField(100, 12, 20, 14);
+		searchBar = new GuiTextField(106, 12, 18, 14);
 
 		itemList = ModItems.journal.getItemList(journalStack);
 		populateItemList();
@@ -114,7 +115,6 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 		if (clickedSlot != null) {
 			onSlotClick(clickedSlot);
 		}
-		//System.out.println("mouseX: " + mouseX + " mouseY: " + mouseY + " Button: " + mouseButton);
 		if (mouseButton == 1 && mouseX >= 20 && mouseY >= 14 && mouseX <= 119 && mouseY <= 25) {
 			searchBar.setText("");
 			searchBar.cursorPos = 0;
@@ -140,10 +140,10 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 	public void showRecipesForStack(ItemStack itemstack) {
 		currentItemStack = itemstack;
 		ModItems.journal.setActiveStack(itemstack, journalStack);
-		ChemistJournalActiveItemMessage message = new ChemistJournalActiveItemMessage(itemstack, player);
+		MessageActiveItem message = new MessageActiveItem(itemstack, player);
 		ModNetworking.INSTANCE.sendToServer(message);
 
-		IRecipe synthesisRecipe = RecipeHandlerSynthesis.getRecipeFromOutput(itemstack);
+		ISynthesisRecipe synthesisRecipe = RecipeHandlerSynthesis.getRecipeFromOutput(itemstack);
 		RecipeDecomposer decomposerRecipe = RecipeHandlerDecomposer.instance.getRecipe(itemstack);
 		synthesisSlots = new GuiFakeSlot[9];
 		decomposerSlots = new GuiFakeSlot[9];
@@ -159,7 +159,7 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 		}
 	}
 
-	public void showSynthesisRecipe(IRecipe recipe) {
+	public void showSynthesisRecipe(ISynthesisRecipe recipe) {
 		NonNullList<ItemStack> ingredients = RecipeUtil.getRecipeAsStackList(recipe);
 		showIngredients(ingredients, synthesisSlots, SYNTHESIS_X, SYNTHESIS_Y);
 	}
@@ -172,7 +172,6 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 		}
 
 		NonNullList<ItemStack> ingredients = MinechemUtil.convertChemicalsIntoItemStacks(recipe.getOutputRaw());
-		//ItemStack[] ingredientArray = ingredients.toArray(new ItemStack[9]);
 		showIngredients(ingredients, decomposerSlots, DECOMPOSER_X, DECOMPOSER_Y);
 	}
 
@@ -188,7 +187,6 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 		if (slideShowTimer == 0) {
 			ArrayList<PotionChemical> potionChemicals = recipes.get(currentSlide).getOutputRaw();
 			NonNullList<ItemStack> ingredients = MinechemUtil.convertChemicalsIntoItemStacks(potionChemicals);
-			//ItemStack[] ingredientArray = ingredients.toArray(new ItemStack[9]);
 			showIngredients(ingredients, decomposerSlots, DECOMPOSER_X, DECOMPOSER_Y);
 		}
 		slideShowTimer++;
@@ -293,11 +291,12 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 	private void drawText() {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.disableLighting();
-		String itemname = String.format("%sl%s", ModGlobals.TEXT_MODIFIER, currentItemStack.getDisplayName());
-		if (itemname.length() > 18) {
+
+		String itemname = String.format("%so%<sl%<sn%s", ModGlobals.TEXT_MODIFIER, currentItemStack.getDisplayName());
+		if (TextFormatting.getTextWithoutFormattingCodes(itemname).length() > 18) {
 			itemname = itemname.substring(0, 18).trim() + "...";
 		}
-		fontRenderer.drawString(itemname, 175, 10, 0x0000FF);
+		fontRenderer.drawString(itemname, 175, 10, 0xFF8B4513);
 		fontRenderer.drawString(MinechemUtil.getLocalString("gui.journal.decomposer"), 175, 20, 0x884400);
 
 		float chance = 100;
@@ -309,7 +308,7 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 			fontRenderer.drawString(String.format("%.1f%% " + MinechemUtil.getLocalString("gui.journal.chance"), chance), 175, 30, 0x555555);
 		}
 
-		fontRenderer.drawString(MinechemUtil.getLocalString("gui.journal.synthesis"), 175, 100, 0x884400);
+		fontRenderer.drawString(MinechemUtil.getLocalString("gui.journal.synthesis") + (currentSynthesisRecipe != null ? (currentSynthesisRecipe.isShaped() ? " - Shaped" : " - Shapeless") : ""), 175, 100, 0x884400);
 		if (currentSynthesisRecipe != null) {
 			int energyCost = RecipeHandlerSynthesis.getEnergyCost(currentSynthesisRecipe);
 			fontRenderer.drawString(String.format("%d " + MinechemUtil.getLocalString("tab.tooltip.energy"), energyCost), 175, 110, 0x555555);
@@ -326,17 +325,34 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 		GlStateManager.popMatrix();
 	}
 
+	//TODO
+	private void drawItemBox(int x, int y) {
+		int selectedBoxColor = 0xFF8B4513;
+		drawGradientRect(x - 1, y - 1, x + 106, y, selectedBoxColor, selectedBoxColor);
+		drawGradientRect(x - 1, y - 1, x, y + 149, selectedBoxColor, selectedBoxColor);
+		drawGradientRect(x + 106, y - 1, x + 107, y + 149, selectedBoxColor, selectedBoxColor);
+		drawGradientRect(x - 1, y + 148, x + 107, y + 149, selectedBoxColor, selectedBoxColor);
+
+		int selectedBoxColor2 = 0x99888888;
+		x += 1;
+		y += 1;
+		drawGradientRect(x - 1, y - 1, x + 106, y, selectedBoxColor2, selectedBoxColor2);
+		drawGradientRect(x - 1, y - 1, x, y + 149, selectedBoxColor2, selectedBoxColor2);
+	}
+
 	private void drawSlots(int x, int y) {
+
 		GlStateManager.pushMatrix();
-		RenderUtil.startScissor(mc, x + 9, y + 26, 140, 156);
-		int ypos = (int) -((listHeight - 130) * scrollBar.getScrollValue());
-		GlStateManager.translate(0, ypos, 0);
+		RenderUtil.startScissor(mc, x + 9, y + 29, 146, 148);
+		int ypos = (int) ((listHeight - 130) * scrollBar.getScrollValue());
+		GlStateManager.translate(0, -ypos, 0);
 		for (GuiFakeSlot slot : itemListSlots) {
 			slot.setYOffset(ypos);
 			slot.draw();
 		}
 		RenderUtil.endScissor();
 		GlStateManager.popMatrix();
+		drawItemBox(x - 44, y = 29);
 	}
 
 	private void drawSlotTooltips() {
@@ -383,7 +399,7 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 
 	@Override
 	public boolean isScrollBarActive() {
-		return true;
+		return itemList != null && itemList.size() > 48;
 	}
 
 	@Override

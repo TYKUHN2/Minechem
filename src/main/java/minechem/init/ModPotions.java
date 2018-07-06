@@ -9,6 +9,8 @@ import minechem.potion.PotionMinechem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 
 /**
@@ -44,6 +46,7 @@ public class ModPotions {
 		return potionList;
 	}
 
+	@SideOnly(Side.CLIENT)
 	public static void renderEffects() {
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityPlayer player = mc.player;

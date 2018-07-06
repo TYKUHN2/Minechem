@@ -256,6 +256,11 @@ public class ModEvents {
 		ModPotions.registerPotions(event.getRegistry());
 	}
 
+	@SubscribeEvent
+	public void onRegistryRegister(RegistryEvent.NewRegistry event) {
+		new ModRegistries();
+	}
+
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onFogOverlay(EntityViewRenderEvent.RenderFogEvent event) {
@@ -438,6 +443,7 @@ public class ModEvents {
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onTooltip(ItemTooltipEvent event) {
 

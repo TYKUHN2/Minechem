@@ -1,6 +1,5 @@
 package minechem.proxy;
 
-import minechem.Minechem;
 import minechem.block.tile.TileDecomposer;
 import minechem.block.tile.TileLeadedChest;
 import minechem.block.tile.TileSynthesis;
@@ -9,7 +8,6 @@ import minechem.client.render.RenderLeadedChest;
 import minechem.client.render.RenderSynthesis;
 import minechem.init.ModBlocks;
 import minechem.init.ModFluids;
-import minechem.init.ModGuiHandler;
 import minechem.init.ModItems;
 import minechem.init.ModPotions;
 import net.minecraft.client.Minecraft;
@@ -22,7 +20,6 @@ import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -53,7 +50,6 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void registerRenderers() {
-		NetworkRegistry.INSTANCE.registerGuiHandler(Minechem.INSTANCE, new ModGuiHandler());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileDecomposer.class, new RenderDecomposer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileSynthesis.class, new RenderSynthesis());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileLeadedChest.class, new RenderLeadedChest());

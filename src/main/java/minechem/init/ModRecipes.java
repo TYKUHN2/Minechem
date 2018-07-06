@@ -1,7 +1,6 @@
 package minechem.init;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Locale;
 
 import com.google.common.collect.Lists;
@@ -26,9 +25,7 @@ import minechem.recipe.RecipeDecomposerSelect;
 import minechem.recipe.RecipeDecomposerSuper;
 import minechem.recipe.RecipePotionCoating;
 import minechem.recipe.RecipePotionSpiking;
-import minechem.recipe.RecipeSynthesisOld;
 import minechem.recipe.handler.RecipeHandlerSynthesis;
-import minechem.utils.MinechemUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockOre;
 import net.minecraft.init.Blocks;
@@ -186,9 +183,9 @@ public class ModRecipes {
 				this.molecule(MoleculeEnum.magnesiumOxide, 8)
 		});
 		RecipeDecomposerFluid.createAndAddFluidRecipeSafely("steel.molten", INGOT_AMOUNT, new PotionChemical[] {
-				this.element(ElementEnum.Fe, 14),
-				this.element(ElementEnum.C, 2)
-		}); // This ratio should be tested
+				this.element(ElementEnum.Fe, 16),
+				this.element(ElementEnum.C, 1)
+		});
 		RecipeDecomposerFluid.createAndAddFluidRecipeSafely("stone.seared", INGOT_AMOUNT, new PotionChemical[] {
 				this.molecule(MoleculeEnum.siliconOxide, 12),
 				this.molecule(MoleculeEnum.ironOxide, 4)
@@ -746,59 +743,60 @@ public class ModRecipes {
 		RecipeDecomposer.add(new RecipeDecomposer(itemDyePowderWhite, new PotionChemical[] {
 				this.molecule(MoleculeEnum.whitePigment)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderBlack, false, COST_ITEM, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_black", COST_ITEM, itemDyePowderBlack, new PotionChemical[] {
 				this.molecule(MoleculeEnum.blackPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderRed, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_red", COST_ITEM, itemDyePowderRed, new PotionChemical[] {
 				this.molecule(MoleculeEnum.redPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderGreen, false, COST_ITEM, new PotionChemical[] {
+		});
+
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_green", COST_ITEM, itemDyePowderGreen, new PotionChemical[] {
 				this.molecule(MoleculeEnum.greenPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderBrown, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_brown", COST_ITEM, itemDyePowderBrown, new PotionChemical[] {
 				this.molecule(MoleculeEnum.theobromine)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderBlue, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_blue", COST_ITEM, itemDyePowderBlue, new PotionChemical[] {
 				this.molecule(MoleculeEnum.lazurite)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderPurple, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_purple", COST_ITEM, itemDyePowderPurple, new PotionChemical[] {
 				this.molecule(MoleculeEnum.purplePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderCyan, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_cyan", COST_ITEM, itemDyePowderCyan, new PotionChemical[] {
 				this.molecule(MoleculeEnum.lightbluePigment),
 				this.molecule(MoleculeEnum.whitePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderLightGray, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_lightgray", COST_ITEM, itemDyePowderLightGray, new PotionChemical[] {
 				this.molecule(MoleculeEnum.whitePigment),
 				this.molecule(MoleculeEnum.blackPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderGray, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_gray", COST_ITEM, itemDyePowderGray, new PotionChemical[] {
 				this.molecule(MoleculeEnum.whitePigment),
 				this.molecule(MoleculeEnum.blackPigment, 2)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderPink, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_pink", COST_ITEM, itemDyePowderPink, new PotionChemical[] {
 				this.molecule(MoleculeEnum.redPigment),
 				this.molecule(MoleculeEnum.whitePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderLime, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_lime", COST_ITEM, itemDyePowderLime, new PotionChemical[] {
 				this.molecule(MoleculeEnum.limePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderYellow, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_yellow", COST_ITEM, itemDyePowderYellow, new PotionChemical[] {
 				this.molecule(MoleculeEnum.yellowPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderLightBlue, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_lightblue", COST_ITEM, itemDyePowderLightBlue, new PotionChemical[] {
 				this.molecule(MoleculeEnum.lightbluePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderMagenta, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_magenta", COST_ITEM, itemDyePowderMagenta, new PotionChemical[] {
 				this.molecule(MoleculeEnum.lightbluePigment),
 				this.molecule(MoleculeEnum.redPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderOrange, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_orange", COST_ITEM, itemDyePowderOrange, new PotionChemical[] {
 				this.molecule(MoleculeEnum.orangePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemDyePowderWhite, false, COST_ITEM, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("dye_white", COST_ITEM, itemDyePowderWhite, new PotionChemical[] {
 				this.molecule(MoleculeEnum.whitePigment)
-		}));
+		});
 
 		// Glass
 		ItemStack blockGlass = new ItemStack(Blocks.GLASS);
@@ -1038,71 +1036,72 @@ public class ModRecipes {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.blackPigment)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockWool, false, COST_WOOL, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("wool", COST_WOOL, blockWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.whitePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockOrangeWool, false, COST_WOOL, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_orange", COST_WOOL, blockOrangeWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.orangePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockMagentaWool, false, COST_WOOL, new PotionChemical[] {
+		});
+
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_magenta", COST_WOOL, blockMagentaWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.lightbluePigment),
 				this.molecule(MoleculeEnum.redPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockLightBlueWool, false, COST_WOOL, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_lightblue", COST_WOOL, blockLightBlueWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.lightbluePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockYellowWool, false, COST_WOOL, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_yellow", COST_WOOL, blockYellowWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.yellowPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockLimeWool, false, COST_WOOL, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_lime", COST_WOOL, blockLimeWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.limePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockPinkWool, false, COST_WOOL, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_pink", COST_WOOL, blockPinkWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.redPigment),
 				this.molecule(MoleculeEnum.whitePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockGrayWool, false, COST_WOOL, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_gray", COST_WOOL, blockGrayWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.whitePigment),
 				this.molecule(MoleculeEnum.blackPigment, 2)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockLightGrayWool, false, COST_WOOL, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_lightgray", COST_WOOL, blockLightGrayWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.whitePigment),
 				this.molecule(MoleculeEnum.blackPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockCyanWool, false, COST_WOOL, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_cyan", COST_WOOL, blockCyanWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.lightbluePigment),
 				this.molecule(MoleculeEnum.whitePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockPurpleWool, false, COST_WOOL, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_purple", COST_WOOL, blockPurpleWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.purplePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockBlueWool, false, COST_WOOL, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_blue", COST_WOOL, blockBlueWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.lazurite)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockGreenWool, false, COST_WOOL, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_green", COST_WOOL, blockGreenWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.greenPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockRedWool, false, COST_WOOL, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_red", COST_WOOL, blockRedWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.redPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockBlackWool, false, COST_WOOL, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("wool_black", COST_WOOL, blockBlackWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine, 2),
 				this.molecule(MoleculeEnum.blackPigment)
-		}));
+		});
 
 		// Wool carpet
 		ItemStack carpetBlockWool = new ItemStack(Blocks.CARPET, 1, 0);
@@ -1190,71 +1189,73 @@ public class ModRecipes {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.blackPigment)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockWool, false, COST_CARPET, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet", COST_CARPET, carpetBlockWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.whitePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockOrangeWool, false, COST_CARPET, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_orange", COST_CARPET, carpetBlockOrangeWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.orangePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockMagentaWool, false, COST_CARPET, new PotionChemical[] {
+		});
+
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_magenta", COST_CARPET, carpetBlockMagentaWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.lightbluePigment),
 				this.molecule(MoleculeEnum.redPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockLightBlueWool, false, COST_CARPET, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_lightblue", COST_CARPET, carpetBlockLightBlueWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.lightbluePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockYellowWool, false, COST_CARPET, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_yellow", COST_CARPET, carpetBlockYellowWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.yellowPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockLimeWool, false, COST_CARPET, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_lime", COST_CARPET, carpetBlockLimeWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.limePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockPinkWool, false, COST_CARPET, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_pink", COST_CARPET, carpetBlockPinkWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.redPigment),
 				this.molecule(MoleculeEnum.whitePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockGrayWool, false, COST_CARPET, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_gray", COST_CARPET, carpetBlockGrayWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.whitePigment),
 				this.molecule(MoleculeEnum.blackPigment, 2)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockLightGrayWool, false, COST_CARPET, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_lightgray", COST_CARPET, carpetBlockLightGrayWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.whitePigment),
 				this.molecule(MoleculeEnum.blackPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockCyanWool, false, COST_CARPET, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_cyan", COST_CARPET, carpetBlockCyanWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.lightbluePigment),
 				this.molecule(MoleculeEnum.whitePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockPurpleWool, false, COST_CARPET, new PotionChemical[] {
+		});
+		//TODO
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_purple", COST_CARPET, carpetBlockPurpleWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.purplePigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockBlueWool, false, COST_CARPET, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_blue", COST_CARPET, carpetBlockBlueWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.lazurite)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockGreenWool, false, COST_CARPET, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_green", COST_CARPET, carpetBlockGreenWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.greenPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockRedWool, false, COST_CARPET, new PotionChemical[] {
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_red", COST_CARPET, carpetBlockRedWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
-				this.molecule(MoleculeEnum.redPigment)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(carpetBlockBlackWool, false, COST_CARPET, new PotionChemical[] {
+				this.molecule(MoleculeEnum.orangePigment)
+		});
+		RecipeHandlerSynthesis.addShapelessRecipe("carpet_black", COST_CARPET, carpetBlockBlackWool, new PotionChemical[] {
 				this.molecule(MoleculeEnum.glycine),
 				this.molecule(MoleculeEnum.blackPigment)
-		}));
+		});
 
 		// Flowers
 		ItemStack blockYellowFlower = new ItemStack(Blocks.YELLOW_FLOWER);
@@ -1341,9 +1342,9 @@ public class ModRecipes {
 		RecipeDecomposer.add(new RecipeDecomposer(blockTnt, new PotionChemical[] {
 				this.molecule(MoleculeEnum.tnt)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockTnt, false, COST_OBSIDIAN, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("tnt", COST_OBSIDIAN, blockTnt, new PotionChemical[] {
 				this.molecule(MoleculeEnum.tnt)
-		}));
+		});
 
 		// Obsidian
 		ItemStack blockObsidian = new ItemStack(Blocks.OBSIDIAN);
@@ -1390,20 +1391,20 @@ public class ModRecipes {
 		// Pumpkin
 		ItemStack blockPumpkin = new ItemStack(Blocks.PUMPKIN);
 		RecipeDecomposer.add(new RecipeDecomposer(blockPumpkin, new PotionChemical[] {
-				this.molecule(MoleculeEnum.cucurbitacin)
+				this.molecule(MoleculeEnum.cucurbitacin, 4)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(blockPumpkin, false, COST_PLANT, new PotionChemical[] {
-				this.molecule(MoleculeEnum.cucurbitacin)
-		}));
+		RecipeHandlerSynthesis.addShapelessRecipe("block_pumpkin", COST_PLANT, blockPumpkin, new PotionChemical[] {
+				this.molecule(MoleculeEnum.cucurbitacin, 4)
+		});
 
 		// Pumpkin seed
 		ItemStack pumpkinSeed = new ItemStack(Items.PUMPKIN_SEEDS);
 		RecipeDecomposer.add(new RecipeDecomposer(pumpkinSeed, new PotionChemical[] {
-				this.molecule(MoleculeEnum.water)
-		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(pumpkinSeed, false, COST_PLANT, new PotionChemical[] {
 				this.molecule(MoleculeEnum.cucurbitacin)
 		}));
+		RecipeHandlerSynthesis.addShapelessRecipe("seed_pumpkin", COST_PLANT, pumpkinSeed, new PotionChemical[] {
+				this.molecule(MoleculeEnum.cucurbitacin)
+		});
 
 		// Netherrack
 		ItemStack blockNetherrack = new ItemStack(Blocks.NETHERRACK);
@@ -1522,9 +1523,9 @@ public class ModRecipes {
 		RecipeDecomposer.add(new RecipeDecomposerChance(blockMycelium, 0.09F, new PotionChemical[] {
 				this.molecule(MoleculeEnum.fingolimod)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(new ItemStack(Blocks.MYCELIUM, 16), false, COST_GRASS, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("block_mycelium", COST_GRASS, new ItemStack(Blocks.MYCELIUM, 16), new PotionChemical[] {
 				this.molecule(MoleculeEnum.fingolimod)
-		}));
+		});
 
 		// End Stone
 		ItemStack blockWhiteStone = new ItemStack(Blocks.END_STONE);
@@ -1599,10 +1600,10 @@ public class ModRecipes {
 		RecipeDecomposer.add(new RecipeDecomposer(itemAppleRed, new PotionChemical[] {
 				this.molecule(MoleculeEnum.malicAcid)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemAppleRed, false, COST_FOOD, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("apple", COST_FOOD, itemAppleRed, new PotionChemical[] {
 				this.molecule(MoleculeEnum.malicAcid),
 				this.molecule(MoleculeEnum.water, 2)
-		}));
+		});
 
 		// Arrow
 		ItemStack itemArrow = new ItemStack(Items.ARROW);
@@ -1629,10 +1630,10 @@ public class ModRecipes {
 		RecipeDecomposer.add(new RecipeDecomposerChance(itemChar, 0.82F, new PotionChemical[] {
 				this.element(ElementEnum.C, 8)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemChar, false, COST_ITEM, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("charcoal", COST_ITEM, itemChar, new PotionChemical[] {
 				this.element(ElementEnum.C, 4),
 				this.element(ElementEnum.C, 4)
-		}));
+		});
 		// Diamond
 		ItemStack itemDiamond = new ItemStack(Items.DIAMOND);
 		RecipeDecomposer.add(new RecipeDecomposer(itemDiamond, new PotionChemical[] {
@@ -1648,18 +1649,18 @@ public class ModRecipes {
 		RecipeDecomposer.add(new RecipeDecomposer(itemIngotIron, new PotionChemical[] {
 				this.element(ElementEnum.Fe, 16)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemIngotIron, false, COST_INGOT, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("ingot_iron", COST_INGOT, itemIngotIron, new PotionChemical[] {
 				this.element(ElementEnum.Fe, 16)
-		}));
+		});
 
 		// Gold Ingot
 		ItemStack itemIngotGold = new ItemStack(Items.GOLD_INGOT);
 		RecipeDecomposer.add(new RecipeDecomposer(itemIngotGold, new PotionChemical[] {
 				this.element(ElementEnum.Au, 16)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemIngotGold, false, COST_INGOT, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("ingot_gold", COST_INGOT, itemIngotGold, new PotionChemical[] {
 				this.element(ElementEnum.Au, 16)
-		}));
+		});
 
 		// Stick
 		ItemStack itemStick = new ItemStack(Items.STICK);
@@ -1794,9 +1795,9 @@ public class ModRecipes {
 		RecipeDecomposer.add(new RecipeDecomposerChance(itemClayBall, 0.5F, new PotionChemical[] {
 				this.molecule(MoleculeEnum.kaolinite)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(new ItemStack(Items.CLAY_BALL, 2), false, COST_ITEM, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("item_clay", COST_ITEM, new ItemStack(Items.CLAY_BALL, 2), new PotionChemical[] {
 				this.molecule(MoleculeEnum.kaolinite)
-		}));
+		});
 
 		// Reed
 		ItemStack itemReed = new ItemStack(Items.REEDS);
@@ -1878,29 +1879,29 @@ public class ModRecipes {
 		RecipeDecomposer.add(new RecipeDecomposer(itemBone, new PotionChemical[] {
 				this.molecule(MoleculeEnum.hydroxylapatite)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemBone, false, COST_ITEM, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("item_bone", COST_ITEM, itemBone, new PotionChemical[] {
 				this.molecule(MoleculeEnum.hydroxylapatite)
-		}));
+		});
 
 		// Sugar
 		ItemStack itemSugar = new ItemStack(Items.SUGAR);
 		RecipeDecomposer.add(new RecipeDecomposerChance(itemSugar, 0.75F, new PotionChemical[] {
 				this.molecule(MoleculeEnum.sucrose)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(itemSugar, false, COST_SUGAR, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("item_sugar", COST_SUGAR, itemSugar, new PotionChemical[] {
 				this.molecule(MoleculeEnum.sucrose)
-		}));
+		});
 
 		// Melon Slice
 		ItemStack itemMelon = new ItemStack(Items.MELON);
 		RecipeDecomposer.add(new RecipeDecomposer(itemMelon, new PotionChemical[] {
 				this.molecule(MoleculeEnum.water, 1)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(new ItemStack(Items.MELON), false, COST_FOOD, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("item_melon", COST_FOOD, new ItemStack(Items.MELON), new PotionChemical[] {
 				this.molecule(MoleculeEnum.cucurbitacin),
 				this.molecule(MoleculeEnum.asparticAcid),
 				this.molecule(MoleculeEnum.water, 1)
-		}));
+		});
 
 		// Melon
 		ItemStack blockMelon = new ItemStack(Blocks.MELON_BLOCK);
@@ -1909,11 +1910,11 @@ public class ModRecipes {
 				this.molecule(MoleculeEnum.asparticAcid),
 				this.molecule(MoleculeEnum.water, 16)
 		}));
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(new ItemStack(Blocks.MELON_BLOCK, 1), false, COST_FOOD, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("block_melon", COST_PLANT, itemSugar, new PotionChemical[] {
 				this.molecule(MoleculeEnum.cucurbitacin),
 				this.molecule(MoleculeEnum.asparticAcid),
 				this.molecule(MoleculeEnum.water, 16)
-		}));
+		});
 
 		// Cooked Chicken
 		ItemStack itemChickenCooked = new ItemStack(Items.COOKED_CHICKEN);
@@ -2113,11 +2114,10 @@ public class ModRecipes {
 				element(ElementEnum.Fe, 3),
 				element(ElementEnum.Fe, 3)
 		}));
-
-		RecipeSynthesisOld.add(new RecipeSynthesisOld(bars, false, COST_BLOCK, new PotionChemical[] {
+		RecipeHandlerSynthesis.addShapelessRecipe("block_ironbars", COST_BLOCK, bars, new PotionChemical[] {
 				element(ElementEnum.Fe, 3),
 				element(ElementEnum.Fe, 3)
-		}));
+		});
 
 		//Uranium Ore
 		RecipeDecomposer.createAndAddRecipeSafely("oreUranium", element(ElementEnum.U, 48));
@@ -2324,10 +2324,12 @@ public class ModRecipes {
 
 		}
 
-		if (Loader.isModLoaded("ThermalFoundation")) {
-			Item bucket = Item.REGISTRY.getObject(new ResourceLocation("ThermalFoundation", "bucket"));
-			Item material = Item.REGISTRY.getObject(new ResourceLocation("ThermalFoundation", "material"));
-
+		//TODO
+		/*
+		if (Loader.isModLoaded("thermalfoundation")) {
+			Item bucket = Item.REGISTRY.getObject(new ResourceLocation("thermalfoundation", "bucket"));
+			Item material = Item.REGISTRY.getObject(new ResourceLocation("thermalfoundation", "material"));
+		
 			ItemStack redstoneBucket = new ItemStack(bucket, 1, 0);
 			ItemStack glowstoneBucket = new ItemStack(bucket, 1, 1);
 			ItemStack enderBucket = new ItemStack(bucket, 1, 2);
@@ -2337,7 +2339,7 @@ public class ModRecipes {
 			ItemStack signalumIngot = new ItemStack(material, 1, 74);
 			ItemStack lumiumIngot = new ItemStack(material, 1, 75);
 			ItemStack enderiumIngot = new ItemStack(material, 1, 76);
-
+		
 			RecipeDecomposer.add(new RecipeDecomposer(redstoneBucket, new PotionChemical[] {
 					this.element(ElementEnum.Cu, 4),
 					this.element(ElementEnum.Fe, 48),
@@ -2352,7 +2354,7 @@ public class ModRecipes {
 					this.element(ElementEnum.Fe, 48),
 					this.element(ElementEnum.P, 4)
 			}));
-
+		
 			RecipeDecomposer.add(new RecipeDecomposer(signalumBlend, new PotionChemical[] {
 					this.element(ElementEnum.Cu, 12),
 					this.element(ElementEnum.Ag, 4),
@@ -2388,7 +2390,7 @@ public class ModRecipes {
 					this.molecule(MoleculeEnum.calciumCarbonate, 8)
 			}));
 			RecipeHandlerSynthesis.addShapelessRecipe("signalum_blend", COST_INGOT, signalumBlend, element(ElementEnum.Cu, 12), element(ElementEnum.Ag, 4), molecule(MoleculeEnum.iron3oxide));
-
+		
 			RecipeSynthesisOld.add(new RecipeSynthesisOld(signalumIngot, false, COST_INGOT, new PotionChemical[] {
 					this.element(ElementEnum.Cu, 12),
 					this.element(ElementEnum.Ag, 4),
@@ -2413,7 +2415,7 @@ public class ModRecipes {
 					this.element(ElementEnum.S, 16)
 			}));
 		}
-
+		
 		//Redstone Arsenal
 		if (Loader.isModLoaded("RedstoneArsenal")) {
 			Item alloy = Item.REGISTRY.getObject(new ResourceLocation("RedstoneArsenal", "material"));
@@ -2462,7 +2464,7 @@ public class ModRecipes {
 					this.element(ElementEnum.Cu, 2)
 			}));
 		}
-
+		
 		//EnderIO
 		if (Loader.isModLoaded("EnderIO")) {
 			Item alloy = Item.REGISTRY.getObject(new ResourceLocation("EnderIO", "itemAlloy"));
@@ -2545,21 +2547,21 @@ public class ModRecipes {
 					})
 			}));
 		}
-
+		
 		if (Loader.isModLoaded("appliedenergistics2")) {
 			MoleculeEnum certusQuartzMolecule = MoleculeEnum.aluminiumPhosphate;
 			MoleculeEnum chargedCertusQuartzMolecule = MoleculeEnum.aluminiumHypophosphite;
 			PotionChemical chargedCertusQuartzChemical = new Molecule(chargedCertusQuartzMolecule);
-
+		
 			PotionChemical[] chargedCertusQuartzDecompositionFormula = new PotionChemical[] {
 					new Molecule(chargedCertusQuartzMolecule, 4)
 			};
-
+		
 			PotionChemical[] quartzGlassDecompositionFormula = new PotionChemical[] {
 					new Molecule(certusQuartzMolecule, 5),
 					new Molecule(MoleculeEnum.siliconDioxide, 16)
 			};
-
+		
 			Item item = Item.REGISTRY.getObject(new ResourceLocation("appliedenergistics2", "item.ItemMultiMaterial"));
 			Block skyStone = Block.REGISTRY.getObject(new ResourceLocation("appliedenergistics2", "tile.BlockSkyStone"));
 			Block quartzGlass = Block.REGISTRY.getObject(new ResourceLocation("appliedenergistics2", "tile.BlockQuartzGlass"));
@@ -2567,10 +2569,10 @@ public class ModRecipes {
 			ItemStack singularity = new ItemStack(item, 1, 47);
 			ItemStack skystone = new ItemStack(skyStone);
 			ItemStack quartzglass = new ItemStack(quartzGlass);
-
+		
 			RecipeDecomposer.add(new RecipeDecomposer(charged, chargedCertusQuartzDecompositionFormula));
 			RecipeHandlerSynthesis.addShapedRecipe("charged_certus_quartz", 30000, charged, " a ", "a a", " a ", 'a', chargedCertusQuartzChemical);
-
+		
 			RecipeDecomposer.add(new RecipeDecomposer(singularity, new PotionChemical[] {
 					this.element(ElementEnum.Fm, 148),
 					this.element(ElementEnum.Md, 142),
@@ -2587,7 +2589,7 @@ public class ModRecipes {
 					this.element(ElementEnum.Cn, 33),
 					this.element(ElementEnum.Uut, 22)
 			}));
-
+		
 			RecipeDecomposer.add(new RecipeDecomposerSelect(skystone, 0.9F, new RecipeDecomposer[] {
 					new RecipeDecomposer(new PotionChemical[] {
 							this.element(ElementEnum.Si),
@@ -2646,11 +2648,11 @@ public class ModRecipes {
 							this.element(ElementEnum.Ar)
 					})
 			}));
-
+		
 			RecipeDecomposer.add(new RecipeDecomposer(quartzglass, quartzGlassDecompositionFormula));
 			RecipeHandlerSynthesis.addShapedRecipe("quartz_glass", 30000, quartzglass, "aba", "bab", "aba", 'a', certusQuartzMolecule, 'b', molecule(MoleculeEnum.siliconDioxide, 4));
 		}
-
+		
 		//RailCraft
 		if (Loader.isModLoaded("Railcraft")) {
 			Block metalPost = Block.REGISTRY.getObject(new ResourceLocation("Railcraft", "tile.railcraft.post.metal"));
@@ -2660,6 +2662,7 @@ public class ModRecipes {
 			RecipeDecomposer.add(new RecipeDecomposer(new ItemStack(metalPlatform), this.element(ElementEnum.Fe, 5)));
 			RecipeDecomposer.add(new RecipeDecomposer(new ItemStack(post), new PotionChemical[] {}));
 		}
+		*/
 	}
 
 	public void RegisterRecipes() {
@@ -2819,7 +2822,7 @@ public class ModRecipes {
 
 		addDecomposerRecipesFromMolecules();
 		addSynthesisRecipesFromMolecules();
-		addUnusedSynthesisRecipes();
+		//addUnusedSynthesisRecipes();
 	}
 
 	private void addDecomposerRecipesFromMolecules() {
@@ -2836,31 +2839,33 @@ public class ModRecipes {
 		for (MoleculeEnum molecule : MoleculeEnum.molecules.values()) {
 			if (molecule != null) {
 				ItemStack moleculeItemStack = new ItemStack(ModItems.molecule, 1, molecule.id());
-				RecipeHandlerSynthesis.addShapelessRecipe("molecule_" + molecule.name().toLowerCase(Locale.US), COST_ITEM, moleculeItemStack, molecule.components());
+				RecipeHandlerSynthesis.addShapelessRecipe("molecule_" + molecule.name().toLowerCase(Locale.US), COST_ITEM, moleculeItemStack, molecule.components().toArray(new PotionChemical[molecule.components().size()]));
 			}
 		}
 
 	}
 
+	//TODO - wtf even are these?
+	/*
 	private void addUnusedSynthesisRecipes() {
 		Iterator<RecipeDecomposer> decomposerRecipes = RecipeDecomposer.recipes.values().iterator();
-
+	
 		while (decomposerRecipes.hasNext()) {
 			RecipeDecomposer nextDecomposerRecipe = decomposerRecipes.next();
 			if (nextDecomposerRecipe.getInput().getItemDamage() != -1) {
 				boolean check = false;
 				Iterator<RecipeSynthesisOld> synthesisRecipes = RecipeSynthesisOld.recipes.values().iterator();
-
+	
 				while (true) {
 					if (synthesisRecipes.hasNext()) {
 						RecipeSynthesisOld nextSynthesisRecipe = synthesisRecipes.next();
 						if (!MinechemUtil.stacksAreSameKind(nextSynthesisRecipe.getOutput(), nextDecomposerRecipe.getInput())) {
 							continue;
 						}
-
+	
 						check = true;
 					}
-
+	
 					if (!check) {
 						ArrayList<PotionChemical> rawDecomposerRecipe = nextDecomposerRecipe.getOutputRaw();
 						if (rawDecomposerRecipe != null) {
@@ -2874,7 +2879,7 @@ public class ModRecipes {
 			}
 		}
 	}
-
+	*/
 	public boolean shouldCreateSynthesis(ItemStack item) {
 		if (item.getItem() == Items.STICK) {
 			return false;

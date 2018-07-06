@@ -13,9 +13,11 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.Lists;
 
+import minechem.api.recipe.ISynthesisRecipe;
 import minechem.init.ModLogger;
 import minechem.potion.PotionChemical;
 import minechem.recipe.RecipeDecomposer;
+import minechem.recipe.SingleItemStackBasedIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
@@ -344,6 +346,21 @@ public class RecipeUtil {
 	}
 
 	public static NonNullList<ItemStack> ingredientListToStackList(List<Ingredient> ingredients) {
+		NonNullList<ItemStack> stackList = NonNullList.withSize(9, ItemStack.EMPTY);
+		for (int i = 0; i < ingredients.size(); i++) {
+			ItemStack[] matchingStacks = ingredients.get(i).getMatchingStacks();
+			if (matchingStacks != null && matchingStacks.length > 0) {
+				stackList.set(i, matchingStacks[0]);
+			}
+		}
+		return stackList;
+	}
+
+	public static NonNullList<ItemStack> getRecipeAsStackList(ISynthesisRecipe recipe) {
+		return singleIngredientListToStackList(recipe.getSingleIngredients());
+	}
+
+	public static NonNullList<ItemStack> singleIngredientListToStackList(List<SingleItemStackBasedIngredient> ingredients) {
 		NonNullList<ItemStack> stackList = NonNullList.withSize(9, ItemStack.EMPTY);
 		for (int i = 0; i < ingredients.size(); i++) {
 			ItemStack[] matchingStacks = ingredients.get(i).getMatchingStacks();

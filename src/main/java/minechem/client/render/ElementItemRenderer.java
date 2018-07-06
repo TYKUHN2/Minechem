@@ -18,7 +18,6 @@ import minechem.utils.MinechemUtil;
 import minechem.utils.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
@@ -66,7 +65,8 @@ public class ElementItemRenderer extends TileEntityItemStackRenderer {
 				model.handlePerspective(transformType);
 			}
 			if (transformType == TransformType.GUI) {
-				RenderHelper.disableStandardItemLighting();
+				//RenderHelper.enableStandardItemLighting();
+				//RenderHelper.disableStandardItemLighting();
 			}
 			if (transformType == TransformType.FIXED) {
 				GlStateManager.translate(1.0, 0, 1.0);
@@ -108,7 +108,7 @@ public class ElementItemRenderer extends TileEntityItemStackRenderer {
 			GlStateManager.scale(-scale * scale, -scale * scale, -scale * scale);
 			GlStateManager.popMatrix();
 			if (transformType == TransformType.GUI) {
-				RenderHelper.enableStandardItemLighting();
+				//RenderHelper.enableStandardItemLighting();
 			}
 			if (transformType == TransformType.FIXED || transformType == TransformType.GUI) {
 				GlStateManager.translate(-0.1F, 0.0F, 0.0F);

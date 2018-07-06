@@ -6,8 +6,10 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import minechem.api.recipe.ISynthesisRecipe;
 import minechem.init.ModConfig;
 import minechem.init.ModItems;
+import minechem.network.message.MessageSyncSynthesisMachine;
 import minechem.recipe.handler.RecipeHandlerSynthesis;
 import minechem.utils.MinechemUtil;
 import minechem.utils.RecipeUtil;
@@ -18,8 +20,6 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -30,6 +30,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInventory {
 
@@ -42,10 +43,11 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 
 	private NonNullList<ItemStack> cachedRecipeStacks =NonNullList.withSize(9, ItemStack.EMPTY);
 	//@formatter:on
+	private int timer = 0;
 
 	public TileSynthesis() {
 		super(ModConfig.maxSynthesizerStorage);
-		inventory = NonNullList.<ItemStack>withSize(30, ItemStack.EMPTY);
+		inventory = NonNullList.<ItemStack>withSize(31, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -61,49 +63,6 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 		}
 		return super.getCapability(capability, facing);
 	}
-	/*
-		public boolean canTakeOutputStack(boolean doTake) {
-			return !inventory.get(SLOT_OUTPUT_REAL).isEmpty() && hasEnoughPowerForCurrentRecipe() && takeStacksFromStorage(doTake);
-		}
-	
-		public void clearRecipeMatrix() {
-			for (int slot : kRecipe) {
-				inventory.set(slot, ItemStack.EMPTY);
-			}
-		}
-	
-		private boolean valueIn(int value, int[] arr) {
-			if (arr == null) {
-				return false;
-			}
-	
-			for (int v : arr) {
-				if (value == v) {
-					return true;
-				}
-			}
-			return false;
-		}
-	
-		/**
-		 * Returns true if the given inventory slot is a "ghost" slot used to show the inputs of a crafting recipe. Items in these slots don't really exist and should never be dumped or extracted.
-		 *
-		 * @param slotId Slot Id to check.
-		 * @return true if the slot is a "ghost" slot for the recipe.
-		 */
-	/*
-	public boolean isGhostCraftingRecipeSlot(int slotId) {
-		return valueIn(slotId, kRecipe);
-	}
-	
-	public boolean isGhostSlot(int slotId) {
-		return isGhostOutputSlot(slotId) || isGhostCraftingRecipeSlot(slotId);
-	}
-	
-	public boolean isRealItemSlot(int slotId) {
-		return !isGhostSlot(slotId);
-	}
-	*/
 
 	@Override
 	public ItemStack decrStackSize(int slot, int amount) {
@@ -112,35 +71,16 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 			onTakeJournal();
 		}
 		if (slot >= SLOT_IDS_MATRIX[0] && slot <= SLOT_IDS_MATRIX[8]) {
-			checkRecipe();
+			//checkRecipe();
 		}
 		if (!inventory.get(slot).isEmpty()) {
 			ItemStack itemstack = ItemStack.EMPTY;
 			if (slot == SLOT_ID_OUTPUT_MATRIX) {
-				int toRemove = amount;
-				/*
-				ItemStack result = getStackInSlot(slot).copy();
-				while (toRemove > 0) {
-				
-					if (takeInputStacks()) {
-						toRemove -= amount;
-					}
-					else {
-						result.setCount(amount - toRemove);
-						return result;
-					}
-				
-					if (toRemove < 1) {
-						return result;
-					}
-				}
-				*/
-				return ItemStack.EMPTY;
+				return super.decrStackSize(slot, amount);
 			}
 			else if (inventory.get(slot).getCount() <= amount) {
 				itemstack = inventory.get(slot);
 				inventory.set(slot, ItemStack.EMPTY);
-				//markDirty();
 				return itemstack;
 			}
 			else {
@@ -148,17 +88,15 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 				if (inventory.get(slot).getCount() == 0) {
 					inventory.set(slot, ItemStack.EMPTY);
 				}
-				//markDirty();
 				return itemstack;
 			}
 		}
-		//markDirty();
 		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public int getSizeInventory() {
-		return 30;
+		return 31;
 	}
 
 	@Override
@@ -189,34 +127,21 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 	}
 
 	private void onPutJournal(@Nonnull ItemStack stack) {
-		//shouldUpdate = true;
 		ItemStack activeItem = ModItems.journal.getActiveStack(stack);
 		if (!activeItem.isEmpty()) {
-			IRecipe recipe = RecipeHandlerSynthesis.getRecipeFromOutput(activeItem);
+			ISynthesisRecipe recipe = RecipeHandlerSynthesis.getRecipeFromOutput(activeItem);
 			if (recipe != null) {
-				//setRecipe(recipe);
-				//setInventorySlotContents(SLOT_ID_OUTPUT_JOURNAL, activeItem.copy());
 				fillMatrixWithRecipe(recipe);
 			}
 		}
-		//shouldUpdate = true;
 	}
 
-	private void fillMatrixWithRecipe(IRecipe recipe) {
-		//PotionChemical[] molecules = RecipeHandlerSynthesis.getChemicalsFromRecipe(recipe);
-		/*null;
-		if (RecipeHandlerSynthesis.isShaped(recipe)) {
-			molecules = recipe.getShapedRecipe();
-		}
-		else {
-			molecules = recipe.getShapelessRecipe();
-		}*/
+	private void fillMatrixWithRecipe(ISynthesisRecipe recipe) {
 		NonNullList<ItemStack> molecules = RecipeUtil.getRecipeAsStackList(recipe);
-		//if (molecules != null && molecules.length > 0) {
 		clearMatrix();
 		for (int i = 0; i < molecules.size(); i++) {
 			if (molecules.get(i) != null) {
-				ItemStack stack = molecules.get(i);//MinechemUtil.chemicalToItemStack(molecules[i], molecules[i].amount);
+				ItemStack stack = molecules.get(i);
 				if (!stack.isEmpty()) {
 					setInventorySlotContents(SLOT_IDS_MATRIX[i], stack);
 				}
@@ -228,7 +153,6 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 				setInventorySlotContents(SLOT_IDS_MATRIX[i], ItemStack.EMPTY);
 			}
 		}
-		//}
 	}
 
 	private void clearMatrix() {
@@ -279,7 +203,7 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 	}
 
 	private void updateRecipeOutput() {
-		IRecipe recipe = getCurrentRecipe();//RecipeHandlerSynthesis.getRecipeFromInput(getMatrixStackList());
+		ISynthesisRecipe recipe = getCurrentRecipe();
 		if (recipe != null) {
 			inventory.set(SLOT_ID_OUTPUT_JOURNAL, recipe.getRecipeOutput());
 		}
@@ -288,8 +212,8 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 		}
 	}
 
-	public IRecipe getCurrentRecipe() {
-		return CraftingManager.findMatchingRecipe(getCraftingInv(), world);
+	public ISynthesisRecipe getCurrentRecipe() {
+		return RecipeHandlerSynthesis.findMatchingRecipe(getCraftingInv(), world);
 	}
 
 	private boolean isCurrentRecipeShaped() {
@@ -300,7 +224,7 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 		return getCurrentRecipe() == null ? false : RecipeHandlerSynthesis.isShapeless(getCurrentRecipe());
 	}
 
-	private Map<ItemStack, Integer> getRecipeStackCost() {
+	private Map<ItemStack, Integer> getRecipeStackCosts() {
 		Map<ItemStack, Integer> data = new HashMap<>();
 		NonNullList<ItemStack> matrixList = getMatrixStackList();
 		for (ItemStack stack : matrixList) {
@@ -319,9 +243,28 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 		return data;
 	}
 
+	private Map<ItemStack, Integer> getStorageStackAmounts() {
+		Map<ItemStack, Integer> data = new HashMap<>();
+		NonNullList<ItemStack> storageList = getStorageBuffer(true);
+		for (ItemStack stack : storageList) {
+			int count = stack.getCount();
+			ItemStack tmpStack = stack.copy();
+			tmpStack.setCount(1);
+
+			if (!isStackAdded(data, tmpStack)) {
+				data.put(tmpStack, count);
+			}
+			else {
+				count += getCount(data, tmpStack);
+				data.put(tmpStack, count);
+			}
+		}
+		return data;
+	}
+
 	private int getCount(Map<ItemStack, Integer> data, ItemStack scompStack) {
 		for (ItemStack stack : data.keySet()) {
-			if (stack.isItemEqual(scompStack)) {
+			if (ItemStack.areItemStacksEqual(stack, scompStack)) {
 				return data.get(stack);
 			}
 		}
@@ -330,7 +273,7 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 
 	private boolean isStackAdded(Map<ItemStack, Integer> data, ItemStack scompStack) {
 		for (ItemStack stack : data.keySet()) {
-			if (stack.isItemEqual(scompStack)) {
+			if (ItemStack.areItemStacksEqual(stack, scompStack)) {
 				return true;
 			}
 		}
@@ -339,47 +282,178 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 
 	private boolean doesStorageContainEnoughToCraft() {
 		if (getStorageBuffer(true).size() > 0) {
-
+			Map<ItemStack, Integer> storageAmounts = getStorageStackAmounts();
+			Map<ItemStack, Integer> recipeCosts = getRecipeStackCosts();
+			for (ItemStack stack : recipeCosts.keySet()) {
+				if (isStackAdded(storageAmounts, stack) && (getCount(storageAmounts, stack) >= getCount(recipeCosts, stack))) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}
 
 	private NonNullList<ItemStack> getStorageBuffer(boolean excludeEmptyStacks) {
 		int size = SLOT_IDS_STORAGE_BUFFER.length;
-		NonNullList<ItemStack> stackList = excludeEmptyStacks ? NonNullList.withSize(size, ItemStack.EMPTY) : NonNullList.create();
+		NonNullList<ItemStack> stackList = NonNullList.create();
 		for (int i = 0; i < size; i++) {
-			if (excludeEmptyStacks) {
-				stackList.set(i, inventory.get(SLOT_IDS_STORAGE_BUFFER[i]));
+			ItemStack currentStack = getStackInSlot(SLOT_IDS_STORAGE_BUFFER[i]);
+			if (!excludeEmptyStacks) {
+				stackList.add(currentStack);
 			}
-			else {
-				stackList.add(inventory.get(SLOT_IDS_STORAGE_BUFFER[i]));
+			else if (excludeEmptyStacks && !currentStack.isEmpty()) {
+				stackList.add(currentStack);
 			}
 		}
 		return stackList;
 	}
 
-	private void checkRecipe() {
-		if (recipeHasChanged()) {
-			updateCachedRecipeStacks();
-			updateRecipeOutput();
+	public void checkRecipe() {
+		//if (recipeHasChanged()) {
+		//updateCachedRecipeStacks();
+		updateRecipeOutput();
+		//}
+	}
+
+	private boolean canMergeRecipeOutputToMatrixOutputSlot() {
+		if (getCurrentRecipe() != null) {
+			ItemStack recipeOutput = getCurrentRecipe().getRecipeOutput();
+			ItemStack stackInMatrixOutput = getStackInSlot(TileSynthesis.SLOT_ID_OUTPUT_MATRIX);
+			if (stackInMatrixOutput.isEmpty()) {
+				return true;
+			}
+			else {
+				return recipeOutput.isItemEqual(stackInMatrixOutput) && (stackInMatrixOutput.getCount() + recipeOutput.getCount()) <= stackInMatrixOutput.getMaxStackSize();
+			}
+		}
+		return false;
+	}
+
+	private boolean areValuesAllZero(Map<ItemStack, Integer> amounts) {
+		for (ItemStack stack : amounts.keySet()) {
+			if (amounts.get(stack) != 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean testAndConsumeCraftingItems(Map<Integer, ItemStack> undo, boolean strictDamage) {
+		int keep = 0;
+		InventoryCrafting inventory = getCraftingInv();
+
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (!stack.isEmpty()) {
+				int count = stack.getCount();
+				for (int element : TileSynthesis.SLOT_IDS_STORAGE_BUFFER) {
+					int slotIdx = element;
+					ItemStack input = getStackInSlot(slotIdx);
+					if (!input.isEmpty() && input.getCount() > keep) {
+						if (match(stack, input, strictDamage)) {
+							int ss = count;
+							if (input.getCount() - ss < keep) {
+								ss = input.getCount() - keep;
+							}
+							count -= ss;
+							if (!undo.containsKey(slotIdx)) {
+								undo.put(slotIdx, input.copy());
+							}
+							input.splitStack(ss);
+							if (input.isEmpty()) {
+								setInventorySlotContents(slotIdx, ItemStack.EMPTY);
+							}
+						}
+					}
+					if (count == 0) {
+						break;
+					}
+				}
+				if (count > 0) {
+					return false;
+				}
+			}
+			else {
+
+			}
+		}
+		return RecipeHandlerSynthesis.findMatchingRecipe(getCraftingInv(), getWorld()) != null;
+	}
+
+	private static boolean match(ItemStack target, ItemStack input, boolean strictDamage) {
+		if (strictDamage) {
+			return OreDictionary.itemMatches(target, input, false);
+		}
+		else {
+			if ((input.isEmpty() && !target.isEmpty()) || (!input.isEmpty() && target.isEmpty())) {
+				return false;
+			}
+			return target.getItem() == input.getItem();
+		}
+	}
+
+	private void undo(Map<Integer, ItemStack> undo) {
+		for (Map.Entry<Integer, ItemStack> entry : undo.entrySet()) {
+			setInventorySlotContents(entry.getKey(), entry.getValue());
+		}
+		undo.clear();
+	}
+
+	private void tryToCraft() {
+		if (doesStorageContainEnoughToCraft() && canMergeRecipeOutputToMatrixOutputSlot() && hasEnoughPower()) {
+			Map<Integer, ItemStack> undo = new HashMap<>();
+
+			if (!testAndConsumeCraftingItems(undo, true)) {
+				undo(undo);
+				if (!testAndConsumeCraftingItems(undo, false)) {
+					undo(undo);
+					return;
+				}
+			}
+			else {
+				if (ModConfig.powerUseEnabled) {
+					int cost = getCurrentRecipe().getEnergyCost();
+					setEnergy(getEnergyStored() - cost);
+				}
+			}
+
+			ItemStack matrixOutputStack = getStackInSlot(SLOT_ID_OUTPUT_MATRIX);
+			if (matrixOutputStack.isEmpty()) {
+				setInventorySlotContents(SLOT_ID_OUTPUT_MATRIX, getCurrentRecipe().getRecipeOutput());
+			}
+			else {
+				matrixOutputStack.grow(1);
+			}
+		}
+	}
+
+	@Override
+	public void markDirty() {
+		super.markDirty();
+		if (getWorld() != null && !getWorld().isRemote) {
+			minechem.init.ModNetworking.INSTANCE.sendToAll(new MessageSyncSynthesisMachine(this));
+		}
+	}
+
+	@Override
+	public void update() {
+		super.update();
+		tryToCraft();
+		if (timer < 10) {
+			timer++;
+		}
+		else {
+			timer = 0;
+			checkRecipe();
+			IBlockState state = getWorld().getBlockState(pos);
+			if (state != null) {
+				getWorld().notifyBlockUpdate(pos, state, state, 3);
+			}
 		}
 	}
 
 	@Override
 	public void setInventorySlotContents(int slot, @Nonnull ItemStack stack) {
-		/*
-		if (slot == SLOT_OUTPUT_REAL && !getStackInSlot(slot).isEmpty()) {
-			if (itemstack.isEmpty()) {
-				decrStackSize(slot, 1);
-				return;
-			}
-			if (getStackInSlot(slot).getItem() == itemstack.getItem()) {
-				decrStackSize(slot, itemstack.getCount());
-				return;
-			}
-		}
-		*/
-		//super.setInventorySlotContents(slot, stack);
 		inventory.set(slot, stack.copy());
 		if (slot == SLOT_ID_CHEMISTS_JOURNAL && !stack.isEmpty()) {
 			onPutJournal(stack);
@@ -387,7 +461,6 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 		if (slot >= SLOT_IDS_MATRIX[0] && slot <= SLOT_IDS_MATRIX[8]) {
 			checkRecipe();
 		}
-		markDirty();
 	}
 
 	@Override
@@ -414,87 +487,26 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 		readFromNBT(pkt.getNbtCompound());
 	}
 
-	/**
-	 * Determines if there is any 'real' output to be given based on what is left in the internal buffer.
-	 */
-	/*
-	public NonNullList<ItemStack> extractOutput(boolean doRemove, int maxItemCount) {
-		// Stops execution if no recipe, empty output buffer, or no power or not enough items.
-		if (getCurrentRecipe() == null || !takeStacksFromStorage(false) || !canAffordRecipe(getCurrentRecipe())) {
-			return NonNullList.<ItemStack>create();
-		}
-	
-		// Make a copy of the item that will be given to the player.
-		ItemStack outputStack = getCurrentRecipe().getOutput().copy();
-		NonNullList<ItemStack> output = NonNullList.from(ItemStack.EMPTY, outputStack);
-	
-		// Actually removes the items from the output buffer.
-		if (doRemove) {
-			takeStacksFromStorage(true);
-		}
-	
-		// Item that will be given to the player.
-		return output;
-	}
-	*/
-	/**
-	 * Returns the current recipe for real items that the player has inserted into the machines crafting matrix.
-	 */
-
-	/*
-	public RecipeSynthesis getCurrentRecipe() {
-		NonNullList<ItemStack> recipeMatrixItems = getRecipeMatrixItems();
-		RecipeSynthesis recipe = RecipeHandlerSynthesis.instance.getRecipeFromInput(recipeMatrixItems);
-		return recipe;//currentRecipe;
-	}
-	*/
-	/**
-	 * Get an ordinal number representing the direction the block is facing based on metadata.
-	 */
-	/*
-	public int getFacing() {
-		return world.getBlockState(pos).getBlock().getMetaFromState(world.getBlockState(pos));
-	}
-	*/
 	@Override
 	public String getName() {
 		return "container.synthesis";
 	}
 
-	/**
-	 * Returns ItemStack array of ghost items that makeup the recipe for whatever is the active recipe in the chemists journal in that slot.
-	 */
-	/*
-	public NonNullList<ItemStack> getRecipeMatrixItems() {
-		NonNullList<ItemStack> recipeList = NonNullList.withSize(9, ItemStack.EMPTY);
-		for (int i = 0; i < 9; i++) {
-			if (!inventory.get(i + 1).isEmpty()) {
-				recipeList.set(i, inventory.get(i + 1).copy());
-			}
-		}
-		return recipeList;
-	}
-	*/
-
-	/*
-		public boolean hasEnoughPowerForCurrentRecipe() {
-			if (!ModConfig.powerUseEnabled) {
-				return true;
-			}
-			if (getCurrentRecipe() != null) {
-				return canAffordRecipe(getCurrentRecipe());
-			}
+	public boolean hasEnoughPower() {
+		if (!ModConfig.powerUseEnabled) {
 			return true;
 		}
-	*/
+		if (getCurrentRecipe() != null) {
+			return getEnergyStored() >= getCurrentRecipe().getEnergyCost();
+		}
+		return true;
+	}
 
 	@Override
 	public int getEnergyRequired() {
-		/*
 		if (getCurrentRecipe() != null && ModConfig.powerUseEnabled) {
-			return getCurrentRecipe().energyCost();
+			return getCurrentRecipe().getEnergyCost();
 		}
-		*/
 		return 0;
 	}
 
@@ -503,252 +515,8 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 		return false;
 	}
 
-	/**
-	 * Determines if there are items in the internal buffer which can be moved into the output slots. Allows the action of moving them to be stopped with doTake being false.
-	 */
-	/*
-	public boolean takeStacksFromStorage(boolean doTake) {
-		// Don't allow the machine to perform synthesis when no recipe or power.
-		if (getCurrentRecipe() == null || !hasEnoughPowerForCurrentRecipe()) {
-			return false;
-		}
-	
-		// One of the most important features in Minechem is the ability to recombine decomposed molecules and elements into items again.
-		NonNullList<ItemStack> ingredients = MinechemUtil.convertChemicalArrayIntoItemStackArray(getCurrentRecipe().getShapelessRecipe());
-		NonNullList<ItemStack> storage = storageInventory.copyInventoryToList();
-		for (ItemStack ingredient : ingredients) {
-			if (!takeStackFromStorage(ingredient, storage)) {
-				return false;
-			}
-		}
-	
-		if (doTake) {
-			storageInventory.setInventoryStacks(storage);
-	
-			// Consume the required amount of energy that was the cost of the item being created.
-			if (ModConfig.powerUseEnabled) {
-				return useEnergy(getCurrentRecipe().energyCost());
-			}
-		}
-	
-		return true;
-	}
-	*/
-	@Override
-	public void update() {
-		super.update();
-		if (!shouldUpdate) {
-			return;
-		}
-		if (!world.isRemote) {
-			return;//updateHandler();
-		}
-		// Forces the output slot to only take a single item preventing stacking.
-		//if (getCurrentRecipe() != null) {
-		validate();
-		//}
-		//else {
-		//updateRecipe();
-		//getRecipeResult();
-		//	inventory.set(kOutput[0], ItemStack.EMPTY);
-		//}
-		checkRecipe();
-		IBlockState iblockstate = getWorld().getBlockState(getPos());
-		if (iblockstate != null) {
-			getWorld().notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
-		}
-	}
-
-	/*
-		@Override
-		public void validate() {
-			super.validate();
-			NonNullList<ItemStack> recipeMatrixItems = getRecipeMatrixItems();
-			RecipeSynthesis recipe = RecipeHandlerSynthesis.instance.getRecipeFromInput(recipeMatrixItems);
-	
-			if (recipe != null) {
-	
-				if (inventory.get(SLOT_OUTPUT_REAL).isEmpty()) {
-					if (!recipe.equals(getCurrentRecipe())) {
-						setRecipe(recipe);
-					}
-					inventory.set(SLOT_OUTPUT_REAL, getCurrentRecipe().getOutput().copy());
-				}
-				//	System.out.print("test");
-			}
-			else {
-				inventory.set(SLOT_OUTPUT_REAL, ItemStack.EMPTY);
-			}
-			//getRecipeResult();
-		}
-	*/
-	/*
-		public void updateHandler() {
-			if (!ModConfig.powerUseEnabled) {
-				return;
-			}
-			//int energyStored = getEnergyStored();
-			//if (oldEnergyStored != energyStored) {
-			//oldEnergyStored = energyStored;
-			//SynthesisUpdateMessage message = new SynthesisUpdateMessage(this);
-			//ModNetworking.INSTANCE.sendToAllAround(message, new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), getPos().getY(), getPos().getZ(), ModConfig.UpdateRadius));
-			//}
-		}
-	
-	public void updateRecipe() {
-		getRecipeResult();
-		return;
-		for (int i = 0; i < oldRecipeList.size(); i++) {
-			if (!ItemStack.areItemStacksEqual(recipeMatrix.getStackInSlot(i), oldRecipeList.get(i))) {
-				oldRecipeList = recipeMatrix.copyInventoryToList();
-				getRecipeResult();
-				return;
-			}
-		}
-	}
-	*/
-
-	/**
-	 * Determines if there is enough energy in the machines internal reserve to allow the creation of this item.
-	 */
-	/*
-	public boolean canAffordRecipe(RecipeSynthesis recipe) {
-		return !ModConfig.powerUseEnabled || getEnergyStored() >= recipe.energyCost();
-	}
-	*/
-	/**
-	 * Returns the current recipe result for whatever is in the crafting matrix.
-	 */
-
-	/*
-	private boolean getRecipeResult() {
-		NonNullList<ItemStack> recipeMatrixItems = getRecipeMatrixItems();
-		RecipeSynthesis recipe = RecipeHandlerSynthesis.instance.getRecipeFromInput(recipeMatrixItems);
-	
-		if (recipe != null) {
-			NonNullList<ItemStack> ingredients = MinechemUtil.convertChemicalArrayIntoItemStackArray(recipe.isShaped() ? recipe.getShapedRecipe() : recipe.getShapelessRecipe());
-			for (int i = 0; i < Math.min(kRecipe.length, ingredients.size()); i++) {
-				inventory.set(kRecipe[i], ingredients.get(i));
-			}
-			setRecipe(recipe);
-			inventory.set(SLOT_OUTPUT_REAL, recipe.getOutput().copy());
-		}
-		else {
-			setRecipe(null);
-			inventory.set(SLOT_OUTPUT_REAL, ItemStack.EMPTY);
-		}
-		shouldUpdate = true;
-		return getCurrentRecipe() != null;
-	}
-	*/
-	/**
-	 * Called when the player places his chemists journal into the slot for it and sets ghost items to selected item recipe if active.
-	 */
-
-	/*
-		private boolean takeStackFromStorage(@Nonnull ItemStack ingredient, NonNullList<ItemStack> storage) {
-			if (ingredient.isEmpty()) {
-				return true;
-			}
-			int ingredientAmountLeft = ingredient.getCount();
-			for (int slot = 0; slot < storage.size(); slot++) {
-				ItemStack storageItem = storage.get(slot);
-				if (!storageItem.isEmpty() && MinechemUtil.stacksAreSameKind(storageItem, ingredient) && storageItem.getItemDamage() == ingredient.getItemDamage()) {
-					int amountToTake = Math.min(storageItem.getCount(), ingredientAmountLeft);
-					ingredientAmountLeft -= amountToTake;
-					storageItem.shrink(amountToTake);
-	
-					if (storageItem.getCount() <= 0) {
-						storage.set(slot, ItemStack.EMPTY);
-					}
-	
-					if (ingredientAmountLeft <= 0) {
-						break;
-					}
-				}
-			}
-			return ingredientAmountLeft == 0;
-		}
-	
-		private boolean takeInputStacks() {
-			if (takeStacksFromStorage(false)) {
-				return takeStacksFromStorage(true);
-			}
-			return false;
-		}
-	
-		public ItemStack getOutputTemplate() {
-			ItemStack template = ItemStack.EMPTY;
-			ItemStack outputStack = inventory.get(SLOT_OUTPUT_REAL);
-			if (!outputStack.isEmpty()) {
-				template = outputStack.copy();
-				if (template.getCount() == 0) {
-					template.setCount(getCurrentRecipe().getOutput().getCount());
-				}
-			}
-			shouldUpdate = true;
-			return template;
-		}
-	
-		public NonNullList<ItemStack> getOutput(int amount) {
-			if (getCurrentRecipe() == null) {
-				return NonNullList.<ItemStack>create();
-			}
-	
-			ItemStack template = getOutputTemplate();
-			NonNullList<ItemStack> outputs = NonNullList.<ItemStack>create();
-			ItemStack initialStack = template.copy();
-			initialStack.setCount(0);
-			outputs.add(initialStack);
-			int took = 0;
-	
-			while (canTakeOutputStack(false) && (amount > took) && takeInputStacks()) {
-				took++;
-				ItemStack output = outputs.get(outputs.size() - 1);
-				if (output.getCount() + template.getCount() > output.getMaxStackSize()) {
-					int leftOverStackSize = template.getCount() - (output.getMaxStackSize() - output.getCount());
-					output.setCount(output.getMaxStackSize());
-					if (leftOverStackSize > 0) {
-						ItemStack newOutput = template.copy();
-						newOutput.setCount(leftOverStackSize);
-						outputs.add(newOutput);
-					}
-				}
-				else {
-					output.grow(template.getCount());
-				}
-	
-				markDirty();
-				amount -= template.getCount();
-			}
-			shouldUpdate = true;
-			return outputs;
-		}
-	*/
-	/**
-	 * Sets ghost items that will make the crafting recipe from currently selected item in chemists journal if located in that slot.
-	 */
-	/*
-	public void setRecipe(RecipeSynthesis recipe) {
-		clearRecipeMatrix();
-		if (recipe != null) {
-			NonNullList<ItemStack> ingredients = MinechemUtil.convertChemicalArrayIntoItemStackArray(recipe.isShaped() ? recipe.getShapedRecipe() : recipe.getShapelessRecipe());
-			for (int i = 0; i < Math.min(kRecipe.length, ingredients.size()); i++) {
-				inventory.set(1 + i, ingredients.get(i));
-			}
-			currentRecipe = recipe;
-			//onInventoryChanged();
-			inventory.set(SLOT_OUTPUT_REAL, recipe.getOutput());
-		}
-		else {
-			inventory.set(SLOT_OUTPUT_REAL, ItemStack.EMPTY);
-		}
-		shouldUpdate = true;
-	}
-	*/
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		// Strangely every item is always valid in the crafting matrix according to this, even though slot code prevents anything but elements of molecules.
 		return true;
 	}
 
@@ -774,28 +542,22 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 
 	@Override
 	public int[] getSlotsForFace(EnumFacing facing) {
-		/*
-		if (takeStacksFromStorage(false)) {
-			return new int[] {
-					SLOT_OUTPUT_REAL
-			};
+		int[] slots = new int[(SLOT_IDS_STORAGE_BUFFER.length + 1)];
+		slots[0] = SLOT_ID_OUTPUT_MATRIX;
+		for (int i = 1; i < SLOT_IDS_STORAGE_BUFFER.length; i++) {
+			slots[i] = SLOT_IDS_STORAGE_BUFFER[i];
 		}
-		*/
-		return new int[0];
+		return slots;
 	}
 
 	@Override
 	public boolean canInsertItem(int slot, ItemStack itemstack, EnumFacing facing) {
-		return false;//ModConfig.AllowAutomation && !itemstack.isEmpty() && ((slot > 0 && facing.getIndex() > 0 && (itemstack.getItem() == ModItems.element || itemstack.getItem() == ModItems.molecule)) || (slot == kJournal[0] && inventory.get(slot).isEmpty() && itemstack.getItem() instanceof ItemChemistJournal));
+		return ModConfig.AllowAutomation && (itemstack.getItem() == ModItems.element || itemstack.getItem() == ModItems.molecule) && (slot >= TileSynthesis.SLOT_IDS_STORAGE_BUFFER[0] && slot < TileSynthesis.SLOT_IDS_STORAGE_BUFFER[0] + TileSynthesis.SLOT_IDS_STORAGE_BUFFER.length);
 	}
 
 	@Override
 	public boolean canExtractItem(int slot, ItemStack itemstack, EnumFacing facing) {
-		return false;//ModConfig.AllowAutomation && ((slot == 0 || slot == 10) && canTakeOutputStack(false));// || (facing.getIndex() != 0 && slot == kJournal[0]));
-	}
-
-	public String getState() {
-		return "Active";//canTakeOutputStack(false) ? "Active" : inventory.get(SLOT_OUTPUT_REAL).isEmpty() ? "No Recipe" : !hasEnoughPowerForCurrentRecipe() ? "No Power" : "Not Enough Ingredients";
+		return ModConfig.AllowAutomation && slot == 2;
 	}
 
 	@Override
@@ -803,7 +565,7 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 		return inventory.isEmpty();
 	}
 
-	private static class InventoryCraftingFake extends InventoryCrafting {
+	public static class InventoryCraftingFake extends InventoryCrafting {
 
 		private final NonNullList<ItemStack> invList;
 
@@ -860,6 +622,6 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 				helper.accountStack(itemstack);
 			}
 		}
-
 	}
+
 }

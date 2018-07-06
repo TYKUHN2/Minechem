@@ -44,14 +44,12 @@ import java.util.Map;
 import java.util.Random;
 
 import minechem.init.ModItems;
-import minechem.init.ModRecipes;
 import minechem.item.MatterState;
 import minechem.item.MinechemChemicalType;
 import minechem.item.element.Element;
 import minechem.potion.PotionChemical;
 import minechem.radiation.RadiationEnum;
 import minechem.recipe.RecipeDecomposer;
-import minechem.recipe.RecipeSynthesisOld;
 import net.minecraft.item.ItemStack;
 
 public class MoleculeEnum extends MinechemChemicalType {
@@ -112,7 +110,7 @@ public class MoleculeEnum extends MinechemChemicalType {
 	public static final MoleculeEnum methylene = addMolecule("methylene", 48, LIQUID, new Element(C), new Element(H, 2));
 	public static final MoleculeEnum memethacrylate = addMolecule("memethacrylate", 49, LIQUID, 5700, new Molecule(methyl, 3), new Element(C, 2), new Element(O, 2));
 	public static final MoleculeEnum pmma = addMolecule("pmma", 50, SOLID, new Molecule(memethacrylate, 3)); // The amount of hydrogens is not 100% right for the polymerized form. But its no big deal.
-	public static final MoleculeEnum redPigment = addMolecule("redPigment", 51, SOLID, new Element(Co), new Molecule(nitrate, 2));
+	public static final MoleculeEnum redPigment = addMolecule("redPigment", 51, 1.0F, 0.0F, 0.0F, 0.5F, 0.0F, 0.0F, SOLID, new Element(Co), new Molecule(nitrate, 2));
 	public static final MoleculeEnum orangePigment = addMolecule("orangePigment", 52, SOLID, new Element(K, 2), new Element(Cr, 2), new Element(O, 7));
 	public static final MoleculeEnum yellowPigment = addMolecule("yellowPigment", 53, SOLID, new Element(Cr), new Element(K, 2), new Element(O, 4));
 	public static final MoleculeEnum limePigment = addMolecule("limePigment", 54, SOLID, new Element(Ni), new Element(Cl, 2));
@@ -300,16 +298,17 @@ public class MoleculeEnum extends MinechemChemicalType {
 	}
 
 	public int getColor1() {
-		int color = (int) (255.0F / red);
-		color = (color << 8) + (int) (255.0F / green);
-		color = (color << 8) + (int) (255.0F / blue);
+		int r = (int) (255.0F / red);
+		int color = (int) (255.0F * red);
+		color = (color << 8) + (int) (255.0F * green);
+		color = (color << 8) + (int) (255.0F * blue);
 		return color;
 	}
 
 	public int getColor2() {
-		int color = (int) (255.0F / red2);
-		color = (color << 8) + (int) (255.0F / green2);
-		color = (color << 8) + (int) (255.0F / blue2);
+		int color = (int) (255.0F * red2);
+		color = (color << 8) + (int) (255.0F * green2);
+		color = (color << 8) + (int) (255.0F * blue2);
 		return color;
 	}
 
@@ -356,8 +355,11 @@ public class MoleculeEnum extends MinechemChemicalType {
 		ArrayList<PotionChemical> var5 = molecule.components();
 		PotionChemical[] var6 = var5.toArray(new PotionChemical[var5.size()]);
 		ItemStack var7 = new ItemStack(ModItems.molecule, 1, molecule.id());
+		//TODO - why here? move to integration pkg
+		/*
 		RecipeDecomposer.add(new RecipeDecomposer(var7, var6));
 		RecipeSynthesisOld.add(new RecipeSynthesisOld(var7, true, ModRecipes.COST_ITEM, var6));
+		*/
 	}
 
 	public static void unregisterMolecule(MoleculeEnum molecule) {

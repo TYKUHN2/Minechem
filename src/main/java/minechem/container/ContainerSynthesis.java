@@ -13,23 +13,23 @@ import minechem.inventory.slot.SlotFake;
 import minechem.inventory.slot.SlotSynthesisOutput;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadiationShield, INoDecay {
 
 	private final TileSynthesis synthesis;
+	private InventoryPlayer playerInventory;
 
-	public ContainerSynthesis(InventoryPlayer inventoryPlayer, TileSynthesis synthesis) {
+	public ContainerSynthesis(InventoryPlayer playerInventory, TileSynthesis synthesis) {
 		this.synthesis = synthesis;
+		this.playerInventory = playerInventory;
 		addSlotToContainer(new SlotChemistJournal(synthesis, TileSynthesis.SLOT_ID_CHEMISTS_JOURNAL, 26, 36));
-		addSlotToContainer(new SlotSynthesisOutput(synthesis, inventoryPlayer.player, TileSynthesis.SLOT_ID_OUTPUT_JOURNAL, 80, 84).setLocked(true));
-		addSlotToContainer(new SlotSynthesisOutput(synthesis, inventoryPlayer.player, TileSynthesis.SLOT_ID_OUTPUT_MATRIX, 133, 36));
 		bindRecipeMatrixSlots();
+		addSlotToContainer(new SlotSynthesisOutput(synthesis, playerInventory.player, TileSynthesis.SLOT_ID_OUTPUT_JOURNAL, 80, 84).setLocked(true));
+		addSlotToContainer(new SlotSynthesisOutput(synthesis, playerInventory.player, TileSynthesis.SLOT_ID_OUTPUT_MATRIX, 133, 36));
 		bindStorageSlots();
-
-		bindPlayerInventory(inventoryPlayer);
+		bindPlayerInventory(playerInventory);
 	}
 
 	private void bindPlayerInventory(InventoryPlayer inventoryPlayer) {
@@ -75,66 +75,12 @@ public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadia
 	}
 
 	@Override
-	public ItemStack slotClick(int slotNum, int mouseButton, ClickType clickType, EntityPlayer entityPlayer) {
-		Slot slot = null;
-		if (slotNum >= 0 && slotNum < inventorySlots.size()) {
-			slot = getSlot(slotNum);
-		}
-		if (slot != null && slot instanceof SlotFake && clickType != ClickType.CLONE) {
-			ItemStack stackOnMouse = entityPlayer.inventory.getItemStack();
-			if (!stackOnMouse.isEmpty() && slot.isItemValid(stackOnMouse)) {
-				if (mouseButton == MOUSE_LEFT) {
-					addStackToSlot(stackOnMouse, slot, stackOnMouse.getCount());
-				}
-				else {
-					addStackToSlot(stackOnMouse, slot, 1);
-				}
-			}
-			else {
-				slot.putStack(ItemStack.EMPTY);
-			}
-			//synthesis.shouldUpdate = true;
-			synthesis.markDirty();
-			return ItemStack.EMPTY;
-		}
-		else {
-			return super.slotClick(slotNum, mouseButton, clickType, entityPlayer);//superSlotClick(slotNum, mouseButton, clickType, entityPlayer);
-			//return superSlotClick(slotNum, mouseButton, clickType, entityPlayer);
-		}
-	}
-
-	/*
-		public void craftMaxmimum() {
-			int amount = 0;
-			ItemStack outputItem = synthesis.getCurrentRecipe().getOutput();
-			for (int slot = 29; slot < inventorySlots.size(); slot++) {
-				ItemStack stack = getSlot(slot).getStack();
-				if (!stack.isEmpty()) {
-					amount += outputItem.getMaxStackSize();
-				}
-				else if (stack.isItemEqual(outputItem)) {
-					amount += outputItem.getMaxStackSize() - stack.getCount();
-				}
-			}
-	
-			List<ItemStack> outputs = synthesis.getOutput(amount);
-			for (ItemStack output : outputs) {
-				mergeItemStack(output, synthesis.getSizeInventory(), inventorySlots.size(), true);
-			}
-		}
-	*/
-	@Override
 	public List<ItemStack> getPlayerInventory() {
-		List<ItemStack> playerInventory = new ArrayList<ItemStack>();
-		/*
-		for (int slot = TileSynthesis.kStartJournal + 1; slot < inventorySlots.size(); slot++) {
-			ItemStack stack = getSlot(slot).getStack();
-			if (!stack.isEmpty()) {
-				playerInventory.add(stack);
-			}
+		List<ItemStack> playerInventoryStacks = new ArrayList<ItemStack>();
+		for (int i = 0; i < playerInventory.getSizeInventory(); i++) {
+			playerInventoryStacks.add(playerInventory.getStackInSlot(i));
 		}
-		*/
-		return playerInventory;
+		return playerInventoryStacks;
 	}
 
 	@Override
@@ -145,81 +91,51 @@ public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadia
 	@Override
 	public List<ItemStack> getStorageInventory() {
 		List<ItemStack> storageInventory = new ArrayList<ItemStack>();
-		/*
-		for (int slot = 0; slot <= TileSynthesis.kStartJournal; slot++) {
-			ItemStack stack = getSlot(slot).getStack();
+		for (int element : TileSynthesis.SLOT_IDS_STORAGE_BUFFER) {
+			ItemStack stack = getSlot(element).getStack();
 			if (!stack.isEmpty()) {
 				storageInventory.add(stack);
 			}
 		}
-		*/
 		return storageInventory;
 	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer entityPlayer, int slot) {
-
 		Slot slotObject = inventorySlots.get(slot);
-		ItemStack stack = ItemStack.EMPTY;
-
 		if (slotObject != null && slotObject.getHasStack()) {
 			ItemStack stackInSlot = slotObject.getStack();
-			stack = stackInSlot.copy();
-			if (slot >= TileSynthesis.SLOT_IDS_STORAGE_BUFFER[0] && slot < TileSynthesis.SLOT_IDS_STORAGE_BUFFER[TileSynthesis.SLOT_IDS_STORAGE_BUFFER.length - 1]) {
-				if (!mergeItemStack(stackInSlot, synthesis.getSizeInventory(), inventorySlots.size(), true)) {
-					return ItemStack.EMPTY;
+			if (slot >= 30 && slot < 66) {
+				if (stackInSlot.getItem() == ModItems.journal) {
+					if (!mergeItemStack(stackInSlot, 0, 1, false)) {
+						return ItemStack.EMPTY;
+					}
 				}
-			}
-			/*
-			if (slot != TileSynthesis.kStartJournal && stack.getItem() == ModItems.journal && !getSlot(TileSynthesis.kStartJournal).getHasStack()) {
-				ItemStack copystack = slotObject.decrStackSize(1);
-				getSlot(TileSynthesis.kStartJournal).putStack(copystack);
-				return ItemStack.EMPTY;
-			}
-			else if (slot == TileSynthesis.kStartOutput) {
-				craftMaxmimum();
-				return ItemStack.EMPTY;
-			}
-			else if (slot >= synthesis.getSizeInventory() && slot < inventorySlots.size() && (stackInSlot.getItem() == ModItems.element || stackInSlot.getItem() == ModItems.molecule)) {
-				if (!mergeItemStack(stackInSlot, TileSynthesis.kStartStorage, TileSynthesis.kStartStorage + TileSynthesis.kStorage.length, false)) {
-					return ItemStack.EMPTY;
+				if (stackInSlot.getItem() == ModItems.element || stackInSlot.getItem() == ModItems.molecule) {
+					if (!mergeItemStack(stackInSlot, 12, 30, false)) {
+						return ItemStack.EMPTY;
+					}
 				}
-			}
-			else if (slot >= TileSynthesis.kStartStorage && slot < TileSynthesis.kStartStorage + TileSynthesis.kStorage.length) {
-				if (!mergeItemStack(stackInSlot, synthesis.getSizeInventory(), inventorySlots.size(), true)) {
-					return ItemStack.EMPTY;
-				}
-			}
-			else if (slot == TileSynthesis.kStartJournal) {
-				if (!mergeItemStack(stackInSlot, synthesis.getSizeInventory(), inventorySlots.size(), true)) {
-					return ItemStack.EMPTY;
-				}
-			}
-			else if (slot < 47 && stackInSlot.getCount() == stack.getCount()) {
-				if (!mergeItemStack(stackInSlot, 47, 56, false)) {
-					return ItemStack.EMPTY;
-				}
-			}
-			else if (slot > 46 && stackInSlot.getCount() == stack.getCount()) {
-				if (!mergeItemStack(stackInSlot, 20, 47, false)) {
-					return ItemStack.EMPTY;
-				}
-			}
-
-			if (stackInSlot.getCount() == 0) {
-				slotObject.putStack(ItemStack.EMPTY);
 			}
 			else {
-				slotObject.onSlotChanged();
+				if (slot >= TileSynthesis.SLOT_IDS_STORAGE_BUFFER[0] && slot < TileSynthesis.SLOT_IDS_STORAGE_BUFFER[TileSynthesis.SLOT_IDS_STORAGE_BUFFER.length - 1]) {
+					if (!mergeItemStack(stackInSlot, 30, 66, false)) {
+						return ItemStack.EMPTY;
+					}
+				}
+				if (slot == TileSynthesis.SLOT_ID_CHEMISTS_JOURNAL) {
+					if (!mergeItemStack(stackInSlot, 30, 66, true)) {
+						return ItemStack.EMPTY;
+					}
+				}
+				if (slot == 11) {
+					if (!mergeItemStack(stackInSlot, 30, 66, false)) {
+						return ItemStack.EMPTY;
+					}
+				}
 			}
-			if (stackInSlot.getCount() == stack.getCount()) {
-				return ItemStack.EMPTY;
-			}
-			slotObject.onTake(entityPlayer, stackInSlot);
-			}
-			*/
 		}
-		return ItemStack.EMPTY;//stack;
+		return ItemStack.EMPTY;
 	}
 
 }

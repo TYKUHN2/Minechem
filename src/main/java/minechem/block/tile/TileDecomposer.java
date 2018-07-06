@@ -9,7 +9,7 @@ import minechem.api.IDecomposerControl;
 import minechem.init.ModConfig;
 import minechem.init.ModNetworking;
 import minechem.inventory.InventoryBounded;
-import minechem.network.message.DecomposerDumpFluidMessage;
+import minechem.network.message.MessageDecomposerDumpFluid;
 import minechem.potion.PotionChemical;
 import minechem.recipe.RecipeDecomposer;
 import minechem.recipe.RecipeDecomposerFluid;
@@ -558,7 +558,7 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 	public void dumpFluid() {
 		tank = new FluidTank(TANK_CAPACITY);
 		if (world.isRemote) {
-			ModNetworking.INSTANCE.sendToServer(new DecomposerDumpFluidMessage(this));
+			ModNetworking.INSTANCE.sendToServer(new MessageDecomposerDumpFluid(this));
 		}
 	}
 

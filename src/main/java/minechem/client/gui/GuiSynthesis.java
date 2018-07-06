@@ -1,13 +1,22 @@
 package minechem.client.gui;
 
+import java.io.IOException;
+
+import org.lwjgl.input.Mouse;
+
 import minechem.block.tile.TileSynthesis;
 import minechem.client.gui.widget.tab.TabHelp;
 import minechem.client.gui.widget.tab.TabSynthesisState;
 import minechem.container.ContainerSynthesis;
 import minechem.init.ModGlobals.ModResources;
+import minechem.init.ModNetworking;
+import minechem.inventory.slot.SlotFake;
+import minechem.network.message.MessageFakeSlotScroll;
 import minechem.utils.MinechemUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 public class GuiSynthesis extends GuiContainerTabbed {
 
@@ -23,14 +32,18 @@ public class GuiSynthesis extends GuiContainerTabbed {
 		//addTab(new GuiTabPatreon(this));
 	}
 
+	//TODO localizations
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
 		String title = MinechemUtil.getLocalString("gui.title.synthesis");
 		String storageHeader = "Input Storage";
 		String invHeader = "Inventory";
 		String outputHeader = "Output";
+		String invMakes = "Creates:";
 		int titleWidth = fontRenderer.getStringWidth(title);
+		int makesWidth = fontRenderer.getStringWidth(invMakes);
 		fontRenderer.drawString(title, (guiWidth - titleWidth) / 2, 5, 0x000000);
+		fontRenderer.drawString(invMakes, (guiWidth - makesWidth) / 2, 73, 0x000000);
 		fontRenderer.drawString(storageHeader, 8, 103, 0x000000);
 		fontRenderer.drawString(invHeader, 8, 150, 0x000000);
 		fontRenderer.drawString(outputHeader, 125, 25, 0x000000);
@@ -45,6 +58,68 @@ public class GuiSynthesis extends GuiContainerTabbed {
 		int x = (width - guiWidth) / 2;
 		int y = (height - guiHeight) / 2;
 		drawTexturedModalRect(x, y, 0, 0, guiWidth, guiHeight);
+	}
+
+	@Override
+	public void handleMouseInput() throws IOException {
+		super.handleMouseInput();
+
+		final int i = Mouse.getEventDWheel();
+		if (i != 0 && isShiftKeyDown() && isOverSynthesisMatrixSlot()) {
+			final int x = Mouse.getEventX() * width / mc.displayWidth;
+			final int y = height - Mouse.getEventY() * height / mc.displayHeight - 1;
+			mouseWheelEvent(x, y, i / Math.abs(i));
+		}
+
+	}
+
+	private boolean isOverSynthesisMatrixSlot() {
+		Slot slot = getSlotUnderMouse();
+		return slot != null && slot instanceof SlotFake;
+	}
+
+	private void mouseWheelEvent(final int x, final int y, final int wheel) {
+		final Slot slot = getSlot(x, y);
+
+		final ItemStack item = slot.getStack();
+		//if (!item.isEmpty()) {
+		final ScrollDirection direction = wheel > 0 ? ScrollDirection.DOWN : ScrollDirection.UP;
+		final int times = Math.abs(wheel);
+		for (int h = 0; h < times; h++) {
+			final MessageFakeSlotScroll p = new MessageFakeSlotScroll(direction, slot.getSlotIndex());
+			ModNetworking.INSTANCE.sendToServer(p);
+		}
+		//}
+	}
+
+	public static enum ScrollDirection {
+			UP(-1), IDLE(0), DOWN(1);
+
+		private final int id;
+
+		ScrollDirection(int id) {
+			this.id = id;
+		}
+
+		public int getValue() {
+			return id;
+		}
+	}
+
+	private Slot getSlot(int x, int y) {
+		for (int i = 0; i < inventorySlots.inventorySlots.size(); ++i) {
+			Slot slot = inventorySlots.inventorySlots.get(i);
+
+			if (isMouseOverSlot(slot, x, y) && slot.isEnabled()) {
+				return slot;
+			}
+		}
+
+		return null;
+	}
+
+	private boolean isMouseOverSlot(Slot slotIn, int mouseX, int mouseY) {
+		return isPointInRegion(slotIn.xPos, slotIn.yPos, 16, 16, mouseX, mouseY);
 	}
 
 }

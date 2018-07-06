@@ -31,45 +31,7 @@ public abstract class TileMinechemEnergyBase extends TileMinechemBase {
 	@Override
 	@Nullable
 	public <T> T getCapability(Capability<T> capability, @Nullable net.minecraft.util.EnumFacing facing) {
-		return hasCapability(capability, facing) ? CapabilityEnergy.ENERGY.cast(new IEnergyStorage() {
-
-			@Override
-			public int receiveEnergy(int maxReceive, boolean simulate) {
-				int received = (maxReceive <= maxEnergyReceived ? maxReceive : maxEnergyReceived);
-				received = (energyStored + received > maxEnergy ? maxEnergy - energyStored : received);
-				if (!simulate) {
-					energyStored += received;
-					shouldUpdate = true;
-				}
-				return received;
-			}
-
-			@Override
-			public int extractEnergy(int maxExtract, boolean simulate) {
-				return 0;
-			}
-
-			@Override
-			public int getEnergyStored() {
-				return energyStored;
-			}
-
-			@Override
-			public int getMaxEnergyStored() {
-				return maxEnergy;
-			}
-
-			@Override
-			public boolean canExtract() {
-				return false;
-			}
-
-			@Override
-			public boolean canReceive() {
-				return true;
-			}
-
-		}) : null;
+		return hasCapability(capability, facing) ? CapabilityEnergy.ENERGY.cast(new EnergySettable(this)) : null;
 	}
 
 	public void syncEnergyValue(int syncAt) {
@@ -81,8 +43,8 @@ public abstract class TileMinechemEnergyBase extends TileMinechemBase {
 		}
 	}
 
-	protected IEnergyStorage getForgeEnergyCap() {
-		return getCapability(CapabilityEnergy.ENERGY, null);
+	protected EnergySettable getForgeEnergyCap() {
+		return (EnergySettable) getCapability(CapabilityEnergy.ENERGY, null);
 	}
 
 	protected int receiveEnergy(int maxReceive, boolean simulate) {
@@ -97,7 +59,11 @@ public abstract class TileMinechemEnergyBase extends TileMinechemBase {
 		return getForgeEnergyCap().getEnergyStored();
 	}
 
-	protected boolean useEnergy(int energy) {
+	public void setEnergy(int amount) {
+		getForgeEnergyCap().setEnergy(amount);
+	}
+
+	public boolean useEnergy(int energy) {
 		if (!ModConfig.powerUseEnabled) {
 			return true;
 		}
@@ -108,7 +74,8 @@ public abstract class TileMinechemEnergyBase extends TileMinechemBase {
 			return false;
 		}
 		energyStored -= energy;
-		shouldUpdate = true;
+		//shouldUpdate = true;
+		super.markDirty();
 		return true;
 	}
 
@@ -130,4 +97,56 @@ public abstract class TileMinechemEnergyBase extends TileMinechemBase {
 	}
 
 	public abstract int getEnergyRequired();
+
+	public static class EnergySettable implements IEnergyStorage {
+
+		private final TileMinechemEnergyBase tile;
+
+		public EnergySettable(TileMinechemEnergyBase tile) {
+			this.tile = tile;
+		}
+
+		@Override
+		public int receiveEnergy(int maxReceive, boolean simulate) {
+			if (!canReceive()) {
+				return 0;
+			}
+
+			int energyReceived = Math.min(tile.maxEnergy - tile.energyStored, Math.min(maxEnergyReceived, maxReceive));
+			if (!simulate) {
+				tile.energyStored += energyReceived;
+			}
+			return energyReceived;
+		}
+
+		@Override
+		public int extractEnergy(int maxExtract, boolean simulate) {
+			return 0;
+		}
+
+		@Override
+		public int getEnergyStored() {
+			return tile.energyStored;
+		}
+
+		@Override
+		public int getMaxEnergyStored() {
+			return tile.maxEnergy;
+		}
+
+		@Override
+		public boolean canExtract() {
+			return false;
+		}
+
+		@Override
+		public boolean canReceive() {
+			return true;
+		}
+
+		public void setEnergy(int amount) {
+			tile.energyStored = Math.abs(amount);
+		}
+
+	}
 }
