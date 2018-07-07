@@ -10,7 +10,7 @@ public class ModGlobals {
 
 	public static final String NAME = "Minechem";
 	public static final String ID = "minechem";
-	public static final String VERSION = "2.0.8a";
+	public static final String VERSION = "2.0.9a";
 
 	public static final int TICKS_PER_SECOND = 20;
 	public static final int TICKS_PER_MINUTE = TICKS_PER_SECOND * 60;

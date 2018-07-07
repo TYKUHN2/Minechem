@@ -331,7 +331,7 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 
 	@Override
 	public boolean canInsertItem(int i, ItemStack itemstack, EnumFacing j) {
-		return (getState() == State.idle || getState() == State.finished) && j == EnumFacing.UP && i == 0 && !itemstack.isEmpty() && RecipeHandlerDecomposer.instance.getRecipe(itemstack) != null;
+		return j == EnumFacing.UP && i == 0 && RecipeDecomposer.get(itemstack) != null && !isOutputInventoryFull();
 	}
 
 	public void closeInventory() {
