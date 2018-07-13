@@ -11,7 +11,7 @@ import minechem.block.BlockLeadedChest;
 import minechem.block.BlockMicroscope;
 import minechem.block.BlockSynthesis;
 import minechem.block.BlockUraniumOre;
-import minechem.block.tile.RadiationFluidTileEntity;
+import minechem.block.tile.TileRadioactiveFluid;
 import minechem.block.tile.TileBlueprintProjector;
 import minechem.block.tile.TileDecomposer;
 import minechem.block.tile.TileEntityProxy;
@@ -89,7 +89,7 @@ public class ModBlocks {
 		// Tile Entity Proxy.
 		GameRegistry.registerTileEntity(TileEntityProxy.class, "minchem.tileEntityProxy");
 
-		GameRegistry.registerTileEntity(RadiationFluidTileEntity.class, "minechem.tileEntityRadiationFluid");
+		GameRegistry.registerTileEntity(TileRadioactiveFluid.class, "minechem.tileEntityRadiationFluid");
 
 	}
 

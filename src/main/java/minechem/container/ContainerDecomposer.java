@@ -6,7 +6,6 @@ import java.util.List;
 import minechem.api.INoDecay;
 import minechem.api.IRadiationShield;
 import minechem.block.tile.TileDecomposer;
-import minechem.init.ModConfig;
 import minechem.inventory.slot.SlotOutput;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -20,9 +19,11 @@ public class ContainerDecomposer extends Container implements IRadiationShield, 
 	protected final int kPlayerInventorySlotStart;
 	protected final int kPlayerInventorySlotEnd;
 	protected final int kDecomposerInventoryEnd;
+	private InventoryPlayer playerInventory;
 
 	public ContainerDecomposer(InventoryPlayer inventoryPlayer, TileDecomposer decomposer) {
 		this.decomposer = decomposer;
+		playerInventory = inventoryPlayer;
 		kPlayerInventorySlotStart = decomposer.getSizeInventory();
 		kPlayerInventorySlotEnd = kPlayerInventorySlotStart + (9 * 4);
 		kDecomposerInventoryEnd = decomposer.getSizeInventory();
@@ -114,23 +115,25 @@ public class ContainerDecomposer extends Container implements IRadiationShield, 
 
 	@Override
 	public List<ItemStack> getStorageInventory() {
-		if (ModConfig.decaySafeMachines) {
-			return new ArrayList<ItemStack>();
-		}
-		else {
-			List<ItemStack> storageInventory = new ArrayList<ItemStack>();
-			for (int slot = 0; slot <= 18; slot++) {
-				ItemStack stack = getSlot(slot).getStack();
-				if (!stack.isEmpty()) {
-					storageInventory.add(stack);
-				}
+		//if (ModConfig.decaySafeMachines) {
+		//	return new ArrayList<ItemStack>();
+		//}
+		//else {
+		List<ItemStack> storageInventory = new ArrayList<ItemStack>();
+		//for (int slot = 0; slot <= 18; slot++) {
+		for (int slot : TileDecomposer.outputSlots) {
+			ItemStack stack = getSlot(slot).getStack();
+			if (!stack.isEmpty()) {
+				storageInventory.add(stack);
 			}
-			return storageInventory;
 		}
+		return storageInventory;
+		//}
 	}
 
 	@Override
 	public List<ItemStack> getPlayerInventory() {
+		/*
 		if (ModConfig.decaySafeMachines) {
 			List<ItemStack> inv = new ArrayList<ItemStack>();
 			for (int slot = 0; slot < inventorySlots.size(); slot++) {
@@ -151,6 +154,12 @@ public class ContainerDecomposer extends Container implements IRadiationShield, 
 			}
 			return playerInventory;
 		}
+		*/
+		List<ItemStack> playerInventoryStacks = new ArrayList<ItemStack>();
+		for (int i = 0; i < playerInventory.getSizeInventory(); i++) {
+			playerInventoryStacks.add(playerInventory.getStackInSlot(i));
+		}
+		return playerInventoryStacks;
 	}
 
 }

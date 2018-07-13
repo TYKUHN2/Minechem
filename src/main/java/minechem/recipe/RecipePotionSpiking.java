@@ -18,14 +18,7 @@ import net.minecraft.world.World;
 public class RecipePotionSpiking implements IRecipe {
 
 	ItemStack result = ItemStack.EMPTY;
-	ResourceLocation registryName = new ResourceLocation(ModGlobals.ID, "spiking_recipe");
 
-	/*
-	static
-	{
-	    RecipeSorter.register("minechem:spikingRecipe", PotionSpikingRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
-	}
-	*/
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) {
 		if (ModConfig.FoodSpiking) {
@@ -101,13 +94,12 @@ public class RecipePotionSpiking implements IRecipe {
 
 	@Override
 	public IRecipe setRegistryName(ResourceLocation name) {
-		registryName = name;
 		return this;
 	}
 
 	@Override
 	public ResourceLocation getRegistryName() {
-		return registryName;
+		return new ResourceLocation(ModGlobals.ID, "potion_spiking");
 	}
 
 	@Override

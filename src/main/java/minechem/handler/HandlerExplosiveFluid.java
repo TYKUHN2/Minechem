@@ -1,4 +1,4 @@
-package minechem.fluid;
+package minechem.handler;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -11,16 +11,16 @@ import minechem.item.molecule.MoleculeEnum;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 
-public class ExplosiveFluidHandler
+public class HandlerExplosiveFluid
 {
 
-    private static ExplosiveFluidHandler instance;
+    private static HandlerExplosiveFluid instance;
 
-    public static ExplosiveFluidHandler getInstance()
+    public static HandlerExplosiveFluid getInstance()
     {
         if (instance == null)
         {
-            instance = new ExplosiveFluidHandler();
+            instance = new HandlerExplosiveFluid();
         }
         return instance;
     }
@@ -28,7 +28,7 @@ public class ExplosiveFluidHandler
     private Map<MinechemChemicalType, Float> explosiveFluids = new LinkedHashMap<MinechemChemicalType, Float>();
     private Set<Block> fireSource = new LinkedHashSet<Block>();
 
-    public ExplosiveFluidHandler()
+    public HandlerExplosiveFluid()
     {
         init();
     }

@@ -1,6 +1,7 @@
 package minechem.item;
 
 import minechem.init.ModCreativeTab;
+import minechem.init.ModGlobals;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -13,7 +14,7 @@ public class ItemAtomicManipulator extends ItemBase {
 	public ItemAtomicManipulator() {
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		setUnlocalizedName("atomic_manipulator");
-		setRegistryName("atomic_manipulator");
+		setRegistryName(ModGlobals.ID + ":atomic_manipulator");
 		setHasSubtypes(true);
 		ForgeRegistries.ITEMS.register(this);
 	}

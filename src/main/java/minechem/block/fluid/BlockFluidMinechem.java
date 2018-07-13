@@ -1,10 +1,14 @@
-package minechem.fluid;
+package minechem.block.fluid;
 
 import java.util.Random;
 
 import minechem.api.ICustomRenderer;
-import minechem.block.tile.RadiationFluidTileEntity;
+import minechem.block.tile.TileRadioactiveFluid;
+import minechem.fluid.FluidElement;
+import minechem.fluid.FluidMinechem;
+import minechem.fluid.FluidMolecule;
 import minechem.fluid.reaction.ChemicalFluidReactionHandler;
+import minechem.handler.HandlerExplosiveFluid;
 import minechem.init.ModConfig;
 import minechem.init.ModGlobals;
 import minechem.init.ModMaterial;
@@ -37,13 +41,13 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class MinechemFluidBlock extends BlockFluidClassic implements ITileEntityProvider, ICustomRenderer {
+public class BlockFluidMinechem extends BlockFluidClassic implements ITileEntityProvider, ICustomRenderer {
 
 	private final boolean isRadioactivity;
 	public static final Material materialFluidBlock = Material.WATER;
 	private final boolean solid;
 
-	public MinechemFluidBlock(MinechemFluid fluid, Material material) {
+	public BlockFluidMinechem(FluidMinechem fluid, Material material) {
 		super(fluid, material);
 		setQuantaPerBlock(fluid.getQuanta());
 
@@ -106,14 +110,14 @@ public class MinechemFluidBlock extends BlockFluidClassic implements ITileEntity
 
 	private void checkToExplode(World world, int x, int y, int z) {
 		MinechemChemicalType type = MinechemUtil.getChemical(this);
-		float level = ExplosiveFluidHandler.getInstance().getExplosiveFluid(type);
+		float level = HandlerExplosiveFluid.getInstance().getExplosiveFluid(type);
 		if (Float.isNaN(level)) {
 			return;
 		}
 
 		boolean flag = false;
 		for (EnumFacing face : EnumFacing.values()) {
-			if (ExplosiveFluidHandler.getInstance().existingFireSource(world.getBlockState(new BlockPos(x + face.getFrontOffsetX(), y + face.getFrontOffsetY(), z + face.getFrontOffsetZ())).getBlock())) {
+			if (HandlerExplosiveFluid.getInstance().existingFireSource(world.getBlockState(new BlockPos(x + face.getFrontOffsetX(), y + face.getFrontOffsetY(), z + face.getFrontOffsetZ())).getBlock())) {
 				flag = true;
 				break;
 			}
@@ -124,7 +128,7 @@ public class MinechemFluidBlock extends BlockFluidClassic implements ITileEntity
 
 		world.destroyBlock(new BlockPos(x, y, z), true);
 		world.setBlockToAir(new BlockPos(x, y, z));
-		world.createExplosion(null, x, y, z, ExplosiveFluidHandler.getInstance().getExplosiveFluid(type), true);
+		world.createExplosion(null, x, y, z, HandlerExplosiveFluid.getInstance().getExplosiveFluid(type), true);
 	}
 
 	@Override
@@ -134,7 +138,7 @@ public class MinechemFluidBlock extends BlockFluidClassic implements ITileEntity
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int i) {
-		return hasTileEntity(getStateFromMeta(i)) ? new RadiationFluidTileEntity() : null;
+		return hasTileEntity(getStateFromMeta(i)) ? new TileRadioactiveFluid() : null;
 	}
 
 	@Override
@@ -154,7 +158,7 @@ public class MinechemFluidBlock extends BlockFluidClassic implements ITileEntity
 		MinechemChemicalType type = MinechemUtil.getChemical(this);
 		world.destroyBlock(pos, true);
 		world.setBlockToAir(pos);
-		world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), ExplosiveFluidHandler.getInstance().getExplosiveFluid(type), true);
+		world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), HandlerExplosiveFluid.getInstance().getExplosiveFluid(type), true);
 	}
 
 	@Override

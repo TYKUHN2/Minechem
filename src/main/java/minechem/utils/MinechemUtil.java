@@ -13,10 +13,10 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
+import minechem.block.fluid.BlockFluidMinechem;
 import minechem.fluid.FluidElement;
+import minechem.fluid.FluidMinechem;
 import minechem.fluid.FluidMolecule;
-import minechem.fluid.MinechemFluid;
-import minechem.fluid.MinechemFluidBlock;
 import minechem.init.ModConfig;
 import minechem.init.ModFluids;
 import minechem.init.ModItems;
@@ -33,37 +33,30 @@ import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.UniversalBucket;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.fml.server.FMLServerHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 public final class MinechemUtil {
@@ -184,39 +177,19 @@ public final class MinechemUtil {
 		return null;
 	}
 
-	// TODO EH LOL PTET CA MARCHE PAS
-	public static Fluid getFluid(IFluidTank te) {
-		////FluidTankInfo[] tanks = null;
-		for (int i = 0; i < 6; i++) {
-			FluidTankInfo tank = te.getInfo();
-			if (tank != null) {
-				//for (FluidTankInfo tank : tanks) {
-				if (tank != null && tank.fluid != null) {
-					return tank.fluid.getFluid();
+	public static Fluid getFluid(TileEntity te) {
+		if (te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+			return te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).getTankProperties()[0].getContents().getFluid();
+		}
+		for (EnumFacing facing : EnumFacing.VALUES) {
+			if (te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing)) {
+				Fluid fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing).getTankProperties()[0].getContents().getFluid();
+				if (fluid != null) {
+					return fluid;
 				}
-				//}
 			}
 		}
 		return null;
-	}
-
-	public static void scanForMoreStacks(ItemStack current, EntityPlayer player) {
-		int getMore = 8 - current.getCount();
-		InventoryPlayer inventory = player.inventory;
-		int maxSlot = player.inventory.getSizeInventory() - 4;
-		int slot = 0;
-		do {
-			if (slot != inventory.currentItem) {
-				ItemStack slotStack = inventory.getStackInSlot(slot);
-				if (!slotStack.isEmpty() && slotStack.isItemEqual(current)) {
-					ItemStack addStack = inventory.decrStackSize(slot, getMore);
-					current.grow(addStack.getCount());
-					getMore -= addStack.getCount();
-				}
-			}
-			slot++;
-		}
-		while (getMore > 0 && slot < maxSlot);
 	}
 
 	public static void incPlayerInventory(ItemStack current, int inc, EntityPlayer player, ItemStack give) {
@@ -435,7 +408,6 @@ public final class MinechemUtil {
 			if (potionChemicals != null && potionChemicals.length > 0) {
 				for (int i = 0; i < potionChemicals.length; i++) {
 					PotionChemical potionChemical = potionChemicals[i];
-					//for (PotionChemical potionChemical : potionChemicals) {
 					if (potionChemical instanceof Element && ((Element) potionChemical).element != null) {
 						stacks.set(i, new ItemStack(ModItems.element, potionChemical.amount, ((Element) potionChemical).element.atomicNumber()));
 					}
@@ -464,49 +436,6 @@ public final class MinechemUtil {
 			}
 		}
 		return true;
-	}
-
-	public static NonNullList<ItemStack> pushTogetherStacks(NonNullList<ItemStack> stacks) {
-		// i slot to move
-		for (int i = stacks.size() - 1; i >= 0; i--) {
-			if (stacks.get(i).isEmpty()) {
-				continue;
-			}
-			// spot for move
-			for (int j = 0; j < i; j++) {
-				// empty spot
-				if (stacks.get(j).isEmpty()) {
-					stacks.set(j, stacks.get(i));
-					stacks.set(j, ItemStack.EMPTY);
-					break;
-				} // same stack
-				else if (stacks.get(j).isItemEqual(stacks.get(i))) {
-					stacks.get(j).grow(stacks.get(i).getCount());
-					stacks.set(i, ItemStack.EMPTY);
-					break;
-				}
-			}
-		}
-		stacks.removeAll(Collections.singleton(ItemStack.EMPTY));
-		return stacks;
-	}
-
-	public static NonNullList<ItemStack> convertChemicalArrayIntoItemStackArray(PotionChemical[] chemicals) {
-		if (chemicals == null) {
-			return NonNullList.<ItemStack>create();
-		}
-
-		NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(chemicals.length, ItemStack.EMPTY);
-		for (int i = 0; i < chemicals.length; i++) {
-			PotionChemical potionChemical = chemicals[i];
-			if (potionChemical instanceof Element) {
-				stacks.set(i, new ItemStack(ModItems.element, potionChemical.amount, ((Element) potionChemical).element.atomicNumber()));
-			}
-			else if (potionChemical instanceof Molecule) {
-				stacks.set(i, new ItemStack(ModItems.molecule, potionChemical.amount, ((Molecule) potionChemical).molecule.id()));
-			}
-		}
-		return stacks;
 	}
 
 	public static ArrayList<PotionChemical> pushTogetherChemicals(ArrayList<PotionChemical> oldList) {
@@ -553,84 +482,6 @@ public final class MinechemUtil {
 		return false;
 	}
 
-	public static EnumFacing getDirectionFromFacing(int facing) {
-		switch (facing) {
-		case 0:
-			return EnumFacing.SOUTH;
-		case 1:
-			return EnumFacing.WEST;
-		case 2:
-			return EnumFacing.NORTH;
-		case 3:
-			return EnumFacing.EAST;
-		default:
-			return null;
-		}
-	}
-
-	/**
-	 * Ensures that the given inventory is the full inventory, i.e. takes double chests into account.
-	 *
-	 * @param inv
-	 * @return Modified inventory if double chest, unmodified otherwise. Credit to Buildcraft.
-	 */
-	public static IInventory getInventory(ILockableContainer inv) {
-		if (inv instanceof TileEntityChest) {
-			TileEntityChest chest = (TileEntityChest) inv;
-			Position pos = new Position(chest.getPos().getX(), chest.getPos().getY(), chest.getPos().getZ());
-			TileEntity tile;
-			ILockableContainer chest2 = null;
-			tile = getTile(chest.getWorld(), pos, EnumFacing.WEST);
-			if (tile instanceof TileEntityChest) {
-				chest2 = (ILockableContainer) tile;
-			}
-			tile = getTile(chest.getWorld(), pos, EnumFacing.EAST);
-			if (tile instanceof TileEntityChest) {
-				chest2 = (ILockableContainer) tile;
-			}
-			tile = getTile(chest.getWorld(), pos, EnumFacing.NORTH);
-			if (tile instanceof TileEntityChest) {
-				chest2 = (ILockableContainer) tile;
-			}
-			tile = getTile(chest.getWorld(), pos, EnumFacing.SOUTH);
-			if (tile instanceof TileEntityChest) {
-				chest2 = (ILockableContainer) tile;
-			}
-			if (chest2 != null) {
-				return new InventoryLargeChest("", inv, chest2);
-			}
-		}
-		return inv;
-	}
-
-	public static TileEntity getTile(World world, Position pos, EnumFacing dir) {
-		Position tmp = new Position(pos);
-		tmp.orientation = dir;
-		tmp.moveForwards(1.0);
-
-		return world.getTileEntity(new BlockPos((int) tmp.x, (int) tmp.y, (int) tmp.z));
-	}
-
-	@SideOnly(Side.SERVER)
-	public static WorldServer getDimension(int dimensionID) {
-		WorldServer[] worlds = FMLServerHandler.instance().getServer().worlds;
-		for (WorldServer world : worlds) {
-			if (world.provider.getDimension() == dimensionID) {
-				return world;
-			}
-		}
-		return null;
-	}
-
-	public static String getChemicalName(PotionChemical potionChemical) {
-		if (potionChemical instanceof Element) {
-			return getLocalString(((Element) potionChemical).element.name(), true);
-		}
-		else {
-			return getLocalString(((Molecule) potionChemical).molecule.name(), true);
-		}
-	}
-
 	public static ItemStack chemicalToItemStack(PotionChemical potionChemical, int amount) {
 		if (potionChemical instanceof Element) {
 			return new ItemStack(ModItems.element, amount, ((Element) potionChemical).element.atomicNumber());
@@ -662,15 +513,11 @@ public final class MinechemUtil {
 		return null;
 	}
 
-	public static int getNumberOfDigits(int n) {
-		return (int) (Math.log10(n) + 1);
-	}
-
 	public static ItemStack getBucketForChemical(MinechemChemicalType type) {
 		for (Block block : ModFluids.getFluidBlocks()) {
-			if (block instanceof MinechemFluidBlock && ((MinechemFluidBlock) block).getFluid() instanceof MinechemFluid) {
-				MinechemFluidBlock fluidBlock = (MinechemFluidBlock) block;
-				MinechemChemicalType blockType = ((MinechemFluid) fluidBlock.getFluid()).getChemical();
+			if (block instanceof BlockFluidMinechem && ((BlockFluidMinechem) block).getFluid() instanceof FluidMinechem) {
+				BlockFluidMinechem fluidBlock = (BlockFluidMinechem) block;
+				MinechemChemicalType blockType = ((FluidMinechem) fluidBlock.getFluid()).getChemical();
 				if (blockType instanceof MoleculeEnum && ((MoleculeEnum) blockType).name().equals("water")) {
 					return new ItemStack(Items.WATER_BUCKET);
 				}
@@ -682,7 +529,6 @@ public final class MinechemUtil {
 			}
 		}
 		return ItemStack.EMPTY;
-
 	}
 
 	public static ElementEnum getElement(ItemStack stack) {
@@ -732,8 +578,8 @@ public final class MinechemUtil {
 	public static MinechemChemicalType getChemicalTypeFromBucket(@Nonnull ItemStack bucket) {
 		if (bucket.getItem() instanceof UniversalBucket) {
 			Fluid fluid = ((UniversalBucket) bucket.getItem()).getFluid(bucket).getFluid();
-			if (fluid instanceof MinechemFluid) {
-				return ((MinechemFluid) fluid).getChemical();
+			if (fluid instanceof FluidMinechem) {
+				return ((FluidMinechem) fluid).getChemical();
 			}
 		}
 		return null;

@@ -308,7 +308,7 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 			fontRenderer.drawString(String.format("%.1f%% " + MinechemUtil.getLocalString("gui.journal.chance"), chance), 175, 30, 0x555555);
 		}
 
-		fontRenderer.drawString(MinechemUtil.getLocalString("gui.journal.synthesis") + (currentSynthesisRecipe != null ? (currentSynthesisRecipe.isShaped() ? " - Shaped" : " - Shapeless") : ""), 175, 100, 0x884400);
+		fontRenderer.drawString(MinechemUtil.getLocalString("gui.journal.synthesis") + (currentSynthesisRecipe != null ? (currentSynthesisRecipe.isShaped() ? " - " + MinechemUtil.getLocalString("recipes.synthesis.shaped") : " - " + MinechemUtil.getLocalString("recipes.synthesis.shapeless")) : ""), 175, 100, 0x884400);
 		if (currentSynthesisRecipe != null) {
 			int energyCost = RecipeHandlerSynthesis.getEnergyCost(currentSynthesisRecipe);
 			fontRenderer.drawString(String.format("%d " + MinechemUtil.getLocalString("tab.tooltip.energy"), energyCost), 175, 110, 0x555555);

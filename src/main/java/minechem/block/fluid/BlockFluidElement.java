@@ -1,5 +1,7 @@
-package minechem.fluid;
+package minechem.block.fluid;
 
+import minechem.fluid.FluidElement;
+import minechem.fluid.FluidMinechem;
 import minechem.init.ModConfig;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -10,13 +12,13 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class FluidBlockElement extends MinechemFluidBlock {
+public class BlockFluidElement extends BlockFluidMinechem {
 
-	public FluidBlockElement(MinechemFluid fluid, Material material) {
+	public BlockFluidElement(FluidMinechem fluid, Material material) {
 		super(fluid, material);
 	}
 
-	public FluidBlockElement(MinechemFluid fluid) {
+	public BlockFluidElement(FluidMinechem fluid) {
 		super(fluid, materialFluidBlock);
 		setUnlocalizedName(fluidName);
 		//this.setRegistryName(fluidName);

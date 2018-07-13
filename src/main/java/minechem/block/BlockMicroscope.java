@@ -7,6 +7,7 @@ import minechem.block.tile.TileMicroscope;
 import minechem.client.render.RenderMicroscope;
 import minechem.client.render.RenderMicroscope.ItemRenderMicroscope;
 import minechem.init.ModCreativeTab;
+import minechem.init.ModGlobals;
 import minechem.init.ModGlobals.Textures;
 import minechem.init.ModRendering;
 import net.minecraft.block.BlockHorizontal;
@@ -38,7 +39,7 @@ public class BlockMicroscope extends BlockSimpleContainer {
 		super(Material.IRON);
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		setUnlocalizedName("microscope");
-		setRegistryName("microscope");
+		setRegistryName(ModGlobals.ID + ":microscope");
 		setLightLevel(0.5F);
 		ForgeRegistries.BLOCKS.register(this);
 		ForgeRegistries.ITEMS.register(new ItemBlock(this).setRegistryName(getRegistryName()));

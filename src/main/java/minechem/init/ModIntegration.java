@@ -20,7 +20,10 @@ public class ModIntegration {
 	}
 
 	public static enum Mods {
-			TOP("theoneprobe", "The One Probe"), WAILA("waila", "WAILA"), JEI("jei", "JEI");
+			TOP("theoneprobe", "The One Probe"), WAILA("waila", "WAILA"), JEI("jei", "JEI"),
+			TE("thermalexpansion", "Thermal Expansion"), TF("thermalfoundation", "Thermal Foundation"),
+			RA("redstonearsenal", "Redstone Arsenal"), AE2("appliedenergistics2", "Applied Energistics 2"),
+			EXU2("extrautils2", "Extra Utilities 2");
 
 		private String modid, name;
 

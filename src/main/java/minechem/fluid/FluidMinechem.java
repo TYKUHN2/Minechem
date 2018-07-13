@@ -7,12 +7,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 
-abstract public class MinechemFluid extends Fluid {
+abstract public class FluidMinechem extends Fluid {
 
 	private static String texturePrefix = ModGlobals.ID + ":blocks/";
 	private int quanta;
 
-	public MinechemFluid(String fluidName, boolean hasFlowIcon, MatterState roomstatus) {
+	public FluidMinechem(String fluidName, boolean hasFlowIcon, MatterState roomstatus) {
 		super(fluidName, new ResourceLocation(texturePrefix + "fluid_still"), new ResourceLocation(texturePrefix + "fluid" + (hasFlowIcon ? "_flow" : "_still")));
 		setGaseous(roomstatus.isGas());
 		setViscosity(roomstatus.getViscosity());

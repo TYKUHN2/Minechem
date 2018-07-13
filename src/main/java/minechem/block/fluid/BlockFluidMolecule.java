@@ -1,5 +1,7 @@
-package minechem.fluid;
+package minechem.block.fluid;
 
+import minechem.fluid.FluidMinechem;
+import minechem.fluid.FluidMolecule;
 import minechem.init.ModConfig;
 import minechem.potion.PharmacologyEffectRegistry;
 import net.minecraft.block.material.Material;
@@ -11,13 +13,13 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class FluidBlockMolecule extends MinechemFluidBlock {
+public class BlockFluidMolecule extends BlockFluidMinechem {
 
-	public FluidBlockMolecule(MinechemFluid fluid, Material material) {
+	public BlockFluidMolecule(FluidMinechem fluid, Material material) {
 		super(fluid, material);
 	}
 
-	public FluidBlockMolecule(MinechemFluid fluid) {
+	public BlockFluidMolecule(FluidMinechem fluid) {
 		super(fluid, materialFluidBlock);
 		//this.setRegistryName(fluidName);
 		setUnlocalizedName(fluidName);

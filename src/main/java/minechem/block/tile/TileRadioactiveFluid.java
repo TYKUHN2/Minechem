@@ -10,15 +10,15 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
-public class RadiationFluidTileEntity extends TileEntity {
+public class TileRadioactiveFluid extends TileEntity {
 
 	public RadiationInfo info;
 
-	public RadiationFluidTileEntity() {
+	public TileRadioactiveFluid() {
 		this(null);
 	}
 
-	public RadiationFluidTileEntity(RadiationInfo info) {
+	public TileRadioactiveFluid(RadiationInfo info) {
 		this.info = info;
 	}
 

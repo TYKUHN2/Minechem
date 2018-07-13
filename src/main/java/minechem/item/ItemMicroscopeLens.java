@@ -25,7 +25,7 @@ public class ItemMicroscopeLens extends ItemBase {
 	public ItemMicroscopeLens() {
 		super();
 		setUnlocalizedName("optical_microscope_lens");
-		setRegistryName("optical_microscope_lens");
+		setRegistryName(ModGlobals.ID + ":optical_microscope_lens");
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		setHasSubtypes(true);
 		ForgeRegistries.ITEMS.register(this);

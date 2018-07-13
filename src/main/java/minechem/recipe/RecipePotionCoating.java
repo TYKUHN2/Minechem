@@ -1,6 +1,7 @@
 package minechem.recipe;
 
 import minechem.init.ModConfig;
+import minechem.init.ModGlobals;
 import minechem.item.ItemMolecule;
 import minechem.potion.PharmacologyEffectRegistry;
 import minechem.potion.PotionEnchantmentCoated;
@@ -13,16 +14,13 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.oredict.RecipeSorter;
 
-@SuppressWarnings("deprecation")
-public class RecipePotionCoating extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+public class RecipePotionCoating implements IRecipe {
 
-	static {
-		RecipeSorter.register("minechem:coatingRecipe", RecipePotionCoating.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
-	}
+	ItemStack output = ItemStack.EMPTY;
 
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) {
@@ -120,6 +118,7 @@ public class RecipePotionCoating extends net.minecraftforge.registries.IForgeReg
 						}
 						else {
 							result.addEnchantment(PotionEnchantmentCoated.POTION_COATED_REGISTRY.get(MinechemUtil.getMolecule(s2)), 1);
+							output = result.copy();
 							return result;
 						}
 					}
@@ -131,7 +130,7 @@ public class RecipePotionCoating extends net.minecraftforge.registries.IForgeReg
 
 	@Override
 	public ItemStack getRecipeOutput() {
-		return ItemStack.EMPTY;
+		return output;
 	}
 
 	@Override
@@ -142,6 +141,21 @@ public class RecipePotionCoating extends net.minecraftforge.registries.IForgeReg
 	@Override
 	public boolean canFit(int width, int height) {
 		return width >= 1 && height >= 1;
+	}
+
+	@Override
+	public IRecipe setRegistryName(ResourceLocation name) {
+		return this;
+	}
+
+	@Override
+	public ResourceLocation getRegistryName() {
+		return new ResourceLocation(ModGlobals.ID, "potion_coating");
+	}
+
+	@Override
+	public Class<IRecipe> getRegistryType() {
+		return IRecipe.class;
 	}
 
 }

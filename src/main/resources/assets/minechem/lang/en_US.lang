@@ -96,6 +96,7 @@ gui.title.decomposer.dump=Dump Fluid
 gui.title.leadedchest=Leaded Chest
 gui.title.microscope=Microscope
 gui.title.synthesis=Chemical Synthesis Machine
+gui.title.inventory=Inventory
 gui.journal.decomposer=Decomposer
 gui.journal.synthesis=Synthesis
 gui.journal.active=Active
@@ -105,6 +106,9 @@ gui.polytool.stone=Stone
 gui.polytool.ores=Ores
 gui.polytool.axe=Axe
 gui.polytool.shovel=Shovel
+gui.synthesis.input_storage=Input Storage
+gui.synthesis.output=Output
+gui.synthesis.creates=Creates
 minechem.owner.tag=Owner
 minechem.enchantment.coated=%s Coated
 minechem.fusionstar.usesleft=%s Uses Left
@@ -823,3 +827,6 @@ fluid.element.Zn.name=Zinc
 fluid.element.Zr.name=Zirconium
 
 minechem.subtitles.projector_sound=Blueprint Projector Running
+
+recipes.synthesis.shaped=Shaped
+recipes.synthesis.shapeless=Shapeless

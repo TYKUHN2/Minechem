@@ -8,7 +8,7 @@ import minechem.item.element.ElementEnum;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-public class FluidElement extends MinechemFluid {
+public class FluidElement extends FluidMinechem {
 
 	public final ElementEnum element;
 	private final int color;

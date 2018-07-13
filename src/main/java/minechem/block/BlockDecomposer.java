@@ -7,6 +7,7 @@ import minechem.block.tile.TileDecomposer;
 import minechem.client.render.RenderDecomposer;
 import minechem.client.render.RenderDecomposer.ItemRenderDecomposer;
 import minechem.init.ModCreativeTab;
+import minechem.init.ModGlobals;
 import minechem.init.ModGlobals.Textures;
 import minechem.init.ModRendering;
 import net.minecraft.block.material.Material;
@@ -28,7 +29,7 @@ public class BlockDecomposer extends BlockSimpleContainer {
 
 	public BlockDecomposer() {
 		super(Material.IRON);
-		setRegistryName("chemical_decomposer");
+		setRegistryName(ModGlobals.ID + ":chemical_decomposer");
 		setUnlocalizedName("chemical_decomposer");
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		ForgeRegistries.BLOCKS.register(this);
@@ -73,14 +74,15 @@ public class BlockDecomposer extends BlockSimpleContainer {
 		return new TileDecomposer();
 	}
 
-	//TODO: Find replacement
 	@Override
 	public void addStacksDroppedOnBlockBreak(TileEntity tileEntity, ArrayList<ItemStack> itemStacks) {
-		TileDecomposer decomposer = (TileDecomposer) tileEntity;
-		for (int slot = 0; slot < decomposer.getSizeInventory(); slot++) {
-			ItemStack itemstack = decomposer.getStackInSlot(slot);
-			if (!itemstack.isEmpty()) {
-				itemStacks.add(itemstack);
+		if (tileEntity instanceof TileDecomposer) {
+			TileDecomposer decomposer = (TileDecomposer) tileEntity;
+			for (int slot = 0; slot < decomposer.getSizeInventory(); slot++) {
+				ItemStack itemstack = decomposer.getStackInSlot(slot);
+				if (!itemstack.isEmpty()) {
+					itemStacks.add(itemstack);
+				}
 			}
 		}
 	}

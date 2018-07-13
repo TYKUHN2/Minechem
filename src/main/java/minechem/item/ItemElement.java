@@ -1,9 +1,7 @@
 package minechem.item;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -11,13 +9,12 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 
 import minechem.api.RadiationInfo;
-import minechem.block.tile.RadiationFluidTileEntity;
+import minechem.block.tile.TileRadioactiveFluid;
 import minechem.fluid.FluidElement;
 import minechem.init.ModCreativeTab;
 import minechem.init.ModFluids;
 import minechem.init.ModGlobals;
 import minechem.init.ModItems;
-import minechem.item.element.ElementClassificationEnum;
 import minechem.item.element.ElementEnum;
 import minechem.item.molecule.MoleculeEnum;
 import minechem.item.polytool.PolytoolHelper;
@@ -51,7 +48,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
@@ -60,27 +57,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SuppressWarnings("deprecation")
 public class ItemElement extends ItemBase {
 
-	//private final static ElementEnum[] elements = ElementEnum.elements;
-	private final Map<IDescriptiveName, Integer> classificationIndexes = new HashMap<IDescriptiveName, Integer>();
-
 	public ItemElement() {
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ELEMENTS);
 		setUnlocalizedName("item_element");
-		setRegistryName("item_element");
+		setRegistryName(ModGlobals.ID + ":item_element");
 		setHasSubtypes(true);
-		classificationIndexes.put(ElementClassificationEnum.nonmetal, 0);
-		classificationIndexes.put(ElementClassificationEnum.halogen, 1);
-		classificationIndexes.put(ElementClassificationEnum.inertGas, 2);
-		classificationIndexes.put(ElementClassificationEnum.semimetallic, 3);
-		classificationIndexes.put(ElementClassificationEnum.otherMetal, 4);
-		classificationIndexes.put(ElementClassificationEnum.alkaliMetal, 5);
-		classificationIndexes.put(ElementClassificationEnum.alkalineEarthMetal, 6);
-		classificationIndexes.put(ElementClassificationEnum.transitionMetal, 7);
-		classificationIndexes.put(ElementClassificationEnum.lanthanide, 8);
-		classificationIndexes.put(ElementClassificationEnum.actinide, 9);
-		classificationIndexes.put(MatterState.GAS, 1);
-		classificationIndexes.put(MatterState.SOLID, 17);
-		classificationIndexes.put(MatterState.LIQUID, 33);
 		ForgeRegistries.ITEMS.register(this);
 	}
 
@@ -142,35 +123,30 @@ public class ItemElement extends ItemBase {
 
 		RadiationEnum radioactivity = RadiationInfo.getRadioactivity(itemstack);
 		String radioactivityColor = radioactivity.getColour();
-
 		String radioactiveName = MinechemUtil.getLocalString("element.property." + radioactivity.name(), true);
 		String timeLeft = "";
 		if (RadiationInfo.getRadioactivity(itemstack) != RadiationEnum.stable && itemstack.getTagCompound() != null) {
 			long worldTime = world.getTotalWorldTime();
-			timeLeft = TimeHelper.getTimeFromTicks(RadiationInfo.getRadioactivity(itemstack).getLife() - (worldTime - itemstack.getTagCompound().getLong("decayStart")));
+			long ticks = RadiationInfo.getRadioactivity(itemstack).getLife() - (worldTime - itemstack.getTagCompound().getLong("decayStart"));
+			timeLeft = TimeHelper.getTimeFromTicks(ticks);
 		}
 		list.add(radioactivityColor + radioactiveName + (timeLeft.equals("") ? "" : " (" + timeLeft + ")"));
 		list.add(getClassification(itemstack));
 		list.add(getRoomState(itemstack));
 
 		if (PolytoolHelper.getTypeFromElement(MinechemUtil.getElement(itemstack), 1) != null) {
-			// Polytool Detail
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
 				String polytoolDesc = PolytoolHelper.getTypeFromElement(MinechemUtil.getElement(itemstack), 1).getDescription();
 				String localizedDesc = I18n.format("polytool.description." + ItemElement.getShortName(itemstack));
-
 				if (!I18n.hasKey("polytool.description." + ItemElement.getShortName(itemstack))) {
 					localizedDesc = polytoolDesc;
 				}
-
 				list.add(TextFormatting.AQUA + localizedDesc);
-
 			}
 			else {
 				list.add(TextFormatting.DARK_GREEN + MinechemUtil.getLocalString("polytool.information"));
 			}
 		}
-
 	}
 
 	@Override
@@ -236,7 +212,8 @@ public class ItemElement extends ItemBase {
 		TileEntity te = world.getTileEntity(pos);
 		boolean result = !world.isRemote;
 		ItemStack stack = player.getHeldItem(hand);
-		if (te != null && te instanceof IFluidHandler && !player.isSneaking() && !(te instanceof IInventory)) {
+		if (te != null && te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing) && !player.isSneaking() && !(te instanceof IInventory)) {
+			IFluidHandler cap = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
 			if (stack.getItemDamage() != 0) {
 				int filled = 0;
 				//for (int i = 0; i < 6; i++) {
@@ -244,10 +221,10 @@ public class ItemElement extends ItemBase {
 				if (fluid == null) {
 					return super.onItemUseFirst(player, world, pos, facing, hitX, hitY, hitZ, hand);
 				}
-				filled = ((IFluidHandler) te).fill(new FluidStack(fluid, 125), false);
+				filled = cap.fill(new FluidStack(fluid, 125), false);
 				if (filled > 0) {
 					if (result) {
-						((IFluidHandler) te).fill(new FluidStack(ModFluids.FLUID_ELEMENTS.get(MinechemUtil.getElement(stack)), 125), true);
+						cap.fill(new FluidStack(ModFluids.FLUID_ELEMENTS.get(MinechemUtil.getElement(stack)), 125), true);
 					}
 					if (!player.capabilities.isCreativeMode) {
 						MinechemUtil.incPlayerInventory(stack, -1, player, new ItemStack(ModItems.element, 1, 0));
@@ -258,40 +235,42 @@ public class ItemElement extends ItemBase {
 			}
 			else {
 				FluidStack drained = null;
-				Fluid fluid = MinechemUtil.getFluid((IFluidTank) te);
-				ElementEnum element = MinechemUtil.getElement(fluid);
-				if (element != null) {
-					//for (int i = 0; i < 6; i++) {
-					drained = ((IFluidHandler) te).drain(new FluidStack(fluid, 125), false);
-					if (drained != null && drained.amount > 0) {
-						if (result) {
-							((IFluidHandler) te).drain(new FluidStack(fluid, 125), true);
-						}
-						if (!player.capabilities.isCreativeMode) {
-							MinechemUtil.incPlayerInventory(stack, -1, player, new ItemStack(ModItems.element, 1, element.atomicNumber()));
-						}
-						return result ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
-					}
-					//}
-				}
-				else {
-					MoleculeEnum molecule = MinechemUtil.getMolecule(fluid);
-					if (fluid == FluidRegistry.WATER) {
-						molecule = MoleculeEnum.water;
-					}
-					if (molecule != null) {
+				Fluid fluid = MinechemUtil.getFluid(te);
+				if (fluid != null) {
+					ElementEnum element = MinechemUtil.getElement(fluid);
+					if (element != null) {
 						//for (int i = 0; i < 6; i++) {
-						drained = ((IFluidHandler) te).drain(new FluidStack(fluid, 125), false);
+						drained = cap.drain(new FluidStack(fluid, 125), false);
 						if (drained != null && drained.amount > 0) {
 							if (result) {
-								((IFluidHandler) te).drain(new FluidStack(fluid, 125), true);
+								cap.drain(new FluidStack(fluid, 125), true);
 							}
 							if (!player.capabilities.isCreativeMode) {
-								MinechemUtil.incPlayerInventory(stack, -1, player, new ItemStack(ModItems.molecule, 1, molecule.id()));
+								MinechemUtil.incPlayerInventory(stack, -1, player, new ItemStack(ModItems.element, 1, element.atomicNumber()));
 							}
 							return result ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 						}
 						//}
+					}
+					else {
+						MoleculeEnum molecule = MinechemUtil.getMolecule(fluid);
+						if (fluid == FluidRegistry.WATER) {
+							molecule = MoleculeEnum.water;
+						}
+						if (molecule != null) {
+							//for (int i = 0; i < 6; i++) {
+							drained = cap.drain(new FluidStack(fluid, 125), false);
+							if (drained != null && drained.amount > 0) {
+								if (result) {
+									cap.drain(new FluidStack(fluid, 125), true);
+								}
+								if (!player.capabilities.isCreativeMode) {
+									MinechemUtil.incPlayerInventory(stack, -1, player, new ItemStack(ModItems.molecule, 1, molecule.id()));
+								}
+								return result ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+							}
+							//}
+						}
 					}
 				}
 			}
@@ -324,8 +303,8 @@ public class ItemElement extends ItemBase {
 					if (!stack.isEmpty()) {
 						stack.setCount(8);
 						TileEntity tile = world.getTileEntity(rayTrace.getBlockPos());
-						if (tile instanceof RadiationFluidTileEntity && ((RadiationFluidTileEntity) tile).info != null) {
-							RadiationInfo.setRadiationInfo(((RadiationFluidTileEntity) tile).info, stack);
+						if (tile instanceof TileRadioactiveFluid && ((TileRadioactiveFluid) tile).info != null) {
+							RadiationInfo.setRadiationInfo(((TileRadioactiveFluid) tile).info, stack);
 						}
 
 						world.setBlockToAir(rayTrace.getBlockPos());
@@ -434,8 +413,8 @@ public class ItemElement extends ItemBase {
 			Block block = ModFluids.FLUID_ELEMENT_BLOCKS.get(fluid);
 			world.setBlockState(pos, block.getStateFromMeta(0), 3);
 			TileEntity tile = world.getTileEntity(pos);
-			if (radioactivity.isRadioactive() && tile instanceof RadiationFluidTileEntity) {
-				((RadiationFluidTileEntity) tile).info = radioactivity;
+			if (radioactivity.isRadioactive() && tile instanceof TileRadioactiveFluid) {
+				((TileRadioactiveFluid) tile).info = radioactivity;
 			}
 		}
 		return itemStack;

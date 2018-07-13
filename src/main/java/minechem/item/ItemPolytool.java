@@ -9,6 +9,7 @@ import com.google.common.collect.Multimap;
 import minechem.Minechem;
 import minechem.api.ICustomRenderer;
 import minechem.init.ModCreativeTab;
+import minechem.init.ModGlobals;
 import minechem.init.ModGuiHandler;
 import minechem.item.element.ElementEnum;
 import minechem.item.polytool.PolytoolHelper;
@@ -48,7 +49,7 @@ public class ItemPolytool extends ItemPickaxe implements ICustomRenderer {
 		instance = this;
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		setUnlocalizedName("polytool");
-		setRegistryName("polytool");
+		setRegistryName(ModGlobals.ID + ":polytool");
 		ForgeRegistries.ITEMS.register(this);
 	}
 

@@ -6,11 +6,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import minechem.api.IDecomposerControl;
+import minechem.api.RadiationInfo;
 import minechem.init.ModConfig;
 import minechem.init.ModNetworking;
 import minechem.inventory.InventoryBounded;
+import minechem.item.ItemElement;
 import minechem.network.message.MessageDecomposerDumpFluid;
 import minechem.potion.PotionChemical;
+import minechem.radiation.RadiationEnum;
 import minechem.recipe.RecipeDecomposer;
 import minechem.recipe.RecipeDecomposerFluid;
 import minechem.recipe.handler.RecipeHandlerDecomposer;
@@ -68,6 +71,7 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 	private NonNullList<ItemStack> outputBuffer = NonNullList.<ItemStack>withSize(outputSlots.length, ItemStack.EMPTY);
 	private final InventoryBounded outputInventory = new InventoryBounded(this, outputSlots);
 	private boolean isCooking = false;
+	private int timer = 0;
 
 	public TileDecomposer() {
 		super(ModConfig.maxDecomposerStorage);
@@ -143,6 +147,9 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 		ItemStack tmpStack2 = stack2.copy();
 		tmpStack1.setCount(1);
 		tmpStack2.setCount(1);
+		NBTTagCompound tmpNBT = new NBTTagCompound();
+		tmpStack1.setTagCompound(tmpNBT);
+		tmpStack2.setTagCompound(tmpNBT);
 		boolean areEqual = ItemStack.areItemStacksEqual(tmpStack1, tmpStack2);
 		return areEqual;
 	}
@@ -162,6 +169,11 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 				if (output != null) {
 					isCooking = true;
 					NonNullList<ItemStack> stacks = MinechemUtil.convertChemicalsIntoItemStacks(getBrokenOutput(output, inputStack.isEmpty() ? 1.0D : getDecompositionMultiplier(inputStack)));
+					for (ItemStack stack : stacks) {
+						if (RadiationInfo.getRadioactivity(stack) != RadiationEnum.stable) {
+							ItemElement.initiateRadioactivity(stack, getWorld());
+						}
+					}
 					if (!inputStack.isEmpty()) {
 						outputBuffer = stacks;//addToOutputBuffer(stacks);
 						inputStack.shrink(1);
@@ -176,7 +188,11 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 							tank.drain(fluidAmount, true);
 						}
 					}
-					shouldUpdate = true;
+					markDirty();
+					IBlockState iblockstate = getWorld().getBlockState(getPos());
+					if (iblockstate != null) {
+						getWorld().notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
+					}
 				}
 			}
 		}
@@ -205,12 +221,16 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 		else {
 			isCooking = false;
 		}
-		shouldUpdate = true;
+		markDirty();
+		IBlockState iblockstate = getWorld().getBlockState(getPos());
+		if (iblockstate != null) {
+			getWorld().notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
+		}
 		return isCooking;
 	}
 
 	private boolean canDecomposeInput() {
-		if (!hasRequiredEnergy() || isCooking || isOutputInventoryFull()) {
+		if (!hasRequiredEnergy() || isCooking || !isOutputBufferEmpty()) {
 			return false;
 		}
 		ItemStack inputStack = getStackInSlot(inputSlots[0]);
@@ -242,7 +262,9 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 	}
 
 	public boolean isOutputInventoryFull() {
+		/*
 		boolean isOutputInvFull = true;
+		boolean doBreak = false;
 		for (int i = 0; i < outputInventory.getSizeInventory(); i++) {
 			ItemStack tmpStack = outputInventory.getStackInSlot(i);
 			if (tmpStack.isEmpty()) {
@@ -259,16 +281,30 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 						if (!currentBufferStack.isEmpty()) {
 							if (areStacksEqualIgnoreSize(currentBufferStack, tmpStack)) {
 								isOutputInvFull = false;
+								doBreak = true;
 								break;
 							}
 						}
 					}
 				}
-				isOutputInvFull = true;
+				if (!doBreak) {
+					isOutputInvFull = true;
+				}
 				//}
+			}
+			if (doBreak) {
+				break;
 			}
 		}
 		return isOutputInvFull;
+		*/
+		for (int i = 0; i < outputInventory.getSizeInventory(); i++) {
+			ItemStack tmpStack = outputInventory.getStackInSlot(i);
+			if (tmpStack.isEmpty() || (tmpStack.getCount() < tmpStack.getMaxStackSize())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private void addStackToOutput(ItemStack stack) {
@@ -284,16 +320,18 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 		}
 	}
 
+	//TODO
 	@Override
 	public void update() {
 		super.update();
-		if (world.isRemote) {
+		timer++;
+		if (timer < 5) {
 			return;
 		}
-		if (getState() != State.jammed && isOutputBufferEmpty()) {
-			shouldUpdate = true;
+		else {
+			timer = 0;
 		}
-		if (!shouldUpdate) {
+		if (world.isRemote || getState() == State.jammed || isOutputInventoryFull()) {
 			return;
 		}
 		if (isCooking) {
@@ -302,6 +340,7 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 		else {
 			processInput();
 		}
+		markDirty();
 		IBlockState iblockstate = getWorld().getBlockState(getPos());
 		if (iblockstate != null) {
 			getWorld().notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
@@ -600,7 +639,12 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 		@Override
 		protected void onContentsChanged() {
 			if (tile != null) {
-				((TileDecomposer) tile).shouldUpdate = true;
+				TileDecomposer te = (TileDecomposer) tile;
+				te.markDirty();
+				IBlockState iblockstate = te.getWorld().getBlockState(te.getPos());
+				if (iblockstate != null) {
+					te.getWorld().notifyBlockUpdate(te.getPos(), iblockstate, iblockstate, 3);
+				}
 			}
 		}
 

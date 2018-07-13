@@ -16,7 +16,6 @@ import minechem.utils.MinechemUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 
 public class GuiSynthesis extends GuiContainerTabbed {
 
@@ -32,14 +31,13 @@ public class GuiSynthesis extends GuiContainerTabbed {
 		//addTab(new GuiTabPatreon(this));
 	}
 
-	//TODO localizations
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
 		String title = MinechemUtil.getLocalString("gui.title.synthesis");
-		String storageHeader = "Input Storage";
-		String invHeader = "Inventory";
-		String outputHeader = "Output";
-		String invMakes = "Creates:";
+		String storageHeader = MinechemUtil.getLocalString("gui.synthesis.input_storage");
+		String invHeader = MinechemUtil.getLocalString("gui.title.inventory");
+		String outputHeader = MinechemUtil.getLocalString("gui.synthesis.output");
+		String invMakes = MinechemUtil.getLocalString("gui.synthesis.creates") + ":";
 		int titleWidth = fontRenderer.getStringWidth(title);
 		int makesWidth = fontRenderer.getStringWidth(invMakes);
 		fontRenderer.drawString(title, (guiWidth - titleWidth) / 2, 5, 0x000000);
@@ -80,16 +78,12 @@ public class GuiSynthesis extends GuiContainerTabbed {
 
 	private void mouseWheelEvent(final int x, final int y, final int wheel) {
 		final Slot slot = getSlot(x, y);
-
-		final ItemStack item = slot.getStack();
-		//if (!item.isEmpty()) {
 		final ScrollDirection direction = wheel > 0 ? ScrollDirection.DOWN : ScrollDirection.UP;
 		final int times = Math.abs(wheel);
 		for (int h = 0; h < times; h++) {
-			final MessageFakeSlotScroll p = new MessageFakeSlotScroll(direction, slot.getSlotIndex());
+			final MessageFakeSlotScroll p = new MessageFakeSlotScroll(direction, slot.slotNumber);
 			ModNetworking.INSTANCE.sendToServer(p);
 		}
-		//}
 	}
 
 	public static enum ScrollDirection {

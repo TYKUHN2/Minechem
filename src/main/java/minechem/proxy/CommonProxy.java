@@ -1,7 +1,6 @@
 package minechem.proxy;
 
 import minechem.Minechem;
-import minechem.fluid.FluidChemicalDispenser;
 import minechem.fluid.reaction.ChemicalFluidReactionHandler;
 import minechem.init.ModBlocks;
 import minechem.init.ModConfig;
@@ -10,7 +9,6 @@ import minechem.init.ModGlobals.MetaData;
 import minechem.init.ModGuiHandler;
 import minechem.init.ModItems;
 import minechem.init.ModNetworking;
-import minechem.init.ModRecipes;
 import minechem.init.ModWorldGen;
 import minechem.item.blueprint.MinechemBlueprint;
 import minechem.item.element.ElementEnum;
@@ -41,10 +39,6 @@ public class CommonProxy {
 		ModFluids.init();
 		PharmacologyEffectRegistry.init();
 		MinechemBlueprint.registerBlueprints();
-		ModRecipes.getInstance().RegisterRecipes();
-		ModRecipes.getInstance().registerFluidRecipes();
-		ModRecipes.getInstance().RegisterModRecipes();
-		ModRecipes.getInstance().registerOreDictOres();
 	}
 
 	public void init(FMLInitializationEvent event) {
@@ -52,7 +46,6 @@ public class CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new PolytoolEventHandler());
 		ModWorldGen.init();
 		registerRenderers();
-		FluidChemicalDispenser.init();
 		ChemicalFluidReactionHandler.initReaction();
 	}
 
@@ -63,8 +56,6 @@ public class CommonProxy {
 	}
 
 	public void loadComplete(FMLLoadCompleteEvent event) {
-		ModRecipes.getInstance().RegisterModRecipes();
-		ModRecipes.getInstance().registerOreDictOres();
 		RecipeUtil.init();
 		RecipeHandlerDecomposer.recursiveRecipes();
 	}

@@ -81,8 +81,4 @@ public class GuiDecomposer extends GuiContainerTabbed {
 
 	}
 
-	private boolean mouseInButton(int x, int y) {
-		return x >= dumpButton.x && x < dumpButton.x + dumpButton.width && y >= dumpButton.y && y < dumpButton.y + dumpButton.height;
-	}
-
 }

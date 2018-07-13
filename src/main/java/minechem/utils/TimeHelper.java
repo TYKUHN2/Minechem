@@ -3,6 +3,7 @@ package minechem.utils;
 import minechem.init.ModGlobals;
 
 public class TimeHelper {
+
 	public static String getTimeFromTicks(long ticks) {
 		if (ticks < 0) {
 			return MinechemUtil.getLocalString("minechem.unstable", true);
@@ -53,4 +54,42 @@ public class TimeHelper {
 		}
 		return timeLeft;
 	}
+
+	public static int getSecondsFromTicks(long ticks) {
+		return (int) (ticks / ModGlobals.TICKS_PER_SECOND);
+	}
+
+	public static String getTimeFormattedFromSeconds(int totalSeconds) {
+		String hourabbr = MinechemUtil.getLocalString("minechem.hour.abbr", true);
+		String minabbr = MinechemUtil.getLocalString("minechem.min.abbr", true);
+		String secabbr = MinechemUtil.getLocalString("minechem.sec.abbr", true);
+		if (hourabbr.isEmpty() || hourabbr.equals("minechem.hour.abbr")) {
+			hourabbr = "H";
+		}
+		if (minabbr.isEmpty() || minabbr.equals("minechem.min.abbr")) {
+			minabbr = "M";
+		}
+		if (secabbr.isEmpty() || secabbr.equals("minechem.sec.abbr")) {
+			secabbr = "S";
+		}
+		int hours = (totalSeconds % (24 * 3600)) / 3600;
+		int minutes = totalSeconds % (24 * 3600);
+		minutes %= 3600;
+		minutes = minutes / 60;
+		int seconds = totalSeconds % (24 * 3600);
+		seconds %= 3600;
+		seconds %= 60;
+		String timeString = "";
+		if (hours > 0) {
+			timeString = hours + "" + hourabbr;
+		}
+		if (minutes > 0) {
+			timeString += " " + minutes + "" + minabbr;
+		}
+		if (seconds > 0) {
+			timeString += " " + seconds + "" + secabbr;
+		}
+		return timeString;
+	}
+
 }

@@ -7,6 +7,7 @@ import minechem.block.tile.TileLeadedChest;
 import minechem.client.render.RenderLeadedChest;
 import minechem.client.render.RenderLeadedChest.ItemRenderLeadedChest;
 import minechem.init.ModCreativeTab;
+import minechem.init.ModGlobals;
 import minechem.init.ModGlobals.Textures;
 import minechem.init.ModRendering;
 import net.minecraft.block.BlockHorizontal;
@@ -42,7 +43,7 @@ public class BlockLeadedChest extends BlockSimpleContainer {
 		setHardness(2.0F);
 		setResistance(5.0F);
 		setUnlocalizedName("leaded_chest");
-		this.setRegistryName("leaded_chest");
+		this.setRegistryName(ModGlobals.ID + ":leaded_chest");
 		ForgeRegistries.BLOCKS.register(this);
 		ForgeRegistries.ITEMS.register(new ItemBlock(this).setRegistryName(getRegistryName()));
 		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
@@ -154,12 +155,12 @@ public class BlockLeadedChest extends BlockSimpleContainer {
 	/*
 	private void dropItems(World world, BlockPos blockPos)
 	{
-	
+
 	    TileEntity te = world.getTileEntity(blockPos);
 	    if (te instanceof IInventory)
 	    {
 	        IInventory inventory = (IInventory) te;
-	
+
 	        int invSize = inventory.getSizeInventory();
 	        for (int i = 0; i < invSize; i++)
 	        {
@@ -206,27 +207,27 @@ public class BlockLeadedChest extends BlockSimpleContainer {
 	{
 	    EnumFacing facing = null;
 	    int facingI = MathHelper.floor(el.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-	
+
 	    if (facingI == 0)
 	    {
 	        facing = EnumFacing.NORTH;
 	    }
-	
+
 	    if (facingI == 1)
 	    {
 	        facing = EnumFacing.EAST;
 	    }
-	
+
 	    if (facingI == 2)
 	    {
 	        facing = EnumFacing.SOUTH;
 	    }
-	
+
 	    if (facingI == 3)
 	    {
 	        facing = EnumFacing.WEST;
 	    }
-	
+
 	    world.setBlockState(blockPos, state.withProperty(FACING, facing), 2);
 	}
 	*/

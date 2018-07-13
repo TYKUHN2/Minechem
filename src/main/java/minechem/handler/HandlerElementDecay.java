@@ -9,7 +9,7 @@ import minechem.api.INoDecay;
 import minechem.api.IRadiationShield;
 import minechem.api.RadiationInfo;
 import minechem.event.RadiationDecayEvent;
-import minechem.fluid.MinechemFluid;
+import minechem.fluid.FluidMinechem;
 import minechem.init.ModFluids;
 import minechem.init.ModItems;
 import minechem.item.ItemElement;
@@ -28,12 +28,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.UniversalBucket;
 
-public class RadiationHandler {
+public class HandlerElementDecay {
 
-	private static RadiationHandler instance = new RadiationHandler();
+	private static HandlerElementDecay instance = new HandlerElementDecay();
 
-	public static RadiationHandler getInstance() {
-		return instance == null ? new RadiationHandler() : instance;
+	public static HandlerElementDecay getInstance() {
+		return instance == null ? new HandlerElementDecay() : instance;
 	}
 
 	public void update(EntityPlayer player) {
@@ -56,7 +56,7 @@ public class RadiationHandler {
 		List<ItemStack> itemstacks = container.getStorageInventory();
 		if (itemstacks != null) {
 			for (ItemStack itemstack : itemstacks) {
-				if (itemstack != null && (itemstack.getItem() == ModItems.molecule || itemstack.getItem() == ModItems.element/* || itemstack.getItem() instanceof MinechemBucketItem*/) && RadiationInfo.getRadioactivity(itemstack) != RadiationEnum.stable) {
+				if (!itemstack.isEmpty() && (itemstack.getItem() == ModItems.molecule || itemstack.getItem() == ModItems.element/* || itemstack.getItem() instanceof MinechemBucketItem*/) && RadiationInfo.getRadioactivity(itemstack) != RadiationEnum.stable) {
 					RadiationInfo radiationInfo = ItemElement.getRadiationInfo(itemstack, player.world);
 					radiationInfo.decayStarted += player.world.getTotalWorldTime() - radiationInfo.lastDecayUpdate;
 					radiationInfo.lastDecayUpdate = player.world.getTotalWorldTime();
@@ -167,11 +167,11 @@ public class RadiationHandler {
 				radiationInfo = ItemElement.decay(element, world);
 			}
 			else if (item == ModItems.molecule) {
-				radiationInfo = RadiationMoleculeHandler.getInstance().handleRadiationMolecule(world, element, inventory, x, y, z);
+				radiationInfo = HandlerMoleculeDecay.getInstance().handleRadiationMolecule(world, element, inventory, x, y, z);
 			}
 			else if (item instanceof UniversalBucket) {
 				Fluid fluid = ((UniversalBucket) item).getFluid(element).getFluid();
-				if (fluid instanceof MinechemFluid) {
+				if (fluid instanceof FluidMinechem) {
 					MinechemChemicalType type = MinechemUtil.getChemicalTypeFromBucket(element);
 					if (type instanceof ElementEnum) {
 						//element.setItem(MinechemBucketHandler.getInstance().buckets.get(ModFluids.FLUID_ELEMENT_BLOCKS.get(ModFluids.FLUID_ELEMENTS.get(ElementEnum.getByID(((ElementEnum) type).atomicNumber())))));
@@ -179,7 +179,7 @@ public class RadiationHandler {
 						radiationInfo = ItemElement.initiateRadioactivity(element, world);
 					}
 					else {
-						radiationInfo = RadiationMoleculeHandler.getInstance().handleRadiationMoleculeBucket(world, element, inventory, x, y, z);
+						radiationInfo = HandlerMoleculeDecay.getInstance().handleRadiationMoleculeBucket(world, element, inventory, x, y, z);
 					}
 				}
 			}

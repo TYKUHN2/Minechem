@@ -9,10 +9,11 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 
 import minechem.api.RadiationInfo;
-import minechem.block.tile.RadiationFluidTileEntity;
+import minechem.block.tile.TileRadioactiveFluid;
 import minechem.init.ModConfig;
 import minechem.init.ModCreativeTab;
 import minechem.init.ModFluids;
+import minechem.init.ModGlobals;
 import minechem.init.ModItems;
 import minechem.init.ModRendering;
 import minechem.item.molecule.MoleculeEnum;
@@ -60,19 +61,17 @@ public class ItemMolecule extends ItemBase {
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ELEMENTS);
 		setHasSubtypes(true);
 		setUnlocalizedName("molecule");
-		setRegistryName("molecule");
+		setRegistryName(ModGlobals.ID + ":molecule");
 		ForgeRegistries.ITEMS.register(this);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerRenderer() {
-		//ModelRegistryHelper.registerItemRenderer(this, new MoleculeItemRenderer());
 		for (int i = 0; i < MoleculeEnum.molecules.values().size(); i++) {
 			MoleculeEnum molecule = MoleculeEnum.molecules.get(i);
 			if (molecule != null) {
 				ModelLoader.setCustomModelResourceLocation(this, molecule.id(), ModRendering.ITEM_MOLECULE_LOC);
-				//ModRendering.setItemTEISR(this, new MoleculeItemRenderer(), i, ModRendering.ITEM_ELEMENT_LOC);
 			}
 		}
 	}
@@ -335,8 +334,8 @@ public class ItemMolecule extends ItemBase {
 			}
 			world.setBlockState(pos, block.getStateFromMeta(0), 3);
 			TileEntity tile = world.getTileEntity(pos);
-			if (radioactivity.isRadioactive() && tile instanceof RadiationFluidTileEntity) {
-				((RadiationFluidTileEntity) tile).info = radioactivity;
+			if (radioactivity.isRadioactive() && tile instanceof TileRadioactiveFluid) {
+				((TileRadioactiveFluid) tile).info = radioactivity;
 			}
 		}
 		return itemStack;

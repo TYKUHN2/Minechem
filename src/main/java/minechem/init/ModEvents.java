@@ -9,6 +9,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.collect.ImmutableList;
 
 import minechem.api.IOreDictionaryHandler;
+import minechem.api.recipe.ISynthesisRecipe;
+import minechem.block.fluid.BlockFluidMinechem;
 import minechem.client.model.generated.CharacterSprite;
 import minechem.client.model.generated.ItemLayerWrapper;
 import minechem.client.model.generated.ModelProperties.PerspectiveProperties;
@@ -17,9 +19,8 @@ import minechem.client.render.ElementItemRenderer;
 import minechem.event.RadiationDecayEvent;
 import minechem.fluid.FluidElement;
 import minechem.fluid.FluidMolecule;
-import minechem.fluid.MinechemFluidBlock;
 import minechem.fluid.reaction.ChemicalFluidReactionHandler;
-import minechem.handler.RadiationHandler;
+import minechem.handler.HandlerElementDecay;
 import minechem.init.ModGlobals.Textures;
 import minechem.item.ItemElement;
 import minechem.item.element.ElementEnum;
@@ -149,7 +150,7 @@ public class ModEvents {
 	public void tick(TickEvent.PlayerTickEvent event) {
 		if (event.side == Side.SERVER && event.phase == TickEvent.Phase.START) {
 			EntityPlayer player = event.player;
-			RadiationHandler.getInstance().update(player);
+			HandlerElementDecay.getInstance().update(player);
 		}
 	}
 
@@ -242,8 +243,13 @@ public class ModEvents {
 	}
 
 	@SubscribeEvent
-	public void onRecipeRegister(RegistryEvent.Register<IRecipe> event) {
+	public void onIRecipeRegister(RegistryEvent.Register<IRecipe> event) {
 		ModRecipes.registerCustomRecipes(event.getRegistry());
+	}
+
+	@SubscribeEvent
+	public void onISynthesisRecipeRegister(RegistryEvent.Register<ISynthesisRecipe> event) {
+		ModRecipes.registerSynthesisRecipes();
 	}
 
 	@SubscribeEvent
@@ -270,7 +276,7 @@ public class ModEvents {
 		if (player.isInsideOfMaterial(Material.WATER) && !player.isCreative() && !player.isSpectator()) {
 			double d0 = player.posY + player.getEyeHeight();
 			BlockPos blockpos = new BlockPos(player.posX, d0, player.posZ);
-			if (!(world.getBlockState(blockpos).getBlock() instanceof MinechemFluidBlock)) {
+			if (!(world.getBlockState(blockpos).getBlock() instanceof BlockFluidMinechem)) {
 				return;
 			}
 			GlStateManager.setFog(GlStateManager.FogMode.EXP);
@@ -288,11 +294,11 @@ public class ModEvents {
 		if (player.isInsideOfMaterial(Material.WATER) && !player.isCreative() && !player.isSpectator()) {
 			double d0 = player.posY + player.getEyeHeight();
 			BlockPos blockpos = new BlockPos(player.posX, d0, player.posZ);
-			if (!(world.getBlockState(blockpos).getBlock() instanceof MinechemFluidBlock)) {
+			if (!(world.getBlockState(blockpos).getBlock() instanceof BlockFluidMinechem)) {
 				return;
 			}
 			Color color = new Color(1.0F, 1.0F, 1.0F, 1.0F);
-			MinechemFluidBlock fluidBlock = (MinechemFluidBlock) world.getBlockState(blockpos).getBlock();
+			BlockFluidMinechem fluidBlock = (BlockFluidMinechem) world.getBlockState(blockpos).getBlock();
 			if (fluidBlock.getFluid() instanceof FluidElement) {
 				color = new Color(((FluidElement) fluidBlock.getFluid()).getColor());
 			}
@@ -317,11 +323,11 @@ public class ModEvents {
 			if (player.isInsideOfMaterial(Material.WATER) && !player.isCreative() && !player.isSpectator()) {
 				double d0 = player.posY + player.getEyeHeight();
 				BlockPos blockpos = new BlockPos(player.posX, d0, player.posZ);
-				if (!(world.getBlockState(blockpos).getBlock() instanceof MinechemFluidBlock)) {
+				if (!(world.getBlockState(blockpos).getBlock() instanceof BlockFluidMinechem)) {
 					return;
 				}
 				Color color = new Color(1.0F, 1.0F, 1.0F, 1.0F);
-				MinechemFluidBlock fluidBlock = (MinechemFluidBlock) world.getBlockState(blockpos).getBlock();
+				BlockFluidMinechem fluidBlock = (BlockFluidMinechem) world.getBlockState(blockpos).getBlock();
 				if (fluidBlock.getFluid() instanceof FluidElement) {
 					color = new Color(((FluidElement) fluidBlock.getFluid()).getColor());
 				}

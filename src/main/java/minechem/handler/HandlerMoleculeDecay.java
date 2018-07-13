@@ -27,13 +27,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class RadiationMoleculeHandler {
+public class HandlerMoleculeDecay {
 
-	private static RadiationMoleculeHandler instance = null;
+	private static HandlerMoleculeDecay instance = null;
 
-	public static RadiationMoleculeHandler getInstance() {
+	public static HandlerMoleculeDecay getInstance() {
 		if (instance == null) {
-			instance = new RadiationMoleculeHandler();
+			instance = new HandlerMoleculeDecay();
 		}
 
 		return instance;
@@ -42,7 +42,7 @@ public class RadiationMoleculeHandler {
 	private final Map<MoleculeEnum, PotionChemical[]> decayedMoleculesPre;
 	private final Map<MoleculeEnum, PotionChemical[]> decayedMoleculesCache;
 
-	private RadiationMoleculeHandler() {
+	private HandlerMoleculeDecay() {
 		decayedMoleculesCache = new WeakHashMap<MoleculeEnum, PotionChemical[]>();
 		decayedMoleculesPre = new WeakHashMap<MoleculeEnum, PotionChemical[]>();
 		initDecayedMoleculesPre();

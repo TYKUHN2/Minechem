@@ -7,7 +7,7 @@ import minechem.item.MinechemChemicalType;
 import minechem.item.molecule.MoleculeEnum;
 import net.minecraft.item.ItemStack;
 
-public class FluidMolecule extends MinechemFluid {
+public class FluidMolecule extends FluidMinechem {
 
 	public final MoleculeEnum molecule;
 	private final int color;

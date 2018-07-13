@@ -300,7 +300,7 @@ public class RecipeHandlerSynthesis {
 		return getShapelessRecipe(MinechemUtil.chemicalToItemStack(recipeOutput, amount));
 	}
 
-	public static void createAndAddRecipeSafely(String item, boolean shaped, int energyCost, PotionChemical... chemicals) {
+	public static void addShapelessOreDictRecipe(String item, int energyCost, PotionChemical... chemicals) {
 		List<ItemStack> oreDictEntries = OreDictionary.getOres(item);
 		int entry = 0;
 		for (Iterator<ItemStack> itr = oreDictEntries.iterator(); itr.hasNext() && entry < 8; entry++) {
@@ -310,6 +310,19 @@ public class RecipeHandlerSynthesis {
 			}
 			ItemStack ore = itr.next();
 			addShapelessRecipe(ore.getItem().getUnlocalizedName(), energyCost, new ItemStack(ore.getItem(), 1, ore.getItemDamage()), val);
+		}
+	}
+
+	public static void addShapedOreDictRecipe(String item, int energyCost, PotionChemical... chemicals) {
+		List<ItemStack> oreDictEntries = OreDictionary.getOres(item);
+		int entry = 0;
+		for (Iterator<ItemStack> itr = oreDictEntries.iterator(); itr.hasNext() && entry < 8; entry++) {
+			PotionChemical[] val = new PotionChemical[9];
+			for (int i = 0; i < chemicals.length; i++) {
+				val[(i + entry) % 9] = chemicals[i];
+			}
+			ItemStack ore = itr.next();
+			addShapedRecipe(ore.getItem().getUnlocalizedName(), energyCost, new ItemStack(ore.getItem(), 1, ore.getItemDamage()), (Object[]) val);
 		}
 	}
 

@@ -7,8 +7,8 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 
 import minechem.api.ICustomRenderer;
-import minechem.fluid.FluidBlockElement;
-import minechem.fluid.FluidBlockMolecule;
+import minechem.block.fluid.BlockFluidElement;
+import minechem.block.fluid.BlockFluidMolecule;
 import minechem.fluid.FluidElement;
 import minechem.fluid.FluidMolecule;
 import minechem.item.MatterState;
@@ -38,7 +38,7 @@ public class ModFluids {
 			if (element != null && (element.roomState() == MatterState.LIQUID || element.roomState() == MatterState.GAS)) {
 				FluidElement fluid = (FluidElement) createFluid(element);
 				FLUID_ELEMENTS.put(element, fluid);
-				FLUID_ELEMENT_BLOCKS.put(fluid, new FluidBlockElement(fluid));
+				FLUID_ELEMENT_BLOCKS.put(fluid, new BlockFluidElement(fluid));
 			}
 		}
 		for (MoleculeEnum molecule : MoleculeEnum.molecules.values()) {
@@ -52,7 +52,7 @@ public class ModFluids {
 				else {
 					FluidMolecule fluid = (FluidMolecule) createFluid(molecule);
 					FLUID_MOLECULES.put(molecule, fluid);
-					FluidBlockMolecule fluidBlock = new FluidBlockMolecule(fluid);
+					BlockFluidMolecule fluidBlock = new BlockFluidMolecule(fluid);
 					FLUID_MOLECULE_BLOCKS.put(fluid, fluidBlock);
 				}
 			}
@@ -61,12 +61,12 @@ public class ModFluids {
 
 	public static void initModels() {
 		for (Block block : FLUID_ELEMENT_BLOCKS.values()) {
-			if (block instanceof FluidBlockElement) {
+			if (block instanceof BlockFluidElement) {
 				((ICustomRenderer) block).registerRenderer();
 			}
 		}
 		for (Block block : FLUID_MOLECULE_BLOCKS.values()) {
-			if (block instanceof FluidBlockMolecule) {
+			if (block instanceof BlockFluidMolecule) {
 				((ICustomRenderer) block).registerRenderer();
 			}
 		}

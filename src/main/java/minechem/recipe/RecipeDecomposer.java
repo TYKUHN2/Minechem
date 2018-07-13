@@ -82,7 +82,7 @@ public class RecipeDecomposer {
 		}
 	}
 
-	public static void createAndAddRecipeSafely(String item, PotionChemical... chemicals) {
+	public static void addOreDictRecipe(String item, PotionChemical... chemicals) {
 		if (chemicals.length > 0) {
 			for (ItemStack i : OreDictionary.getOres(item)) {
 				RecipeDecomposer.add(new RecipeDecomposer(new ItemStack(i.getItem(), 1, i.getItemDamage()), chemicals));

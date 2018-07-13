@@ -10,14 +10,12 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class GuiFakeSlot extends Gui {
 
 	private Minecraft mc;
 	private GuiContainerTabbed parentContainer;
 	private EntityPlayer player;
-	//private int parentWidth, parentHeight;
 	private int xPos, yPos;
 	private int xOffset = 0;
 	private int yOffset = 0;
@@ -28,10 +26,8 @@ public class GuiFakeSlot extends Gui {
 
 	public GuiFakeSlot(GuiContainerTabbed parentContainer, EntityPlayer player) {
 		this.parentContainer = parentContainer;
-		//parentWidth = parentContainer.getXSize();
-		//parentHeight = parentContainer.getYSize();
 		this.player = player;
-		mc = FMLClientHandler.instance().getClient();
+		mc = Minecraft.getMinecraft();
 	}
 
 	private int mouseX() {

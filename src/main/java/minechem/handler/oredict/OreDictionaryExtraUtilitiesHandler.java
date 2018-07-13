@@ -29,9 +29,9 @@ public class OreDictionaryExtraUtilitiesHandler implements IOreDictionaryHandler
 	public void handle(String oreName) {
 		switch (blockList.indexOf(oreName)) {
 		case BURNT_QUARTZ:
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, new Molecule(MoleculeEnum.siliconDioxide, 4), new Molecule(MoleculeEnum.arsenicOxide, 1), new Molecule(MoleculeEnum.galliumOxide, 1));
+			RecipeDecomposer.addOreDictRecipe(oreName, new Molecule(MoleculeEnum.siliconDioxide, 4), new Molecule(MoleculeEnum.arsenicOxide, 1), new Molecule(MoleculeEnum.galliumOxide, 1));
 		case ICE_STONE:
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, new Molecule(MoleculeEnum.water, 4));
+			RecipeDecomposer.addOreDictRecipe(oreName, new Molecule(MoleculeEnum.water, 4));
 		}
 	}
 

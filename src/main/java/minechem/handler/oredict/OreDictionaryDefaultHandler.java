@@ -64,42 +64,42 @@ public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 
 		switch (prefix) {
 		case oreNether:
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, scaleFloor(ore.getComposition(), 6d));
+			RecipeDecomposer.addOreDictRecipe(oreName, scaleFloor(ore.getComposition(), 6d));
 			break;
 		case ore:
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, scaleFloor(ore.getComposition(), 3d));
+			RecipeDecomposer.addOreDictRecipe(oreName, scaleFloor(ore.getComposition(), 3d));
 			break;
 		case ingot:
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, ore.getComposition());
+			RecipeDecomposer.addOreDictRecipe(oreName, ore.getComposition());
 			if (!haveSeen(ore, EnumOrePrefix.dust) && !haveSeen(ore, EnumOrePrefix.dustSmall)) {
-				RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, false, ModRecipes.COST_INGOT, ore.getComposition());
+				RecipeHandlerSynthesis.addShapelessOreDictRecipe(oreName, ModRecipes.COST_INGOT, ore.getComposition());
 				registeredIngots.put(ore, oreName);
 			}
 			break;
 
 		case nugget:
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, scaleFloor(ore.getComposition(), 1d / 9d));
+			RecipeDecomposer.addOreDictRecipe(oreName, scaleFloor(ore.getComposition(), 1d / 9d));
 			break;
 		case dust:
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, ore.getComposition());
+			RecipeDecomposer.addOreDictRecipe(oreName, ore.getComposition());
 			//unregisterIngot(ore);
-			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, ModRecipes.COST_INGOT, startAtRow(2, ore.getComposition()));
+			RecipeHandlerSynthesis.addShapedOreDictRecipe(oreName, ModRecipes.COST_INGOT, startAtRow(2, ore.getComposition()));
 			break;
 		case dustDirty:
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, scaleFloor(ore.getComposition(), 0.75d));
+			RecipeDecomposer.addOreDictRecipe(oreName, scaleFloor(ore.getComposition(), 0.75d));
 			break;
 		case plate:
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, ore.getComposition());
+			RecipeDecomposer.addOreDictRecipe(oreName, ore.getComposition());
 			break;
 		case dustSmall:
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, scaleFloor(ore.getComposition(), 0.25d));
+			RecipeDecomposer.addOreDictRecipe(oreName, scaleFloor(ore.getComposition(), 0.25d));
 			//unregisterIngot(ore);
-			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, false, ModRecipes.COST_INGOT / 4, scaleCeil(ore.getComposition(), 0.25d));
+			RecipeHandlerSynthesis.addShapelessOreDictRecipe(oreName, ModRecipes.COST_INGOT / 4, scaleCeil(ore.getComposition(), 0.25d));
 			break;
 		case crystal:
 		case gem:
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, ore.getComposition());
-			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, ModRecipes.COST_GEM, startAtRow(2, ore.getComposition()));
+			RecipeDecomposer.addOreDictRecipe(oreName, ore.getComposition());
+			RecipeHandlerSynthesis.addShapedOreDictRecipe(oreName, ModRecipes.COST_GEM, startAtRow(2, ore.getComposition()));
 			break;
 		default:
 			ModLogger.debug(OreDictionaryDefaultHandler.class.getSimpleName() + " : Invalid ore dictionary type.");

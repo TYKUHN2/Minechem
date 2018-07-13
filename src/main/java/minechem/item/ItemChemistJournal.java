@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import minechem.Minechem;
 import minechem.init.ModCreativeTab;
+import minechem.init.ModGlobals;
 import minechem.init.ModGuiHandler;
 import minechem.utils.MinechemUtil;
 import net.minecraft.client.util.ITooltipFlag;
@@ -31,7 +32,7 @@ public class ItemChemistJournal extends ItemBase {
 
 	public ItemChemistJournal() {
 		setUnlocalizedName("chemist_journal");
-		setRegistryName("chemist_journal");
+		setRegistryName(ModGlobals.ID + ":chemist_journal");
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		ForgeRegistries.ITEMS.register(this);
 	}

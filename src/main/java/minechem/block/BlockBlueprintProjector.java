@@ -6,6 +6,7 @@ import minechem.block.tile.TileBlueprintProjector;
 import minechem.client.render.RenderBlueprintProjector;
 import minechem.client.render.RenderBlueprintProjector.ItemRenderBlueprintProjector;
 import minechem.init.ModCreativeTab;
+import minechem.init.ModGlobals;
 import minechem.init.ModGlobals.Textures;
 import minechem.init.ModRendering;
 import minechem.item.blueprint.ItemBlueprint;
@@ -41,7 +42,7 @@ public class BlockBlueprintProjector extends BlockSimpleContainer {
 	public BlockBlueprintProjector() {
 		super(Material.IRON);
 		setUnlocalizedName("blueprint_projector");
-		setRegistryName("blueprint_projector");
+		setRegistryName(ModGlobals.ID + ":blueprint_projector");
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		setLightLevel(0.7F);
 		ForgeRegistries.BLOCKS.register(this);

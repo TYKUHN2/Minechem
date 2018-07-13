@@ -2,6 +2,7 @@ package minechem.block;
 
 import minechem.api.ICustomRenderer;
 import minechem.init.ModCreativeTab;
+import minechem.init.ModGlobals;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -18,7 +19,7 @@ public class BlockUraniumOre extends Block implements ICustomRenderer {
 		super(Material.IRON);
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		setUnlocalizedName("uranium_ore");
-		setRegistryName("uranium_ore");
+		setRegistryName(ModGlobals.ID + ":uranium_ore");
 		setHardness(4F);
 		ForgeRegistries.BLOCKS.register(this);
 		ForgeRegistries.ITEMS.register(new ItemBlock(this).setRegistryName(getRegistryName()));

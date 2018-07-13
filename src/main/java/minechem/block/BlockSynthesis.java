@@ -7,6 +7,7 @@ import minechem.block.tile.TileSynthesis;
 import minechem.client.render.RenderSynthesis;
 import minechem.client.render.RenderSynthesis.ItemRenderSynthesis;
 import minechem.init.ModCreativeTab;
+import minechem.init.ModGlobals;
 import minechem.init.ModGlobals.Textures;
 import minechem.init.ModRendering;
 import net.minecraft.block.BlockHorizontal;
@@ -41,7 +42,7 @@ public class BlockSynthesis extends BlockSimpleContainer {
 
 	public BlockSynthesis() {
 		super(Material.IRON);
-		setRegistryName("chemical_synthesizer");
+		setRegistryName(ModGlobals.ID + ":chemical_synthesizer");
 		setUnlocalizedName("chemical_synthesizer");
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		ForgeRegistries.BLOCKS.register(this);

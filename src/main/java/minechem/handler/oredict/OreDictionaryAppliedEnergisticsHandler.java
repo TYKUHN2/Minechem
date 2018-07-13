@@ -123,28 +123,28 @@ public class OreDictionaryAppliedEnergisticsHandler implements IOreDictionaryHan
 	@Override
 	public void handle(String oreName) {
 		if (oreName.equals("dustCertusQuartz")) {
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, certusQuartzDecompositionFormula);
-			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, 30000, certusQuartzDustSynthesisFormula);
+			RecipeDecomposer.addOreDictRecipe(oreName, certusQuartzDecompositionFormula);
+			RecipeHandlerSynthesis.addShapedOreDictRecipe(oreName, 30000, certusQuartzDustSynthesisFormula);
 		}
 		else if (oreName.equals("crystalCertusQuartz")) {
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, certusQuartzDecompositionFormula);
-			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, 30000, certusQuartzCrystalSynthesisFormula);
+			RecipeDecomposer.addOreDictRecipe(oreName, certusQuartzDecompositionFormula);
+			RecipeHandlerSynthesis.addShapedOreDictRecipe(oreName, 30000, certusQuartzCrystalSynthesisFormula);
 		}
 		else if (oreName.equals("crystalChargedCertusQuartz")) {
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, chargedCertusQuartzDecompositionFormula);
-			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, 30000, chargedCertusQuartzCrystalSynthesisFormula);
+			RecipeDecomposer.addOreDictRecipe(oreName, chargedCertusQuartzDecompositionFormula);
+			RecipeHandlerSynthesis.addShapedOreDictRecipe(oreName, 30000, chargedCertusQuartzCrystalSynthesisFormula);
 		}
 		else if (oreName.equals("crystalFluix")) {
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, fluixCertusQuartzDecompositionFormula);
-			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, 30000, fluixQuartzCrystalSynthesisFormula);
+			RecipeDecomposer.addOreDictRecipe(oreName, fluixCertusQuartzDecompositionFormula);
+			RecipeHandlerSynthesis.addShapedOreDictRecipe(oreName, 30000, fluixQuartzCrystalSynthesisFormula);
 		}
 		else if (oreName.equals("dustFluix")) {
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, fluixQuartzDustDecompositionFormula);
-			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, 30000, fluixQuartzDustSynthesisFormula);
+			RecipeDecomposer.addOreDictRecipe(oreName, fluixQuartzDustDecompositionFormula);
+			RecipeHandlerSynthesis.addShapedOreDictRecipe(oreName, 30000, fluixQuartzDustSynthesisFormula);
 		}
 		else if (oreName.equals("pearlFluix")) {
-			RecipeDecomposer.createAndAddRecipeSafely(oreName, fluixQuartzPearlDecompositionFormula);
-			RecipeHandlerSynthesis.createAndAddRecipeSafely(oreName, true, 30000, fluixQuartzPearlSynthesisFormula);
+			RecipeDecomposer.addOreDictRecipe(oreName, fluixQuartzPearlDecompositionFormula);
+			RecipeHandlerSynthesis.addShapedOreDictRecipe(oreName, 30000, fluixQuartzPearlSynthesisFormula);
 		}
 		else {
 			ModLogger.debug("Unknown type of AE2 item : " + oreName);
