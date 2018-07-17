@@ -67,6 +67,8 @@ config.uraniumoredensity=Uranium Ore Density
 config.worldgen.description=Configure how Minechem generates world features, like ore
 config.worldgen.ore.description=Should Minechem generate ore
 config.worldgen.ore.tooltip=Generate Ore
+config.worldgen.dimwhitelist.description=Numerial list of dimension Uranium Ore should generate in
+config.worldgen.dimwhitelist.tooltip=WorldGen Dim Whitelist
 config.power.energyPacketSize.description=Max RF/t consumption of Minechem machines
 config.power.energyPacketSize.max.name=Max RF consumption
 config.recursiveDepth.description=Recipe Recursion Depth (higher for more complex recipes)
@@ -116,9 +118,9 @@ minechem.hour.abbr=hr
 minechem.min.abbr=m
 minechem.sec.abbr=s
 minechem.unstable=unstable
-minechem.fusion_wall.name=Fusion Wall
+minechem.fusion_wall.name=Reactor Wall
 minechem.tungsten_plating.name=Tungsten Plating
-minechem.fusion_core.name=Fusion Core
+minechem.fusion_core.name=Reactor Core
 
 tile.chemical_decomposer.name=Chemical Decomposer
 tile.uranium_ore.name=Uranium Ore
@@ -139,10 +141,15 @@ item.fusionStar.name=Fusion Star
 item.name.testtube=Empty Test Tube
 item.name.periodicTable=Periodic Table of Elements
 item.chemist_journal.name=Chemist's Journal
+item.blueprint.name=Multiblock Blueprint
+item.blueprint.blank.desc=Blank
 item.name.blueprintFusion=Fusion Chamber Blueprint (WIP)
 item.name.blueprintFission=Fission Chamber Blueprint (WIP)
 item.name.chemistryUpgrade=Chemistry Turtle Module
 item.minechemBucket.name=Chemical Bucket
+
+blueprint.fusion.desc=Fusion Chamber
+blueprint.fission.desc=Fission Chamber
 
 element.property.solid=Solid
 element.property.gas=Gaseous

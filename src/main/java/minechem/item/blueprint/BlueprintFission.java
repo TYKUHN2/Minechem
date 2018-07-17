@@ -1,224 +1,61 @@
 package minechem.item.blueprint;
 
-import java.util.HashMap;
-
 import minechem.init.ModBlocks;
-import minechem.item.blueprint.BlueprintBlock.Type;
+import net.minecraft.block.state.IBlockState;
 
 public class BlueprintFission extends MinechemBlueprint {
 
-	private static int w = wildcard;
-	private static int A = 1;
-	private static int C = 2;
-	private static Integer[][][] structure = {
+	private static IBlockState w = air;
+	private static IBlockState A = ModBlocks.reactor.getStateFromMeta(0);
+	private static IBlockState C = ModBlocks.reactor.getStateFromMeta(1);
+	//@formatter:off
+	private static IBlockState[][][] structure = {
 			{
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					},
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					},
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					},
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					},
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					}
+					{C,C,C,C,C},
+					{C,C,C,C,C},
+					{C,C,C,C,C},
+					{C,C,C,C,C},
+					{C,C,C,C,C}
 			},
 			{
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					},
-					{
-							C,
-							w,
-							w,
-							w,
-							C
-					},
-					{
-							C,
-							w,
-							w,
-							w,
-							C
-					},
-					{
-							C,
-							w,
-							w,
-							w,
-							C
-					},
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					}
+					{C,C,C,C,C},
+					{C,w,w,w,C},
+					{C,w,w,w,C},
+					{C,w,w,w,C},
+					{C,C,C,C,C}
 			},
 			{
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					},
-					{
-							C,
-							w,
-							w,
-							w,
-							C
-					},
-					{
-							C,
-							w,
-							w,
-							w,
-							C
-					},
-					{
-							C,
-							w,
-							w,
-							w,
-							C
-					},
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					}
+					{C,C,C,C,C},
+					{C,w,w,w,C},
+					{C,w,A,w,C},
+					{C,w,w,w,C},
+					{C,C,C,C,C}
 			},
 			{
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					},
-					{
-							C,
-							w,
-							w,
-							w,
-							C
-					},
-					{
-							C,
-							w,
-							w,
-							w,
-							C
-					},
-					{
-							C,
-							w,
-							w,
-							w,
-							C
-					},
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					}
+					{C,C,C,C,C},
+					{C,w,w,w,C},
+					{C,w,w,w,C},
+					{C,w,w,w,C},
+					{C,C,C,C,C}
 			},
 			{
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					},
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					},
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					},
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					},
-					{
-							C,
-							C,
-							C,
-							C,
-							C
-					}
+					{C,C,C,C,C},
+					{C,C,C,C,C},
+					{C,C,C,C,C},
+					{C,C,C,C,C},
+					{C,C,C,C,C}
 			}
 
 	};
+	//@formatter:on
 
 	public BlueprintFission() {
-		super(5, 5, 5);
+		super("blueprint.fission.desc", structure[0][0].length, structure.length, structure[0].length);
 		name = "blueprint_fission";
 	}
 
 	@Override
-	public HashMap<Integer, BlueprintBlock> getBlockLookup() {
-		HashMap<Integer, BlueprintBlock> lookup = new HashMap<Integer, BlueprintBlock>();
-		lookup.put(A, new BlueprintBlock(ModBlocks.FUSION, 0, Type.PROXY));
-		lookup.put(C, new BlueprintBlock(ModBlocks.FUSION, 1, Type.PROXY));
-		return lookup;
-	}
-
-	@Override
-	public Integer[][][] getStructure() {
-		return structure;
-	}
-
-	@Override
-	public Integer[][][] getResultStructure() {
+	public IBlockState[][][] getStructure() {
 		return structure;
 	}
 
@@ -238,8 +75,8 @@ public class BlueprintFission extends MinechemBlueprint {
 	}
 
 	@Override
-	public BlueprintBlock getManagerBlock() {
-		return new BlueprintBlock(ModBlocks.FUSION, 3, Type.MANAGER);
+	public int getRenderScale() {
+		return 9;
 	}
 
 }

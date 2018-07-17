@@ -2,7 +2,7 @@ package minechem.utils;
 
 import minechem.init.ModGlobals;
 
-public class TimeHelper {
+public class TickTimeUtil {
 
 	public static String getTimeFromTicks(long ticks) {
 		if (ticks < 0) {

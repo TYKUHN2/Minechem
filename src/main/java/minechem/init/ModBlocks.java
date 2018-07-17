@@ -11,12 +11,12 @@ import minechem.block.BlockLeadedChest;
 import minechem.block.BlockMicroscope;
 import minechem.block.BlockSynthesis;
 import minechem.block.BlockUraniumOre;
-import minechem.block.tile.TileRadioactiveFluid;
 import minechem.block.tile.TileBlueprintProjector;
 import minechem.block.tile.TileDecomposer;
 import minechem.block.tile.TileEntityProxy;
 import minechem.block.tile.TileLeadedChest;
 import minechem.block.tile.TileMicroscope;
+import minechem.block.tile.TileRadioactiveFluid;
 import minechem.block.tile.TileSynthesis;
 import minechem.tileentity.multiblock.fission.FissionTileEntity;
 import minechem.tileentity.multiblock.fusion.FusionBlock;
@@ -42,7 +42,7 @@ public class ModBlocks {
 	public static Block synthesis;
 	public static Block ghostBlock;
 	public static Block blueprintProjector;
-	public static Block FUSION;
+	public static Block reactor;
 	public static Block printer;
 	public static Block leadChest;
 
@@ -64,8 +64,8 @@ public class ModBlocks {
 		GameRegistry.registerTileEntity(TileSynthesis.class, synthesis.getUnlocalizedName());
 
 		// Fusion Reactor.
-		BLOCK_LIST.add(FUSION = new FusionBlock());
-		GameRegistry.registerTileEntity(FusionTileEntity.class, FUSION.getUnlocalizedName());
+		BLOCK_LIST.add(reactor = new FusionBlock());
+		GameRegistry.registerTileEntity(FusionTileEntity.class, reactor.getUnlocalizedName());
 
 		// Ghost Block.
 		ghostBlock = new GhostBlock();

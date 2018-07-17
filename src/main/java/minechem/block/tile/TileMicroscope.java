@@ -4,12 +4,10 @@ import javax.annotation.Nullable;
 
 import minechem.api.recipe.ISynthesisRecipe;
 import minechem.init.ModItems;
-import minechem.inventory.InventoryBounded;
 import minechem.item.ItemChemistJournal;
 import minechem.recipe.RecipeDecomposer;
 import minechem.recipe.handler.RecipeHandlerDecomposer;
 import minechem.recipe.handler.RecipeHandlerSynthesis;
-import minechem.utils.Transactor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -26,11 +24,6 @@ public class TileMicroscope extends TileMinechemBase implements IInventory {
 	};
 
 	public boolean isShaped = true;
-
-	private final InventoryBounded inputInvetory = new InventoryBounded(this, kInput);
-	private final InventoryBounded journalInventory = new InventoryBounded(this, kJournal);
-	private Transactor inputTransactor = new Transactor(inputInvetory, 1);
-	private Transactor journalTransactor = new Transactor(journalInventory, 1);
 
 	public TileMicroscope() {
 		inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);

@@ -36,7 +36,7 @@ public class GuiDecomposer extends GuiContainerTabbed {
 	public void initGui() {
 		super.initGui();
 		buttonList.clear();
-		dumpButton = new GuiButton(0, 162, 44, 12, 12, "x");
+		dumpButton = new GuiButton(0, guiLeft + 37, guiTop + 17, 12, 12, "x");
 		buttonList.add(dumpButton);
 	}
 

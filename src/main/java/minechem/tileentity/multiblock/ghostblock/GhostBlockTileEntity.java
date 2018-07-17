@@ -3,81 +3,64 @@ package minechem.tileentity.multiblock.ghostblock;
 import javax.annotation.Nullable;
 
 import minechem.block.tile.TileMinechemBase;
-import minechem.init.ModConfig;
-import minechem.init.ModLogger;
-import minechem.init.ModNetworking;
-import minechem.item.blueprint.BlueprintBlock;
-import minechem.item.blueprint.MinechemBlueprint;
-import minechem.network.message.GhostBlockMessage;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GhostBlockTileEntity extends TileMinechemBase {
 
-	private MinechemBlueprint blueprint;
-	private int blockID;
+	private IBlockState bpState;
 
-	public void setBlueprintAndID(MinechemBlueprint blueprint, int blockID) {
-		setBlueprint(blueprint);
-		setBlockID(blockID);
-
-		BlueprintBlock bp = blueprint.getBlockLookup().get(this.blockID);
-
-		world.setBlockState(pos, bp.block.getStateFromMeta(bp.metadata), 3);
-		if (world != null && !world.isRemote) {
-			GhostBlockMessage message = new GhostBlockMessage(this);
-			ModNetworking.INSTANCE.sendToAllAround(message, new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), ModConfig.UpdateRadius));
-		}
+	public void setRenderedBlockState(IBlockState bpState) {
+		this.bpState = bpState;
 	}
 
-	public void setBlueprint(MinechemBlueprint blueprint) {
-		this.blueprint = blueprint;
-	}
-
-	public MinechemBlueprint getBlueprint() {
-		return blueprint;
-	}
-
-	public void setBlockID(int blockID) {
-		this.blockID = blockID;
-	}
-
-	public int getBlockID() {
-		return blockID;
+	public IBlockState getRenderedBlockState() {
+		return bpState;
 	}
 
 	public ItemStack getBlockAsItemStack() {
-		try {
-			BlueprintBlock blueprintBlock = blueprint.getBlockLookup().get(blockID);
-			if (blueprintBlock != null) {
-				return new ItemStack(blueprintBlock.block, 1, blueprintBlock.metadata);
-			}
-		}
-		catch (Exception e) {
-			ModLogger.debug("Block generated an exception at: " + pos.toString());
-		}
-		return ItemStack.EMPTY;
+		Block block = getRenderedBlockState().getBlock();
+		int meta = block.getMetaFromState(getRenderedBlockState());
+		return new ItemStack(block, 1, meta);
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
 		super.writeToNBT(nbtTagCompound);
-		if (blueprint != null) {
-			nbtTagCompound.setInteger("blueprintID", blueprint.id);
-		}
-
-		nbtTagCompound.setInteger("blockID", blockID);
+		nbtTagCompound.setString("blockID", getRenderedBlockState().getBlock().getRegistryName().toString());
+		nbtTagCompound.setInteger("blockMeta", getRenderedBlockState().getBlock().getMetaFromState(getRenderedBlockState()));
 		return nbtTagCompound;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTagCompound) {
 		super.readFromNBT(nbtTagCompound);
-		blockID = nbtTagCompound.getInteger("blockID");
-		int blueprintID = nbtTagCompound.getInteger("blueprintID");
-		blueprint = MinechemBlueprint.blueprints.get(blueprintID);
+		if (nbtTagCompound.hasKey("blockID") && nbtTagCompound.hasKey("blockMeta")) {
+			Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbtTagCompound.getString("blockID")));
+			if (block != null) {
+				setRenderedBlockState(block.getStateFromMeta(nbtTagCompound.getInteger("blockMeta")));
+			}
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public AxisAlignedBB getRenderBoundingBox() {
+		return INFINITE_EXTENT_AABB;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public double getMaxRenderDistanceSquared() {
+		return Double.MAX_VALUE;
 	}
 
 	@Override

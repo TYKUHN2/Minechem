@@ -69,7 +69,12 @@ public class RecipeDecomposer {
 		if (fluidStack == null || fluidStack.getFluid() == null) {
 			return null;
 		}
-		return get(MapKey.getKey(fluidStack));
+		RecipeDecomposer recipe = get(MapKey.getKey(fluidStack));
+		if (recipe instanceof RecipeDecomposerFluid) {
+			RecipeDecomposerFluid fluidRecipe = (RecipeDecomposerFluid) recipe;
+			return fluidStack.amount >= fluidRecipe.inputFluid.amount ? fluidRecipe : null;
+		}
+		return null;
 	}
 
 	public static RecipeDecomposer get(MapKey key) {

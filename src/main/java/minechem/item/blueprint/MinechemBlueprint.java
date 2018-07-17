@@ -1,103 +1,182 @@
 package minechem.item.blueprint;
 
-import java.util.HashMap;
+import minechem.api.IMinechemBlueprint;
+import minechem.utils.MinechemUtil;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public abstract class MinechemBlueprint
-{
+public abstract class MinechemBlueprint extends IForgeRegistryEntry.Impl<IMinechemBlueprint> implements IMinechemBlueprint {
 
-    public static final int wildcard = -1;
-    public static final int air = 0;
-    public static HashMap<Integer, MinechemBlueprint> blueprints = new HashMap<Integer, MinechemBlueprint>();
-    public static MinechemBlueprint fusion;
-    public static MinechemBlueprint fission;
+	public static final String BLUEPRINT_NBT_KEY = "Blueprint";
 
-    public int xSize;
-    public int ySize;
-    public int zSize;
-    private int totalSize;
-    private int horizontalSize;
-    private int verticalSize;
-    public String name;
-    public int id;
+	public static final IBlockState air = Blocks.AIR.getDefaultState();
 
-    public static void registerBlueprint(int id, MinechemBlueprint blueprint)
-    {
-        blueprint.id = id;
-        blueprints.put(id, blueprint);
-    }
+	private int xSize;
+	private int ySize;
+	private int zSize;
+	public String name;
+	private final String langKey;
 
-    public static void registerBlueprints()
-    {
-        fusion = new BlueprintFusion();
-        registerBlueprint(0, fusion);
-        fission = new BlueprintFission();
-        registerBlueprint(1, fission);
-    }
+	public MinechemBlueprint(String langKey, int xSize, int ySize, int zSize) {
+		this.xSize = xSize;
+		this.ySize = ySize;
+		this.zSize = zSize;
+		this.langKey = langKey;
+	}
 
-    public MinechemBlueprint(int xSize, int ySize, int zSize)
-    {
-        this.xSize = xSize;
-        this.ySize = ySize;
-        this.zSize = zSize;
-        this.horizontalSize = xSize * zSize;
-        this.verticalSize = ySize * zSize;
-        this.totalSize = this.horizontalSize * ySize;
-    }
+	@Override
+	public String getDescriptiveName() {
+		return MinechemUtil.getLocalString(langKey);
+	}
 
-    public Integer[][] getHorizontalSlice(int y)
-    {
-        Integer[][][] structure = getStructure();
-        Integer[][] slice = new Integer[xSize][zSize];
-        for (int x = 0; x < xSize; x++)
-        {
-            for (int z = 0; z < zSize; z++)
-            {
-                slice[x][z] = structure[y][x][z];
-            }
-        }
-        return slice;
-    }
+	@Override
+	public IBlockState[][] getHorizontalSlice(int y) {
+		IBlockState[][][] structure = getStructure();
+		IBlockState[][] slice = new IBlockState[xSize][zSize];
+		for (int x = 0; x < xSize; x++) {
+			for (int z = 0; z < zSize; z++) {
+				slice[x][z] = structure[y][x][z];
+			}
+		}
+		return slice;
+	}
 
-    public Integer[][] getVerticalSlice(int x)
-    {
-        Integer[][][] structure = getStructure();
-        Integer[][] slice = new Integer[ySize][zSize];
-        for (int y = 0; y < ySize; y++)
-        {
-            for (int z = 0; z < zSize; z++)
-            {
-                slice[y][z] = structure[y][x][z];
-            }
-        }
-        return slice;
-    }
+	@Override
+	public IBlockState[][] getVerticalSlice(int x) {
+		IBlockState[][][] structure = getStructure();
+		IBlockState[][] slice = new IBlockState[ySize][zSize];
+		for (int y = 0; y < ySize; y++) {
+			for (int z = 0; z < zSize; z++) {
+				slice[y][z] = structure[y][x][z];
+			}
+		}
+		return slice;
+	}
 
-    public int getHorizontalSliceSize()
-    {
-        return this.horizontalSize;
-    }
+	@Override
+	public int xSize() {
+		return xSize;
+	}
 
-    public int getVerticalSliceSize()
-    {
-        return this.verticalSize;
-    }
+	@Override
+	public int ySize() {
+		return ySize;
+	}
 
-    public int getTotalSize()
-    {
-        return this.totalSize;
-    }
+	@Override
+	public int zSize() {
+		return zSize;
+	}
 
-    public abstract HashMap<Integer, BlueprintBlock> getBlockLookup();
+	@Override
+	public int getTotalSize() {
+		return (xSize * zSize) * ySize;
+	}
 
-    public abstract Integer[][][] getStructure();
+	@Override
+	public abstract IBlockState[][][] getStructure();
 
-    public abstract Integer[][][] getResultStructure();
+	@Override
+	public abstract int getManagerPosX();
 
-    public abstract int getManagerPosX();
+	@Override
+	public abstract int getManagerPosY();
 
-    public abstract int getManagerPosY();
+	@Override
+	public abstract int getManagerPosZ();
 
-    public abstract int getManagerPosZ();
+	public static class MinechemBlueprintCallbacks implements IForgeRegistry.MissingFactory<IMinechemBlueprint> {
 
-    public abstract BlueprintBlock getManagerBlock();
+		public static final MinechemBlueprintCallbacks INSTANCE = new MinechemBlueprintCallbacks();
+
+		@Override
+		public IMinechemBlueprint createMissing(ResourceLocation key, boolean isNetwork) {
+			return isNetwork ? new DummyBlueprint().setRegistryName(key) : null;
+		}
+
+		private static class DummyBlueprint implements IMinechemBlueprint {
+
+			private ResourceLocation name;
+
+			@Override
+			public IMinechemBlueprint setRegistryName(ResourceLocation name) {
+				this.name = name;
+				return this;
+			}
+
+			@Override
+			public ResourceLocation getRegistryName() {
+				return name;
+			}
+
+			@Override
+			public Class<IMinechemBlueprint> getRegistryType() {
+				return IMinechemBlueprint.class;
+			}
+
+			@Override
+			public IBlockState[][] getHorizontalSlice(int y) {
+				return new IBlockState[0][0];
+			}
+
+			@Override
+			public IBlockState[][] getVerticalSlice(int x) {
+				return new IBlockState[0][0];
+			}
+
+			@Override
+			public int getTotalSize() {
+				return 0;
+			}
+
+			@Override
+			public IBlockState[][][] getStructure() {
+				return new IBlockState[0][0][0];
+			}
+
+			@Override
+			public int getManagerPosX() {
+				return 0;
+			}
+
+			@Override
+			public int getManagerPosY() {
+				return 0;
+			}
+
+			@Override
+			public int getManagerPosZ() {
+				return 0;
+			}
+
+			@Override
+			public int xSize() {
+				return 0;
+			}
+
+			@Override
+			public int ySize() {
+				return 0;
+			}
+
+			@Override
+			public int zSize() {
+				return 0;
+			}
+
+			@Override
+			public String getDescriptiveName() {
+				return "blueprint.dummy.desc";
+			}
+
+			@Override
+			public int getRenderScale() {
+				return 0;
+			}
+		}
+	}
+
 }

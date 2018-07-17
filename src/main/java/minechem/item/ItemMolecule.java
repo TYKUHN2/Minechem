@@ -21,7 +21,7 @@ import minechem.potion.PharmacologyEffect;
 import minechem.potion.PharmacologyEffectRegistry;
 import minechem.radiation.RadiationEnum;
 import minechem.utils.MinechemUtil;
-import minechem.utils.TimeHelper;
+import minechem.utils.TickTimeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.color.IItemColor;
@@ -120,7 +120,7 @@ public class ItemMolecule extends ItemBase {
 		String timeLeft = "";
 		if (RadiationInfo.getRadioactivity(itemstack) != RadiationEnum.stable && itemstack.getTagCompound() != null) {
 			long worldTime = world.getTotalWorldTime();
-			timeLeft = TimeHelper.getTimeFromTicks(RadiationInfo.getRadioactivity(itemstack).getLife() - (worldTime - itemstack.getTagCompound().getLong("decayStart")));
+			timeLeft = TickTimeUtil.getTimeFromTicks(RadiationInfo.getRadioactivity(itemstack).getLife() - (worldTime - itemstack.getTagCompound().getLong("decayStart")));
 		}
 		list.add(radioactivityColor + radioactiveName + (timeLeft.equals("") ? "" : " (" + timeLeft + ")"));
 		list.add(getRoomState(itemstack));

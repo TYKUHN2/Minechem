@@ -20,7 +20,7 @@ import minechem.item.molecule.MoleculeEnum;
 import minechem.item.polytool.PolytoolHelper;
 import minechem.radiation.RadiationEnum;
 import minechem.utils.MinechemUtil;
-import minechem.utils.TimeHelper;
+import minechem.utils.TickTimeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -128,7 +128,7 @@ public class ItemElement extends ItemBase {
 		if (RadiationInfo.getRadioactivity(itemstack) != RadiationEnum.stable && itemstack.getTagCompound() != null) {
 			long worldTime = world.getTotalWorldTime();
 			long ticks = RadiationInfo.getRadioactivity(itemstack).getLife() - (worldTime - itemstack.getTagCompound().getLong("decayStart"));
-			timeLeft = TimeHelper.getTimeFromTicks(ticks);
+			timeLeft = TickTimeUtil.getTimeFromTicks(ticks);
 		}
 		list.add(radioactivityColor + radioactiveName + (timeLeft.equals("") ? "" : " (" + timeLeft + ")"));
 		list.add(getClassification(itemstack));

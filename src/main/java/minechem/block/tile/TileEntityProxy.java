@@ -76,7 +76,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 		}
 
 		// Return the entire fusion generator as a whole (indicating the structure is complete).
-		if (world.getBlockState(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset)) == ModBlocks.FUSION) {
+		if (world.getBlockState(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset)) == ModBlocks.reactor) {
 			manager = buildManagerBlock();
 			return manager;
 		}
@@ -93,7 +93,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 			fusion.setWorld(world);
 			fusion.setPos(new BlockPos(managerXOffset + pos.getX(), managerYOffset + pos.getY(), managerZOffset + pos.getZ()));
 
-			fusion.setBlockType(ModBlocks.FUSION);
+			fusion.setBlockType(ModBlocks.reactor);
 			world.setTileEntity(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset), fusion);
 		}
 
@@ -102,7 +102,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 			FissionTileEntity fission = new FissionTileEntity();
 			fission.setWorld(world);
 			fission.setPos(new BlockPos(managerXOffset + pos.getX(), managerYOffset + pos.getY(), managerZOffset + pos.getZ()));
-			fission.setBlockType(ModBlocks.FUSION);
+			fission.setBlockType(ModBlocks.reactor);
 			world.setTileEntity(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset), fission);
 		}
 		return world.getTileEntity(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset));

@@ -8,9 +8,12 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.collect.ImmutableList;
 
+import minechem.api.IMinechemBlueprint;
 import minechem.api.IOreDictionaryHandler;
 import minechem.api.recipe.ISynthesisRecipe;
 import minechem.block.fluid.BlockFluidMinechem;
+import minechem.block.tile.TileBlueprintProjector;
+import minechem.client.gui.GuiBlueprintProjector;
 import minechem.client.model.generated.CharacterSprite;
 import minechem.client.model.generated.ItemLayerWrapper;
 import minechem.client.model.generated.ModelProperties.PerspectiveProperties;
@@ -27,8 +30,11 @@ import minechem.item.element.ElementEnum;
 import minechem.item.molecule.MoleculeEnum;
 import minechem.potion.PharmacologyEffectRegistry;
 import minechem.potion.PotionEnchantmentCoated;
+import minechem.utils.BlueprintUtil;
+import minechem.utils.BlueprintUtil.MultiblockBlockAccess;
+import minechem.utils.BlueprintUtil.MultiblockRenderInfo;
 import minechem.utils.MinechemUtil;
-import minechem.utils.TimeHelper;
+import minechem.utils.TickTimeUtil;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -65,6 +71,7 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.LootTableLoadEvent;
@@ -245,6 +252,7 @@ public class ModEvents {
 	@SubscribeEvent
 	public void onIRecipeRegister(RegistryEvent.Register<IRecipe> event) {
 		ModRecipes.registerCustomRecipes(event.getRegistry());
+		ModRecipes.registerRecipes();
 	}
 
 	@SubscribeEvent
@@ -263,8 +271,46 @@ public class ModEvents {
 	}
 
 	@SubscribeEvent
+	public void onBlueprintRegister(RegistryEvent.Register<IMinechemBlueprint> event) {
+		ModBlueprints.registerBlueprints();
+	}
+
+	@SubscribeEvent
 	public void onRegistryRegister(RegistryEvent.NewRegistry event) {
 		new ModRegistries();
+	}
+
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void afterWorldRender(RenderWorldLastEvent event) {
+
+	}
+
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void onClientTick(TickEvent.ClientTickEvent event) {
+		if (Minecraft.getMinecraft().currentScreen instanceof GuiBlueprintProjector) {
+			if (((GuiBlueprintProjector) Minecraft.getMinecraft().currentScreen).getProjector() != null) {
+				TileBlueprintProjector projector = ((GuiBlueprintProjector) Minecraft.getMinecraft().currentScreen).getProjector();
+				if (projector.hasBlueprint()) {
+					if (BlueprintUtil.blockAccess == null || (!BlueprintUtil.blockAccess.data.multiblock.getDescriptiveName().equals(projector.getBlueprint().getDescriptiveName()))) {
+						BlueprintUtil.blockAccess = new MultiblockBlockAccess(new MultiblockRenderInfo(projector.getBlueprint()));
+					}
+					int totalLayers = BlueprintUtil.blockAccess.data.structureHeight;
+					if (BlueprintUtil.structureRenderTicks >= 20) {
+						BlueprintUtil.structureRenderTicks = 0;
+						++BlueprintUtil.currentLayer;
+						if (BlueprintUtil.currentLayer > totalLayers) {
+							BlueprintUtil.currentLayer = 0;
+						}
+						BlueprintUtil.blockAccess.data.setShowLayer(BlueprintUtil.currentLayer);
+					}
+					else {
+						BlueprintUtil.structureRenderTicks++;
+					}
+				}
+			}
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -391,7 +437,7 @@ public class ModEvents {
 		if (event.getPlayer() != null) {
 			String nameBeforeDecay = event.getLongName(event.getBefore());
 			String nameAfterDecay = event.getLongName(event.getAfter());
-			String time = TimeHelper.getTimeFromTicks(event.getTime());
+			String time = TickTimeUtil.getTimeFromTicks(event.getTime());
 			String message = String.format("Radiation Warning: Element %s decayed into %s after %s.", nameBeforeDecay, nameAfterDecay, time);
 			event.getPlayer().sendMessage(new TextComponentString(message));
 		}

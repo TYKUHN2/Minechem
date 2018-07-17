@@ -5,7 +5,6 @@ import java.awt.Rectangle;
 import minechem.client.gui.GuiContainerTabbed;
 import minechem.init.ModGlobals.ModResources;
 import minechem.init.ModLogger;
-import minechem.utils.SessionVars;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
@@ -173,11 +172,11 @@ public abstract class GuiTab {
 
 		if (open) {
 			open = false;
-			SessionVars.setOpenedTab(null);
+			GuiContainerTabbed.setOpenedTab(null);
 		}
 		else {
 			open = true;
-			SessionVars.setOpenedTab(this.getClass());
+			GuiContainerTabbed.setOpenedTab(this.getClass());
 		}
 	}
 

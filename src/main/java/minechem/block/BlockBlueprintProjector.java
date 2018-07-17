@@ -2,6 +2,8 @@ package minechem.block;
 
 import java.util.ArrayList;
 
+import minechem.Minechem;
+import minechem.api.IMinechemBlueprint;
 import minechem.block.tile.TileBlueprintProjector;
 import minechem.client.render.RenderBlueprintProjector;
 import minechem.client.render.RenderBlueprintProjector.ItemRenderBlueprintProjector;
@@ -9,8 +11,7 @@ import minechem.init.ModCreativeTab;
 import minechem.init.ModGlobals;
 import minechem.init.ModGlobals.Textures;
 import minechem.init.ModRendering;
-import minechem.item.blueprint.ItemBlueprint;
-import minechem.item.blueprint.MinechemBlueprint;
+import minechem.utils.BlueprintUtil;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -28,7 +29,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -106,18 +106,19 @@ public class BlockBlueprintProjector extends BlockSimpleContainer {
 
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if (tileEntity instanceof TileBlueprintProjector) {
-			//player.openGui(Minechem.INSTANCE, 0, world, pos.getX(), pos.getY(), pos.getZ());
-			if (hand == EnumHand.MAIN_HAND) {
-				player.sendMessage(new TextComponentString("Temporarily disabled"));
-				return false;
-			}
+			player.openGui(Minechem.INSTANCE, 0, world, pos.getX(), pos.getY(), pos.getZ());
+			//if (hand == EnumHand.MAIN_HAND) {
+			//	player.sendMessage(new TextComponentString("Temporarily disabled"));
+			//	return false;
+			//}
+			return true;
 		}
 		return false;
 	}
 
 	private ItemStack takeBlueprintFromProjector(TileBlueprintProjector projector) {
-		MinechemBlueprint blueprint = projector.takeBlueprint();
-		return ItemBlueprint.createItemStackFromBlueprint(blueprint);
+		IMinechemBlueprint blueprint = projector.takeBlueprint();
+		return BlueprintUtil.createStack(blueprint);
 	}
 
 	@Override

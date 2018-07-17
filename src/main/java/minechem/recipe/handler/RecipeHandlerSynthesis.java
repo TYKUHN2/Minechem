@@ -1,5 +1,6 @@
 package minechem.recipe.handler;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +34,6 @@ import minechem.recipe.RecipeSynthesisShapeless;
 import minechem.recipe.SingleItemStackBasedIngredient;
 import minechem.utils.MinechemUtil;
 import minechem.utils.RecipeUtil;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -169,14 +169,20 @@ public class RecipeHandlerSynthesis {
 		return GameData.register_impl(object);
 	}
 	*/
-	private static <ISynthesisRecipe extends IForgeRegistryEntry<ISynthesisRecipe>> ISynthesisRecipe register(ISynthesisRecipe object) {
+	private static <K extends IForgeRegistryEntry<ISynthesisRecipe>> ISynthesisRecipe register(ISynthesisRecipe object) {
 		return GameData.register_impl(object);
 	}
 
-	public static void addShapedRecipe(String name, int energyCost, ItemStack result, Object... recipe) {
+	public static void addShapedRecipe(ResourceLocation registryName, int energyCost, ItemStack result, Object... recipe) {
 		MinechemShapedPrimer primer = RecipeSynthesisShaped.parseShaped(recipe);
-		ISynthesisRecipe newRecipe = new RecipeSynthesisShaped(primer.width, primer.height, energyCost, primer.input, result).setRegistryName(new ResourceLocation(ModGlobals.ID, PREFIX_SHAPED + "" + name));
+		ISynthesisRecipe newRecipe = new RecipeSynthesisShaped(primer.width, primer.height, energyCost, primer.input, result).setRegistryName(registryName);
 		register(newRecipe);
+	}
+
+	public static void addShapedRecipe(String name, int energyCost, ItemStack result, Object... recipe) {
+		String regDomain = name.split(":").length == 1 ? ModGlobals.ID : name.split(":")[1];
+		String regPath = name.split(":").length == 1 ? name : name.split(":")[1];
+		addShapedRecipe(new ResourceLocation(regDomain, PREFIX_SHAPED + "" + regPath), energyCost, result, recipe);
 	}
 
 	public static void addShapelessRecipe(String name, int energyCost, @Nonnull ItemStack output, PotionChemical... recipe) {
@@ -315,15 +321,43 @@ public class RecipeHandlerSynthesis {
 
 	public static void addShapedOreDictRecipe(String item, int energyCost, PotionChemical... chemicals) {
 		List<ItemStack> oreDictEntries = OreDictionary.getOres(item);
-		int entry = 0;
-		for (Iterator<ItemStack> itr = oreDictEntries.iterator(); itr.hasNext() && entry < 8; entry++) {
-			PotionChemical[] val = new PotionChemical[9];
-			for (int i = 0; i < chemicals.length; i++) {
-				val[(i + entry) % 9] = chemicals[i];
-			}
-			ItemStack ore = itr.next();
-			addShapedRecipe(ore.getItem().getUnlocalizedName(), energyCost, new ItemStack(ore.getItem(), 1, ore.getItemDamage()), (Object[]) val);
+		//int entry = 0;
+		//for (Iterator<ItemStack> itr = oreDictEntries.iterator(); itr.hasNext() && entry < 8; entry++) {
+		if (!oreDictEntries.isEmpty()) {
+			ItemStack ore = oreDictEntries.get(0);
+			ResourceLocation regName = ore.getItem().getRegistryName();
+			addShapedRecipe(regName.getResourceDomain() + "_" + regName.getResourcePath() + "_" + ore.getItemDamage(), energyCost, new ItemStack(ore.getItem(), 1, ore.getItemDamage()), createShapedObject(chemicals));
 		}
+	}
+
+	private static Object[] createShapedObject(PotionChemical[] chemicals) {
+		int currentSymbolIndex = 'a';
+		String[] pattern = new String[3];
+		List<Object> symbolDefs = new ArrayList<>();
+		// String pattern
+		for (int i = 0; i < 3; i++) {
+			String rowStr = "";
+			for (int j = 0; j < 3; j++) {
+				if (chemicals[j + i * 3] == null) {
+					rowStr += " ";
+				}
+				else {
+					rowStr += (char) currentSymbolIndex;
+					symbolDefs.add((char) currentSymbolIndex);
+					symbolDefs.add(chemicals[j + i * 3]);
+					currentSymbolIndex++;
+				}
+			}
+			pattern[i] = rowStr;
+		}
+		Object[] returnObject = new Object[pattern.length + symbolDefs.size()];
+		for (int i = 0; i < 3; i++) {
+			returnObject[i] = pattern[i];
+		}
+		for (int i = 3; i < symbolDefs.size() + 3; i++) {
+			returnObject[i] = symbolDefs.get(i - 3);
+		}
+		return returnObject;
 	}
 
 	// helper stuff
@@ -634,7 +668,7 @@ public class RecipeHandlerSynthesis {
 
 		private static class DummyRecipe implements ISynthesisRecipe {
 
-			private static ItemStack result = new ItemStack(Items.DIAMOND, 64);
+			private static ItemStack result = ItemStack.EMPTY;
 			private ResourceLocation name;
 
 			@Override
@@ -656,7 +690,7 @@ public class RecipeHandlerSynthesis {
 			@Override
 			public boolean matches(InventoryCrafting inv, World worldIn) {
 				return false;
-			} //dirt?
+			}
 
 			@Override
 			public ItemStack getCraftingResult(InventoryCrafting inv) {

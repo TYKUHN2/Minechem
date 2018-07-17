@@ -112,7 +112,7 @@ public abstract class TileMinechemEnergyBase extends TileMinechemBase {
 				return 0;
 			}
 
-			int energyReceived = Math.min(tile.maxEnergy - tile.energyStored, Math.min(maxEnergyReceived, maxReceive));
+			int energyReceived = Math.min(tile.maxEnergy - tile.energyStored, Math.max(maxEnergyReceived, maxReceive));
 			if (!simulate) {
 				tile.energyStored += energyReceived;
 			}

@@ -64,7 +64,7 @@ public class ModConfig {
 
 	// Power base storage values
 	public static int maxSynthesizerStorage = 100000;
-	public static int maxDecomposerStorage = 10000;
+	public static int maxDecomposerStorage = 100000;
 	public static int maxFissionStorage = 100000;
 	public static int maxFusionStorage = 100000;
 
@@ -83,6 +83,9 @@ public class ModConfig {
 	public static String[] SynthesisMachineBlacklist = {};
 	public static NonNullList<ItemStack> decomposerBlacklist = NonNullList.create();
 	public static NonNullList<ItemStack> synthesisBlacklist = NonNullList.create();
+	public static int[] worldGenDimWhitelist = new int[] {
+			0
+	};
 
 	public static boolean displayMoleculeEffects = true;
 
@@ -123,6 +126,12 @@ public class ModConfig {
 		prop.setComment(languageMap.translateKey("config.uraniumoreclustersize.description"));
 		prop.setLanguageKey("config.uraniumoreclustersize");
 		UraniumOreClusterSize = prop.getInt();
+		configList.add(prop.getName());
+
+		prop = config.get("worldgen", "DimensionWHitelistForWorldGen", ModConfig.worldGenDimWhitelist);
+		prop.setComment(languageMap.translateKey("config.worldgen.dimwhitelist.description"));
+		prop.setLanguageKey("config.worldgen.dimwhitelist.tooltip");
+		worldGenDimWhitelist = prop.getIntList();
 		configList.add(prop.getName());
 
 		prop = config.get("worldgen", "uraniumoredensity", ModConfig.UraniumOreDensity);
@@ -241,9 +250,7 @@ public class ModConfig {
 		configList.add(prop.getName());
 
 		prop = config.get("blacklist", "synthesis", new String[] {
-				"minecraft:diamond",
-				"ore:ore*",
-				"*:dragon_egg"
+				"minecraft:diamond", "ore:ore*", "*:dragon_egg"
 		});
 		prop.setLanguageKey("config.blacklist.synthesis.tooltip").setRequiresMcRestart(true);
 		prop.setComment(languageMap.translateKey("config.blacklist.synthesis.example"));

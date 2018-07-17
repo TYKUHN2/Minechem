@@ -44,6 +44,10 @@ public class LocalPosition extends Position {
 		return pos;
 	}
 
+	public Pos3 getLocalPos(BlockPos pos) {
+		return getLocalPos(pos.getX(), pos.getY(), pos.getZ());
+	}
+
 	public BlockPos getLocalBlockPos() {
 		Pos3 p = getLocalPos((int) x, (int) y, (int) z);
 		return new BlockPos(p.x, p.y, p.z);

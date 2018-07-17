@@ -68,11 +68,8 @@ public class GhostBlock extends BlockContainer implements ICustomRenderer {
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		//super.onBlockActivated(world, pos, state, player, hand, itemStack, facing, f8, f9, f10);
+		super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
 		if (world.isRemote) {
-			return true;
-		}
-		if (player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) > 64.0D) {
 			return true;
 		}
 		TileEntity tileEntity = world.getTileEntity(pos);
@@ -80,7 +77,8 @@ public class GhostBlock extends BlockContainer implements ICustomRenderer {
 			GhostBlockTileEntity ghostBlock = (GhostBlockTileEntity) tileEntity;
 			ItemStack blockAsStack = ghostBlock.getBlockAsItemStack();
 			if (playerIsHoldingItem(player, blockAsStack)) {
-				world.setBlockState(pos, ModBlocks.FUSION.getStateFromMeta(blockAsStack.getItemDamage()), 3);
+				IBlockState newState = ModBlocks.reactor.getStateFromMeta(blockAsStack.getItemDamage());
+				world.setBlockState(pos, newState, 3);
 				if (!player.capabilities.isCreativeMode) {
 					player.inventory.decrStackSize(player.inventory.currentItem, 1);
 				}
@@ -94,7 +92,7 @@ public class GhostBlock extends BlockContainer implements ICustomRenderer {
 		ItemStack helditem = entityPlayer.inventory.getCurrentItem();
 		if (!helditem.isEmpty() && !itemstack.isEmpty()) {
 			if (helditem.getItem() == itemstack.getItem()) {
-				if (helditem.getItemDamage() == itemstack.getItemDamage() || itemstack.getItemDamage() == -1) {
+				if (helditem.getItemDamage() == itemstack.getItemDamage()) {
 					return true;
 				}
 			}
@@ -129,7 +127,7 @@ public class GhostBlock extends BlockContainer implements ICustomRenderer {
 	@Nullable
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
-		return null;
+		return new AxisAlignedBB(0D, 0D, 0D, 0D, 0D, 0D);
 	}
 
 	/**
@@ -148,7 +146,7 @@ public class GhostBlock extends BlockContainer implements ICustomRenderer {
 	// XXX: Maybe wrong replacement for getRenderBlockPass()
 	@Override
 	public BlockRenderLayer getBlockLayer() {
-		return BlockRenderLayer.CUTOUT_MIPPED;
+		return BlockRenderLayer.CUTOUT;
 	}
 
 	@Override
@@ -173,4 +171,13 @@ public class GhostBlock extends BlockContainer implements ICustomRenderer {
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation(getRegistryName(), "type=" + FusionBlockType.values()[i].getName()));
 		}
 	}
+
+	/*
+	@SideOnly(Side.CLIENT)
+	@Override
+	public EnumBlockRenderType getRenderType(IBlockState state)
+	{
+	    return EnumBlockRenderType.MODEL;
+	}
+	*/
 }

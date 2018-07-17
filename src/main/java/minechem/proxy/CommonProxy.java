@@ -3,6 +3,7 @@ package minechem.proxy;
 import minechem.Minechem;
 import minechem.fluid.reaction.ChemicalFluidReactionHandler;
 import minechem.init.ModBlocks;
+import minechem.init.ModBlueprints;
 import minechem.init.ModConfig;
 import minechem.init.ModFluids;
 import minechem.init.ModGlobals.MetaData;
@@ -10,7 +11,6 @@ import minechem.init.ModGuiHandler;
 import minechem.init.ModItems;
 import minechem.init.ModNetworking;
 import minechem.init.ModWorldGen;
-import minechem.item.blueprint.MinechemBlueprint;
 import minechem.item.element.ElementEnum;
 import minechem.item.molecule.MoleculeEnum;
 import minechem.item.polytool.PolytoolEventHandler;
@@ -38,7 +38,7 @@ public class CommonProxy {
 		MoleculeEnum.init();
 		ModFluids.init();
 		PharmacologyEffectRegistry.init();
-		MinechemBlueprint.registerBlueprints();
+		ModBlueprints.init();
 	}
 
 	public void init(FMLInitializationEvent event) {

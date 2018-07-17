@@ -1,1023 +1,164 @@
 package minechem.item.blueprint;
 
-import java.util.HashMap;
-
 import minechem.init.ModBlocks;
-import minechem.item.blueprint.BlueprintBlock.Type;
+import net.minecraft.block.state.IBlockState;
 
 public class BlueprintFusion extends MinechemBlueprint {
 
-	private static int w = wildcard;
-	private static int A = 1;
-	private static int C = 2;
-	private static Integer[][][] structure = {
+	private static IBlockState w = air;
+	private static IBlockState C = ModBlocks.reactor.getStateFromMeta(1);
+	private static IBlockState A = ModBlocks.reactor.getDefaultState();
+	private static IBlockState[][][] structure = {
 			{
 					{
-							w,
-							w,
-							w,
-							w,
-							A,
-							A,
-							A,
-							A,
-							A,
-							w,
-							w,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							A,
-							A,
-							A,
-							A,
-							A,
-							A,
-							A,
-							A,
-							A,
-							w,
-							w
-					},
-					{
-							w,
-							A,
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A,
-							A,
-							w
-					},
-					{
-							w,
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A,
-							w
-					},
-					{
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A
-					},
-					{
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A
-					},
-					{
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A
-					},
-					{
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A
-					},
-					{
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A
-					},
-					{
-							w,
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A,
-							w
-					},
-					{
-							w,
-							A,
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A,
-							A,
-							w
-					},
-					{
-							w,
-							w,
-							A,
-							A,
-							A,
-							A,
-							A,
-							A,
-							A,
-							A,
-							A,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							w,
-							w,
-							A,
-							A,
-							A,
-							A,
-							A,
-							w,
-							w,
-							w,
-							w
+							w, w, w, w, A, A, A, A, A, w, w, w, w
+					}, {
+							w, w, A, A, A, A, A, A, A, A, A, w, w
+					}, {
+							w, A, A, A, C, C, C, C, C, A, A, A, w
+					}, {
+							w, A, A, C, C, C, C, C, C, C, A, A, w
+					}, {
+							A, A, C, C, C, C, C, C, C, C, C, A, A
+					}, {
+							A, A, C, C, C, C, C, C, C, C, C, A, A
+					}, {
+							A, A, C, C, C, C, C, C, C, C, C, A, A
+					}, {
+							A, A, C, C, C, C, C, C, C, C, C, A, A
+					}, {
+							A, A, C, C, C, C, C, C, C, C, C, A, A
+					}, {
+							w, A, A, C, C, C, C, C, C, C, A, A, w
+					}, {
+							w, A, A, A, C, C, C, C, C, A, A, A, w
+					}, {
+							w, w, A, A, A, A, A, A, A, A, A, w, w
+					}, {
+							w, w, w, w, A, A, A, A, A, w, w, w, w
 					}
-			},
-			{
+			}, {
 					{
-							w,
-							w,
-							w,
-							w,
-							A,
-							A,
-							A,
-							A,
-							A,
-							w,
-							w,
-							w,
-							w
+							w, w, w, w, A, A, A, A, A, w, w, w, w
+					}, {
+							w, w, A, A, C, C, C, C, C, A, A, w, w
+					}, {
+							w, A, C, C, w, w, w, w, w, C, C, A, w
+					}, {
+							w, A, C, w, w, w, w, w, w, w, C, A, w
+					}, {
+							A, C, w, w, w, w, w, w, w, w, w, C, A
+					}, {
+							A, C, w, w, w, w, C, w, w, w, w, C, A
+					}, {
+							A, C, w, w, w, C, w, C, w, w, w, C, A
+					}, {
+							A, C, w, w, w, w, C, w, w, w, w, C, A
+					}, {
+							A, C, w, w, w, w, w, w, w, w, w, C, A
+					}, {
+							w, A, C, w, w, w, w, w, w, w, C, A, w
+					}, {
+							w, A, C, C, w, w, w, w, w, C, C, A, w
+					}, {
+							w, w, A, A, C, C, C, C, C, A, A, w, w
+					}, {
+							w, w, w, w, A, A, A, A, A, w, w, w, w
 					},
+			}, {
 					{
-							w,
-							w,
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A,
-							w,
-							w
+							w, w, w, w, A, A, A, A, A, w, w, w, w
+					}, {
+							w, w, A, A, C, C, C, C, C, A, A, w, w
+					}, {
+							w, A, C, C, w, w, w, w, w, C, C, A, w
+					}, {
+							w, A, C, w, w, w, w, w, w, w, C, A, w
+					}, {
+							A, C, w, w, w, w, w, w, w, w, w, C, A
+					}, {
+							A, C, w, w, w, w, C, w, w, w, w, C, A
+					}, {
+							A, C, w, w, w, C, w, C, w, w, w, C, A
+					}, {
+							A, C, w, w, w, w, C, w, w, w, w, C, A
+					}, {
+							A, C, w, w, w, w, w, w, w, w, w, C, A
+					}, {
+							w, A, C, w, w, w, w, w, w, w, C, A, w
+					}, {
+							w, A, C, C, w, w, w, w, w, C, C, A, w
+					}, {
+							w, w, A, A, C, C, C, C, C, A, A, w, w
+					}, {
+							w, w, w, w, A, A, A, A, A, w, w, w, w
 					},
+			}, {
 					{
-							w,
-							A,
-							C,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							C,
-							A,
-							w
+							w, w, w, w, A, A, A, A, A, w, w, w, w
+					}, {
+							w, w, A, A, C, C, C, C, C, A, A, w, w
+					}, {
+							w, A, C, C, w, w, w, w, w, C, C, A, w
+					}, {
+							w, A, C, w, w, w, w, w, w, w, C, A, w
+					}, {
+							A, C, w, w, w, w, w, w, w, w, w, C, A
+					}, {
+							A, C, w, w, w, w, C, w, w, w, w, C, A
+					}, {
+							A, C, w, w, w, C, w, C, w, w, w, C, A
+					}, {
+							A, C, w, w, w, w, C, w, w, w, w, C, A
+					}, {
+							A, C, w, w, w, w, w, w, w, w, w, C, A
+					}, {
+							w, A, C, w, w, w, w, w, w, w, C, A, w
+					}, {
+							w, A, C, C, w, w, w, w, w, C, C, A, w
+					}, {
+							w, w, A, A, C, C, C, C, C, A, A, w, w
+					}, {
+							w, w, w, w, A, A, A, A, A, w, w, w, w
 					},
+			}, {
 					{
-							w,
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A,
-							w
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							C,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							C,
-							0,
-							C,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							C,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							w,
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A,
-							w
-					},
-					{
-							w,
-							A,
-							C,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							C,
-							A,
-							w
-					},
-					{
-							w,
-							w,
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							w,
-							w,
-							A,
-							A,
-							A,
-							A,
-							A,
-							w,
-							w,
-							w,
-							w
-					},
-			},
-			{
-					{
-							w,
-							w,
-							w,
-							w,
-							A,
-							A,
-							A,
-							A,
-							A,
-							w,
-							w,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A,
-							w,
-							w
-					},
-					{
-							w,
-							A,
-							C,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							C,
-							A,
-							w
-					},
-					{
-							w,
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A,
-							w
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							C,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							C,
-							0,
-							C,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							C,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							w,
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A,
-							w
-					},
-					{
-							w,
-							A,
-							C,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							C,
-							A,
-							w
-					},
-					{
-							w,
-							w,
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							w,
-							w,
-							A,
-							A,
-							A,
-							A,
-							A,
-							w,
-							w,
-							w,
-							w
-					},
-			},
-			{
-					{
-							w,
-							w,
-							w,
-							w,
-							A,
-							A,
-							A,
-							A,
-							A,
-							w,
-							w,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A,
-							w,
-							w
-					},
-					{
-							w,
-							A,
-							C,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							C,
-							A,
-							w
-					},
-					{
-							w,
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A,
-							w
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							C,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							C,
-							0,
-							C,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							C,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A
-					},
-					{
-							w,
-							A,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							A,
-							w
-					},
-					{
-							w,
-							A,
-							C,
-							C,
-							w,
-							w,
-							w,
-							w,
-							w,
-							C,
-							C,
-							A,
-							w
-					},
-					{
-							w,
-							w,
-							A,
-							A,
-							C,
-							C,
-							C,
-							C,
-							C,
-							A,
-							A,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							w,
-							w,
-							A,
-							A,
-							A,
-							A,
-							A,
-							w,
-							w,
-							w,
-							w
-					},
-			},
-			{
-					{
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							w,
-							w,
-							C,
-							C,
-							C,
-							C,
-							C,
-							w,
-							w,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							w,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							w,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							C,
-							C,
-							C,
-							C,
-							A,
-							C,
-							C,
-							C,
-							C,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							C,
-							C,
-							C,
-							A,
-							A,
-							A,
-							C,
-							C,
-							C,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							C,
-							C,
-							C,
-							C,
-							A,
-							C,
-							C,
-							C,
-							C,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							w,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							C,
-							w,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							w,
-							w,
-							C,
-							C,
-							C,
-							C,
-							C,
-							w,
-							w,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w
-					},
-					{
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w,
-							w
+							w, w, w, w, w, w, w, w, w, w, w, w, w
+					}, {
+							w, w, w, w, w, w, w, w, w, w, w, w, w
+					}, {
+							w, w, w, w, C, C, C, C, C, w, w, w, w
+					}, {
+							w, w, w, C, C, C, C, C, C, C, w, w, w
+					}, {
+							w, w, C, C, C, C, C, C, C, C, C, w, w
+					}, {
+							w, w, C, C, C, C, A, C, C, C, C, w, w
+					}, {
+							w, w, C, C, C, A, A, A, C, C, C, w, w
+					}, {
+							w, w, C, C, C, C, A, C, C, C, C, w, w
+					}, {
+							w, w, C, C, C, C, C, C, C, C, C, w, w
+					}, {
+							w, w, w, C, C, C, C, C, C, C, w, w, w
+					}, {
+							w, w, w, w, C, C, C, C, C, w, w, w, w
+					}, {
+							w, w, w, w, w, w, w, w, w, w, w, w, w
+					}, {
+							w, w, w, w, w, w, w, w, w, w, w, w, w
 					}
 			},
 	};
 
 	public BlueprintFusion() {
-		super(13, 5, 13);
+		super("blueprint.fusion.desc", 13, 5, 13);
 		name = "blueprint_fusion";
 	}
 
 	@Override
-	public HashMap<Integer, BlueprintBlock> getBlockLookup() {
-		HashMap<Integer, BlueprintBlock> lookup = new HashMap<Integer, BlueprintBlock>();
-		lookup.put(A, new BlueprintBlock(ModBlocks.FUSION, 0, Type.PROXY));
-		lookup.put(C, new BlueprintBlock(ModBlocks.FUSION, 1, Type.NORMAL));
-		return lookup;
-	}
-
-	@Override
-	public Integer[][][] getStructure() {
-		return structure;
-	}
-
-	@Override
-	public Integer[][][] getResultStructure() {
+	public IBlockState[][][] getStructure() {
 		return structure;
 	}
 
@@ -1037,8 +178,8 @@ public class BlueprintFusion extends MinechemBlueprint {
 	}
 
 	@Override
-	public BlueprintBlock getManagerBlock() {
-		return new BlueprintBlock(ModBlocks.FUSION, 2, Type.MANAGER);
+	public int getRenderScale() {
+		return 6;
 	}
 
 }

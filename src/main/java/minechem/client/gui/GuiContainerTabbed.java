@@ -9,7 +9,6 @@ import org.lwjgl.input.Mouse;
 import minechem.client.gui.widget.tab.GuiTab;
 import minechem.client.gui.widget.tab.GuiTabPatreon;
 import minechem.utils.MinechemUtil;
-import minechem.utils.SessionVars;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -21,6 +20,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class GuiContainerTabbed extends GuiContainerBase implements GuiYesNoCallback {
+
+	private static Class<?> openedTab;
 
 	private String clickedURI;
 
@@ -178,7 +179,7 @@ public abstract class GuiContainerTabbed extends GuiContainerBase implements Gui
 		else {
 			tabListRight.add(guiTab);
 		}
-		if (SessionVars.getOpenedTab() != null && guiTab.getClass().equals(SessionVars.getOpenedTab())) {
+		if (getOpenedTab() != null && guiTab.getClass().equals(getOpenedTab())) {
 			guiTab.setFullyOpen();
 		}
 	}
@@ -248,6 +249,14 @@ public abstract class GuiContainerTabbed extends GuiContainerBase implements Gui
 
 	public int getMouseY() {
 		return height - (Mouse.getY() * height / mc.displayHeight - 1);
+	}
+
+	public static Class<?> getOpenedTab() {
+		return openedTab;
+	}
+
+	public static void setOpenedTab(Class<?> tabClass) {
+		openedTab = tabClass;
 	}
 
 }
