@@ -35,7 +35,9 @@ import minechem.utils.BlueprintUtil.MultiblockBlockAccess;
 import minechem.utils.BlueprintUtil.MultiblockRenderInfo;
 import minechem.utils.MinechemUtil;
 import minechem.utils.TickTimeUtil;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -47,13 +49,17 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.potion.Potion;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -80,6 +86,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -490,6 +497,79 @@ public class ModEvents {
 				Enchantment enchant = Enchantment.getEnchantmentByID(enchantmentTag.getShort("id"));
 				if (enchant instanceof PotionEnchantmentCoated) {
 					((PotionEnchantmentCoated) enchant).applyEffect(event.getEntityLiving());
+				}
+			}
+		}
+	}
+
+	@SideOnly(Side.SERVER)
+	@SubscribeEvent
+	public void onBlockBreak(BlockEvent.BreakEvent event) {
+		if (event.getState().getBlock() == ModBlocks.blueprintProjector) {
+			event.setCanceled(true);
+			EntityPlayer player = event.getPlayer();
+			World world = event.getWorld();
+			BlockPos pos = event.getPos();
+			IBlockState iblockstate = world.getBlockState(pos);
+			Block block = iblockstate.getBlock();
+			TileEntity tileentity = world.getTileEntity(pos);
+			ItemStack droppedStack = ItemStack.EMPTY;
+			if (tileentity != null && tileentity instanceof TileBlueprintProjector) {
+				TileBlueprintProjector projector = (TileBlueprintProjector) tileentity;
+				IMinechemBlueprint blueprint = projector.getBlueprint();
+				if (blueprint != null) {
+					droppedStack = BlueprintUtil.createStack(blueprint);
+					projector.setBlueprint(null);
+					projector.destroyProjection();
+				}
+				//projector.markDirty();
+				//world.notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
+			}
+
+			ItemStack stack = player.getHeldItemMainhand();
+			if (!stack.isEmpty() && stack.getItem().onBlockStartBreak(stack, pos, player)) {
+				return;
+			}
+
+			//Item item = block.getItemDropped(iblockstate, world.rand, 0);
+
+			//if (item == Items.AIR) {
+			//	return;
+			//}
+
+			//itemstack.setStackDisplayName(((IWorldNameable)te).getName());
+			if (!droppedStack.isEmpty()) {
+				Block.spawnAsEntity(world, pos, droppedStack);
+			}
+
+			world.playEvent(player, 2001, pos, Block.getStateId(iblockstate));
+			boolean flag1 = false;
+
+			if (player.isCreative()) {
+				flag1 = iblockstate.getBlock().removedByPlayer(iblockstate, world, pos, player, false);
+				if (flag1) {
+					iblockstate.getBlock().onBlockDestroyedByPlayer(world, pos, iblockstate);
+				}
+				((EntityPlayerMP) player).connection.sendPacket(new SPacketBlockChange(world, pos));
+			}
+			else {
+				ItemStack itemstack1 = player.getHeldItemMainhand();
+				ItemStack itemstack2 = itemstack1.isEmpty() ? ItemStack.EMPTY : itemstack1.copy();
+				boolean flag = iblockstate.getBlock().canHarvestBlock(world, pos, player);
+
+				if (!itemstack1.isEmpty()) {
+					itemstack1.onBlockDestroyed(world, iblockstate, pos, player);
+					if (itemstack1.isEmpty()) {
+						net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(player, itemstack2, EnumHand.MAIN_HAND);
+					}
+				}
+
+				flag1 = iblockstate.getBlock().removedByPlayer(iblockstate, world, pos, player, false);//this.removeBlock(pos, flag);
+				if (flag1) {
+					iblockstate.getBlock().onBlockDestroyedByPlayer(world, pos, iblockstate);
+				}
+				if (flag1 && flag) {
+					iblockstate.getBlock().harvestBlock(world, player, pos, iblockstate, tileentity, itemstack2);
 				}
 			}
 		}

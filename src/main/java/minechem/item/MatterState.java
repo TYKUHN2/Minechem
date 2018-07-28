@@ -3,7 +3,7 @@ package minechem.item;
 import net.minecraft.client.resources.I18n;
 
 public enum MatterState implements IDescriptiveName {
-		LIQUID("Liquid", false, 1000, 8), SOLID("Solid", false, 1200, 1), GAS("Gaseous", true, 400, 8);
+		LIQUID("liquid", false, 1000, 8), SOLID("solid", false, 1200, 1), GAS("gaseous", true, 400, 8);
 
 	private final boolean isGas;
 	private final int viscosity;

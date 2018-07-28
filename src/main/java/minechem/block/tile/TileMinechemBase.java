@@ -14,7 +14,7 @@ import net.minecraft.util.NonNullList;
 
 public abstract class TileMinechemBase extends TileEntity implements ITickable, IInventory {
 
-	protected long ticks = 0;
+	protected NonNullList<ItemStack> inventory = NonNullList.<ItemStack>create();
 
 	public void setBlockType(Block block) {
 		blockType = block;
@@ -22,23 +22,23 @@ public abstract class TileMinechemBase extends TileEntity implements ITickable, 
 
 	@Override
 	public void update() {
-		if (ticks >= Long.MAX_VALUE) {
-			ticks = 1;
-		}
-		ticks++;
 	}
 
-	public NonNullList<ItemStack> inventory = NonNullList.<ItemStack>create();
-
-	/*
-	@Nullable
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
-	    NBTTagCompound tagCompound = new NBTTagCompound();
-	    this.writeToNBT(tagCompound);
-	    return new SPacketUpdateTileEntity(pos, 0, tagCompound);
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
 	}
-	*/
+
+	@Override
+	@Nullable
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(getPos(), 255, getUpdateTag());
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+		readFromNBT(pkt.getNbtCompound());
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
@@ -58,22 +58,6 @@ public abstract class TileMinechemBase extends TileEntity implements ITickable, 
 	@Override
 	public int getInventoryStackLimit() {
 		return 64;
-	}
-
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		return writeToNBT(new NBTTagCompound());
-	}
-
-	@Override
-	@Nullable
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(getPos(), 255, getUpdateTag());
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		readFromNBT(pkt.getNbtCompound());
 	}
 
 	@Override

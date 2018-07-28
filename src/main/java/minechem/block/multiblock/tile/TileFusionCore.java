@@ -1,4 +1,4 @@
-package minechem.tileentity.multiblock.fusion;
+package minechem.block.multiblock.tile;
 
 import javax.annotation.Nullable;
 
@@ -9,8 +9,8 @@ import minechem.item.ItemElement;
 import minechem.item.blueprint.BlueprintFusion;
 import minechem.item.element.ElementEnum;
 import minechem.network.message.FusionUpdateMessage;
-import minechem.tileentity.multiblock.MultiBlockTileEntity;
 import minechem.utils.MinechemUtil;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -19,20 +19,59 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-public class FusionTileEntity extends MultiBlockTileEntity implements ISidedInventory {
+public class TileFusionCore extends TileReactorCore implements ISidedInventory {
 
 	public static boolean canProcess = false;
 	public static int fusedResult = 0;
 	public static int inputLeft = 0;
 	public static int inputRight = 1;
 	public static int output = 2;
+	int timer;
 
-	public FusionTileEntity() {
-		super(ModConfig.maxFusionStorage);
+	public TileFusionCore() {
+		this(null);
+	}
+
+	public TileFusionCore(EnumFacing structureFacing) {
+		super();
 		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
 		setBlueprint(new BlueprintFusion());
+		setStructureFacing(structureFacing);
+	}
+
+	@Override
+	public void update() {
+		super.update();
+		if (!structureFormed) {
+			return;
+		}
+		++timer;
+		if (!world.isRemote && structureFormed) {
+			if (!canProcess) {
+				if (getEnergyRequired() <= getEnergyStored() && inputsCanBeFused() && canOutput()) {
+					canProcess = true;
+				}
+			}
+			if (canProcess && useEnergy(getEnergyRequired())) {
+				fuseInputs();
+				removeInputs();
+				canProcess = false;
+			}
+			else {
+				fusedResult = 0;
+			}
+		}
+		if (timer >= 20) {
+			timer = 0;
+			FusionUpdateMessage message = new FusionUpdateMessage(this, structureFormed);
+			ModNetworking.INSTANCE.sendToDimension(message, getWorld().provider.getDimension());
+			markDirty();
+			IBlockState iblockstate = getWorld().getBlockState(getPos());
+			if (iblockstate != null) {
+				getWorld().notifyBlockUpdate(getPos(), iblockstate, iblockstate, 3);
+			}
+		}
 	}
 
 	@Override
@@ -137,7 +176,7 @@ public class FusionTileEntity extends MultiBlockTileEntity implements ISidedInve
 
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer entityPlayer) {
-		return completeStructure;
+		return structureFormed;
 	}
 
 	@Override
@@ -172,33 +211,8 @@ public class FusionTileEntity extends MultiBlockTileEntity implements ISidedInve
 		return false;
 	}
 
-	@Override
-	public void update() {
-		super.update();
-		if (!completeStructure) {
-			return;
-		}
-		if (!world.isRemote) {
-			if (!canProcess) {
-				if (getEnergyRequired() <= getEnergyStored() && inputsCanBeFused() && canOutput()) {
-					canProcess = true;
-				}
-			}
-			if (canProcess && useEnergy(getEnergyRequired())) {
-				fuseInputs();
-				removeInputs();
-				canProcess = false;
-			}
-			else {
-				fusedResult = 0;
-			}
-			FusionUpdateMessage message = new FusionUpdateMessage(this);
-			ModNetworking.INSTANCE.sendToAllAround(message, new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), ModConfig.UpdateRadius));
-		}
-	}
-
 	public boolean canOutput() {
-		if (!inventory.get(output).isEmpty()) {
+		if (inventory.get(output).isEmpty()) {
 			return true;
 		}
 		else if (inventory.get(output).getItemDamage() == fusedResult) {
@@ -223,21 +237,6 @@ public class FusionTileEntity extends MultiBlockTileEntity implements ISidedInve
 		if (!inventory.get(inputLeft).isEmpty() && !inventory.get(inputRight).isEmpty() && inputsCanBeFused() && ModConfig.powerUseEnabled) {
 			return (inventory.get(inputLeft).getItemDamage() + inventory.get(inputRight).getItemDamage()) * ModConfig.fusionMultiplier;
 		}
-		return 0;
-	}
-
-	@Override
-	public int receiveEnergy(int i, boolean b) {
-		return 0;
-	}
-
-	@Override
-	public int getEnergyStored() {
-		return 0;
-	}
-
-	@Override
-	public int getMaxEnergyStored() {
 		return 0;
 	}
 

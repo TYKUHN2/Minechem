@@ -31,4 +31,9 @@ public class BlockUraniumOre extends Block implements ICustomRenderer {
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
 	}
 
+	@Override
+	public String getUnlocalizedName() {
+		return super.getUnlocalizedName().replace("tile.", "block.");
+	}
+
 }

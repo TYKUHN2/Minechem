@@ -1,15 +1,12 @@
-package minechem.tileentity.multiblock.ghostblock;
+package minechem.block.multiblock;
 
 import javax.annotation.Nullable;
 
 import minechem.api.ICustomRenderer;
-import minechem.init.ModBlocks;
-import minechem.tileentity.multiblock.fusion.FusionBlock.FusionBlockType;
+import minechem.block.multiblock.tile.TileGhostBlock;
+import minechem.tileentity.multiblock.ghostblock.GhostBlockItem;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
@@ -17,12 +14,15 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -30,11 +30,9 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class GhostBlock extends BlockContainer implements ICustomRenderer {
+public class BlockGhost extends BlockContainer implements ICustomRenderer {
 
-	static PropertyEnum<FusionBlockType> TYPE = PropertyEnum.<FusionBlockType>create("type", FusionBlockType.class);
-
-	public GhostBlock() {
+	public BlockGhost() {
 		super(Material.IRON);
 		setRegistryName("ghost_block");
 		setUnlocalizedName("ghost_block");
@@ -43,27 +41,19 @@ public class GhostBlock extends BlockContainer implements ICustomRenderer {
 		setResistance(1000F);
 		ForgeRegistries.BLOCKS.register(this);
 		ForgeRegistries.ITEMS.register(new GhostBlockItem(this).setRegistryName(getRegistryName()));
-		setDefaultState(blockState.getBaseState().withProperty(TYPE, FusionBlockType.FUSION));
 	}
 
 	@Override
-	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] {
-				TYPE
-		});
-	}
-
-	@Override
-	public int getMetaFromState(IBlockState state) {
-		return state.getValue(TYPE).ordinal();
-	}
-
-	@Override
-	public IBlockState getStateFromMeta(int meta) {
-		if (meta > 2) {
-			meta = 0;
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+		if (!world.isRemote) {
+			return super.getPickBlock(state, target, world, pos, player);
 		}
-		return blockState.getBaseState().withProperty(TYPE, FusionBlockType.values()[meta]);
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof TileGhostBlock) {
+			TileGhostBlock ghostTile = (TileGhostBlock) te;
+			return ghostTile.getBlockAsItemStack();
+		}
+		return super.getPickBlock(state, target, world, pos, player);
 	}
 
 	@Override
@@ -73,19 +63,19 @@ public class GhostBlock extends BlockContainer implements ICustomRenderer {
 			return true;
 		}
 		TileEntity tileEntity = world.getTileEntity(pos);
-		if (tileEntity instanceof GhostBlockTileEntity) {
-			GhostBlockTileEntity ghostBlock = (GhostBlockTileEntity) tileEntity;
+		if (tileEntity instanceof TileGhostBlock) {
+			TileGhostBlock ghostBlock = (TileGhostBlock) tileEntity;
 			ItemStack blockAsStack = ghostBlock.getBlockAsItemStack();
 			if (playerIsHoldingItem(player, blockAsStack)) {
-				IBlockState newState = ModBlocks.reactor.getStateFromMeta(blockAsStack.getItemDamage());
-				world.setBlockState(pos, newState, 3);
+				;
+				world.setBlockState(pos, ghostBlock.getRenderedBlockState(), 3);
 				if (!player.capabilities.isCreativeMode) {
 					player.inventory.decrStackSize(player.inventory.currentItem, 1);
 				}
 				return true;
 			}
 		}
-		return false;
+		return true;
 	}
 
 	private boolean playerIsHoldingItem(EntityPlayer entityPlayer, ItemStack itemstack) {
@@ -98,6 +88,12 @@ public class GhostBlock extends BlockContainer implements ICustomRenderer {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	@Nullable
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+		return NULL_AABB;
 	}
 
 	@Override
@@ -122,15 +118,6 @@ public class GhostBlock extends BlockContainer implements ICustomRenderer {
 	}
 
 	/**
-	 * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been cleared to be reused)
-	 */
-	@Nullable
-	@Override
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
-		return new AxisAlignedBB(0D, 0D, 0D, 0D, 0D, 0D);
-	}
-
-	/**
 	 * Returns true if the given side of this block type should be rendered, if the adjacent block is at the given coordinates. Args: blockAccess, x, y, z, side
 	 */
 	@Override
@@ -143,6 +130,11 @@ public class GhostBlock extends BlockContainer implements ICustomRenderer {
 		return false;
 	}
 
+	@Override
+	public boolean isFullCube(IBlockState state) {
+		return false;
+	}
+
 	// XXX: Maybe wrong replacement for getRenderBlockPass()
 	@Override
 	public BlockRenderLayer getBlockLayer() {
@@ -151,7 +143,7 @@ public class GhostBlock extends BlockContainer implements ICustomRenderer {
 
 	@Override
 	public TileEntity createNewTileEntity(World var1, int i) {
-		return new GhostBlockTileEntity();
+		return new TileGhostBlock();
 	}
 
 	/**
@@ -168,8 +160,26 @@ public class GhostBlock extends BlockContainer implements ICustomRenderer {
 	@Override
 	public void registerRenderer() {
 		for (int i = 0; i < 2; i++) {
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation(getRegistryName(), "type=" + FusionBlockType.values()[i].getName()));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation(getRegistryName(), "inventory"));
 		}
+	}
+
+	@Override
+	public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, @Nullable ItemStack stack) {
+		player.addStat(StatList.getBlockStats(this));
+		player.addExhaustion(0.025F);
+		stack = getItemBlockWithNBT(te);
+		spawnAsEntity(worldIn, pos, stack);
+	}
+
+	private ItemStack getItemBlockWithNBT(@Nullable TileEntity te) {
+		ItemStack stack = new ItemStack(this);
+		NBTTagCompound nbttagcompound = new NBTTagCompound();
+		if (te != null) {
+			te.writeToNBT(nbttagcompound);
+			stack.setTagInfo("BlockEntityTag", nbttagcompound);
+		}
+		return stack;
 	}
 
 	/*

@@ -1,5 +1,6 @@
 package minechem.proxy;
 
+import minechem.block.multiblock.tile.TileGhostBlock;
 import minechem.block.tile.TileDecomposer;
 import minechem.block.tile.TileLeadedChest;
 import minechem.block.tile.TileSynthesis;
@@ -11,7 +12,6 @@ import minechem.init.ModBlocks;
 import minechem.init.ModFluids;
 import minechem.init.ModItems;
 import minechem.init.ModPotions;
-import minechem.tileentity.multiblock.ghostblock.GhostBlockTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -55,7 +55,7 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileDecomposer.class, new RenderDecomposer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileSynthesis.class, new RenderSynthesis());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileLeadedChest.class, new RenderLeadedChest());
-		ClientRegistry.bindTileEntitySpecialRenderer(GhostBlockTileEntity.class, new RenderGhostBlock());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileGhostBlock.class, new RenderGhostBlock());
 	}
 
 	@SubscribeEvent

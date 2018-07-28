@@ -1,25 +1,27 @@
-package minechem.tileentity.multiblock.fission;
+package minechem.client.gui;
 
-import minechem.client.gui.GuiContainerTabbed;
+import minechem.block.multiblock.tile.TileFissionCore;
 import minechem.client.gui.widget.tab.GuiTabPatreon;
+import minechem.client.gui.widget.tab.TabFissionState;
 import minechem.client.gui.widget.tab.TabHelp;
+import minechem.container.ContainerFission;
 import minechem.init.ModGlobals.ModResources;
 import minechem.utils.MinechemUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 
-public class FissionGui extends GuiContainerTabbed {
+public class GuiFission extends GuiContainerTabbed {
 	int guiWidth = 176;
 	int guiHeight = 166;
 
-	public FissionGui(Container par1Container) {
+	public GuiFission(Container par1Container) {
 		super(par1Container);
 	}
 
-	public FissionGui(InventoryPlayer inventoryPlayer, FissionTileEntity fission) {
-		super(new FissionContainer(inventoryPlayer, fission));
-		addTab(new FissionTabStateControl(this, fission));
+	public GuiFission(InventoryPlayer inventoryPlayer, TileFissionCore fission) {
+		super(new ContainerFission(inventoryPlayer, fission));
+		addTab(new TabFissionState(this, fission));
 		addTab(new TabHelp(this, MinechemUtil.getLocalString("help.fission")));
 		addTab(new GuiTabPatreon(this));
 	}
@@ -27,7 +29,7 @@ public class FissionGui extends GuiContainerTabbed {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
 		super.drawGuiContainerForegroundLayer(par1, par2);
-		String info = MinechemUtil.getLocalString("block.fissionReactor.name");
+		String info = MinechemUtil.getLocalString("gui.title.fission_chamber");
 		int infoWidth = fontRenderer.getStringWidth(info);
 		fontRenderer.drawString(info, (guiWidth - infoWidth) / 2, 5, 0x000000);
 	}

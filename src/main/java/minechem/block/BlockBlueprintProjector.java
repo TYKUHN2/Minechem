@@ -1,7 +1,5 @@
 package minechem.block;
 
-import java.util.ArrayList;
-
 import minechem.Minechem;
 import minechem.api.IMinechemBlueprint;
 import minechem.block.tile.TileBlueprintProjector;
@@ -29,7 +27,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
@@ -126,54 +123,10 @@ public class BlockBlueprintProjector extends BlockSimpleContainer {
 		return new TileBlueprintProjector();
 	}
 
-	@Override
-	public void addStacksDroppedOnBlockBreak(TileEntity tileEntity, ArrayList<ItemStack> itemStacks) {
-		if (tileEntity instanceof TileBlueprintProjector) {
-			TileBlueprintProjector projector = (TileBlueprintProjector) tileEntity;
-			if (projector.hasBlueprint()) {
-				itemStacks.add(takeBlueprintFromProjector(projector));
-			}
-		}
-	}
-
-	@Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
-		TileEntity tileEntity = world.getTileEntity(pos);
-		if (tileEntity instanceof TileBlueprintProjector) {
-			TileBlueprintProjector projector = (TileBlueprintProjector) tileEntity;
-			projector.destroyProjection();
-		}
-		return super.removedByPlayer(state, world, pos, player, willHarvest);
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return super.shouldSideBeRendered(blockState, blockAccess, pos, side);//true;
-	}
-
 	@SideOnly(Side.CLIENT)
 	@Override
 	public BlockRenderLayer getBlockLayer() {
 		return BlockRenderLayer.CUTOUT;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
-		return super.isNormalCube(state, world, pos);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean isSideSolid(IBlockState base_state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-		return super.isSideSolid(base_state, world, pos, side);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean isBlockNormalCube(IBlockState state) {
-		return super.isBlockNormalCube(state);
 	}
 
 	@Override
@@ -206,5 +159,20 @@ public class BlockBlueprintProjector extends BlockSimpleContainer {
 			worldIn.setBlockState(pos, state.withProperty(FACING, enumfacing), 2);
 		}
 	}
+	/*
+		@Override
+		public void breakBlock(World world, BlockPos pos, IBlockState state) {
+			TileEntity tileEntity = world.getTileEntity(pos);
+			if (tileEntity instanceof TileBlueprintProjector) {
+				TileBlueprintProjector projector = (TileBlueprintProjector) tileEntity;
+				if (projector.hasBlueprint()) {
+					MinechemUtil.throwItemStack(world, takeBlueprintFromProjector(projector), pos.getX(), pos.getY(), pos.getZ());
+				}
+			}
+			if (hasTileEntity(state) && !(this instanceof BlockContainer)) {
+				world.removeTileEntity(pos);
+			}
+		}
+		*/
 
 }

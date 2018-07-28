@@ -26,9 +26,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
  */
 public class Blueprint {
 
-	public static IBlockState A = ModBlocks.reactor.getStateFromMeta(1);
-	public static IBlockState B = ModBlocks.reactor.getStateFromMeta(1);
-	public static IBlockState C = ModBlocks.reactor.getStateFromMeta(2);
+	public static IBlockState A = ModBlocks.reactor_core.getStateFromMeta(1);
+	public static IBlockState B = ModBlocks.reactor_wall.getStateFromMeta(1);
+	public static IBlockState C = ModBlocks.tungsten_plating.getStateFromMeta(2);
 	public static IBlockState D = Blocks.AIR.getDefaultState();
 
 	public static Blueprint FISSION_REACTOR = new Blueprint(new IBlockState[][][] {

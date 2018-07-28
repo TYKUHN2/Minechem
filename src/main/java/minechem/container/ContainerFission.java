@@ -1,6 +1,7 @@
-package minechem.tileentity.multiblock.fission;
+package minechem.container;
 
 import minechem.api.IRadiationShield;
+import minechem.block.multiblock.tile.TileFissionCore;
 import minechem.init.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -8,20 +9,20 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class FissionContainer extends Container implements IRadiationShield {
+public class ContainerFission extends Container implements IRadiationShield {
 
-	protected FissionTileEntity fission;
+	protected TileFissionCore fission;
 	protected final int kPlayerInventorySlotStart;
 	protected final int kPlayerInventorySlotEnd;
 	protected final int kDecomposerInventoryEnd;
 
-	public FissionContainer(InventoryPlayer inventoryPlayer, FissionTileEntity fission) {
+	public ContainerFission(InventoryPlayer inventoryPlayer, TileFissionCore fission) {
 		this.fission = fission;
 		kPlayerInventorySlotStart = fission.getSizeInventory();
 		kPlayerInventorySlotEnd = kPlayerInventorySlotStart + (9 * 4);
 		kDecomposerInventoryEnd = fission.getSizeInventory();
 
-		addSlotToContainer(new Slot(fission, FissionTileEntity.kInput[0], 80, 16));
+		addSlotToContainer(new Slot(fission, TileFissionCore.kInput[0], 80, 16));
 		bindOutputSlot();
 		bindPlayerInventory(inventoryPlayer);
 	}

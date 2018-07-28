@@ -70,7 +70,7 @@ public abstract class GuiTabState extends GuiTab {
 			String print = tileEntity.getEnergyStored() + " FE (" + String.valueOf(tileEntity.getPowerRemainingScaled(100D)) + "%)";
 			fontRenderer.drawString(print, x + 5, y + 40, textColour);
 
-			fontRenderer.drawStringWithShadow(MinechemUtil.getLocalString("tab.title.activationEnergy"), x + 5, y + 60, subheaderColour);
+			fontRenderer.drawStringWithShadow(MinechemUtil.getLocalString("tab.title.activation_energy"), x + 5, y + 60, subheaderColour);
 			fontRenderer.drawString(String.valueOf(tileEntity.getEnergyRequired()) + " FE", x + 5, y + 70, textColour);
 		}
 	}

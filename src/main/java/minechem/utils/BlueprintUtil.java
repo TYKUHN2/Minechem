@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
 import minechem.api.IMinechemBlueprint;
@@ -13,6 +14,7 @@ import minechem.block.tile.TileBlueprintProjector;
 import minechem.init.ModItems;
 import minechem.init.ModRegistries;
 import minechem.item.blueprint.MinechemBlueprint;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -96,6 +98,100 @@ public class BlueprintUtil {
 		return stackList;
 	}
 
+	public static Pair<IMinechemBlueprint, EnumFacing> getBlueprintFromStructure(World world, BlockPos pos) {
+		/*
+		TileEntity te = world.getTileEntity(pos);
+		if (te != null && te instanceof TileReactorCore) {
+			TileReactorCore reactorTile = (TileReactorCore) te;
+			if (reactorTile.getBlueprint() != null && reactorTile.getStructureFacing() != null) {
+				if (te instanceof TileFissionCore) {
+					TileFissionCore fissionTile = (TileFissionCore) te;
+					if (fissionTile.getBlueprint() == null) {
+						fissionTile.setBlueprint(reactorTile.getBlueprint());
+					}
+					if (fissionTile.getStructureFacing() == null) {
+						fissionTile.setStructureFacing(reactorTile.getStructureFacing());
+					}
+					if (isStructureComplete(fissionTile.getBlueprint(), fissionTile.getStructureFacing(), world, pos)) {
+						return Pair.of(fissionTile.getBlueprint(), fissionTile.getStructureFacing());
+					}
+				}
+				if (te instanceof TileFusionCore) {
+					TileFusionCore fusionTile = (TileFusionCore) te;
+					if (fusionTile.getBlueprint() == null) {
+						fusionTile.setBlueprint(reactorTile.getBlueprint());
+					}
+					if (fusionTile.getStructureFacing() == null) {
+						fusionTile.setStructureFacing(reactorTile.getStructureFacing());
+					}
+					if (isStructureComplete(fusionTile.getBlueprint(), fusionTile.getStructureFacing(), world, pos)) {
+						return Pair.of(fusionTile.getBlueprint(), fusionTile.getStructureFacing());
+					}
+				}
+			}
+		}
+		*/
+		List<IMinechemBlueprint> bpList = ModRegistries.MINECHEM_BLUEPRINTS.getValues();
+		for (IMinechemBlueprint bp : bpList) {
+			for (EnumFacing facing : EnumFacing.HORIZONTALS) {
+				LocalPosition position = new LocalPosition(pos.getX(), pos.getY(), pos.getZ(), facing);
+
+				position.moveForwards(Math.floor(bp.xSize() / 2));
+				position.moveLeft(Math.floor(bp.zSize() / 2));
+				position.moveDown(Math.floor(bp.ySize() / 2));
+				LocalPosition.Pos3 worldPos = position.getLocalPos(pos);
+				if (isStructureComplete(bp, facing, world, pos)) {
+					return Pair.of(bp, facing);
+				}
+			}
+		}
+		return null;
+	}
+
+	public static boolean isStructureComplete(World world, BlockPos pos) {
+		return getBlueprintFromStructure(world, pos) != null;
+	}
+
+	public static boolean isStructureComplete(IMinechemBlueprint blueprint, EnumFacing structureFacing, World world, BlockPos pos) {
+		if (blueprint == null || structureFacing == null || world == null || pos == null) {
+			return false;
+		}
+		LocalPosition position = new LocalPosition(pos.getX(), pos.getY(), pos.getZ(), structureFacing);
+		//LocalPosition worldPos = new LocalPosition(blueprint.getManagerPosX(), blueprint.getManagerPosY(), blueprint.getManagerPosZ(), structureFacing);
+		position.moveForwards(Math.floor(blueprint.zSize() / 2));
+		position.moveRight(Math.floor(blueprint.xSize() / 2));
+		position.moveDown(Math.floor(blueprint.ySize() / 2));
+		IBlockState[][][] resultStructure = blueprint.getStructure();
+		for (int x = 0; x < blueprint.xSize(); ++x) {
+			for (int y = 0; y < blueprint.ySize(); ++y) {
+				for (int z = 0; z < blueprint.zSize(); ++z) {
+					if (x == blueprint.getManagerPosX() && y == blueprint.getManagerPosY() && z == blueprint.getManagerPosZ()) {
+						continue;
+					}
+					LocalPosition.Pos3 worldPos = position.getLocalPos(new BlockPos(x, y, z));
+					BlockPos wPos = new BlockPos(pos.getX() - blueprint.getManagerPosX() + x, pos.getY() - blueprint.getManagerPosY() + y, pos.getZ() - blueprint.getManagerPosZ() + z);
+					IBlockState bpState = resultStructure[y][x][z];
+					IBlockState worldState = world.getBlockState(wPos);
+
+					Block bpBlock = bpState.getBlock();
+					Block worldBlock = worldState.getBlock();
+
+					int bpMeta = bpBlock.getMetaFromState(bpState);
+					int worldMeta = worldBlock.getMetaFromState(worldState);
+					if (bpBlock != worldBlock || bpMeta != worldMeta) {
+						worldState = world.getBlockState(new BlockPos(worldPos.x, worldPos.y, worldPos.z));
+						worldBlock = worldState.getBlock();
+						worldMeta = worldBlock.getMetaFromState(worldState);
+						if (bpBlock != worldBlock || bpMeta != worldMeta) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 	public static int structureRenderTicks = 0;
 	public static MultiblockBlockAccess blockAccess;
 	public static int currentLayer = 0;
@@ -111,8 +207,8 @@ public class BlueprintUtil {
 			int structureWidth = blueprint.xSize();
 			int structureHeight = blueprint.ySize();
 			double squirt = Math.sqrt(structureHeight * structureHeight + structureWidth * structureWidth + structureLength * structureLength);
-			float transX = x + 60 + structureWidth / 2;
-			float transY = y + 35 + (float) squirt / 2;
+			float transX = x + 40 + blueprint.getXOffset();
+			float transY = y + 0 + blueprint.getYOffset();
 
 			int yOffTotal = (int) (transY - y + scale * squirt / 2);
 

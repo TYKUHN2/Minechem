@@ -1,9 +1,11 @@
 package minechem.block.tile;
 
-import minechem.init.ModBlocks;
+import javax.annotation.Nullable;
+
+import minechem.block.multiblock.tile.TileFissionCore;
+import minechem.block.multiblock.tile.TileFusionCore;
+import minechem.block.multiblock.tile.TileReactorCore;
 import minechem.init.ModConfig;
-import minechem.tileentity.multiblock.fission.FissionTileEntity;
-import minechem.tileentity.multiblock.fusion.FusionTileEntity;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -12,27 +14,61 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInventory {
+
+	public TileReactorCore manager;
+	int managerXOffset;
+	int managerYOffset;
+	int managerZOffset;
+	final EnergySettableMultiBlock energyStorage = new EnergySettableMultiBlock(null);
 
 	public TileEntityProxy() {
 		super(ModConfig.energyPacketSize);
 	}
 
-	public TileEntity manager;
-	int managerXOffset;
-	int managerYOffset;
-	int managerZOffset;
+	@Override
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+		return capability == CapabilityEnergy.ENERGY;
+	}
+
+	@Override
+	@Nullable
+	public <T> T getCapability(Capability<T> capability, @Nullable net.minecraft.util.EnumFacing facing) {
+		return hasCapability(capability, facing) ? CapabilityEnergy.ENERGY.cast(energyStorage) : null;
+	}
+
+	public TileReactorCore getManager() {
+		int xx = getPos().getX();
+		int yy = getPos().getY();
+		int zz = getPos().getZ();
+		boolean posMatch = managerXOffset == xx && managerYOffset == yy && managerZOffset == zz;
+
+		if (!posMatch && manager == null) {
+			TileEntity te = world.getTileEntity(new BlockPos(getPos().getX() + managerXOffset, getPos().getY() + managerYOffset, getPos().getZ() + managerZOffset));
+			if (te instanceof TileFusionCore) {
+				manager = (TileFusionCore) te;
+			}
+			else if (te instanceof TileFissionCore) {
+				manager = (TileFissionCore) te;
+			}
+			else if (te instanceof TileReactorCore) {
+				manager = (TileReactorCore) te;
+			}
+			else {
+				manager = null;
+			}
+			energyStorage.setManager(manager);
+
+		}
+		return manager;
+	}
 
 	@Override
 	public void update() {
-		if (manager != null) {
-			int ammountReceived = ((TileMinechemEnergyBase) manager).receiveEnergy(getEnergyStored(), true);
-			if (ammountReceived > 0) {
-				((TileMinechemEnergyBase) manager).receiveEnergy(ammountReceived, false);
-				useEnergy(ammountReceived);
-			}
-		}
 	}
 
 	@Override
@@ -53,65 +89,48 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 		managerXOffset = nbtTagCompound.getInteger("managerXOffset");
 		managerYOffset = nbtTagCompound.getInteger("managerYOffset");
 		managerZOffset = nbtTagCompound.getInteger("managerZOffset");
-		if (world != null) {
-			manager = world.getTileEntity(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset));
+		int xx = getPos().getX();
+		int yy = getPos().getY();
+		int zz = getPos().getZ();
+		boolean posMatch = managerXOffset == xx && managerYOffset == yy && managerZOffset == zz;
+		if (world != null && !posMatch) {
+			BlockPos tilePos = new BlockPos(getPos().getX() + managerXOffset, getPos().getY() + managerYOffset, getPos().getZ() + managerZOffset);
+			TileEntity te = world.getTileEntity(tilePos);
+			if (te instanceof TileFusionCore) {
+				manager = (TileFusionCore) te;
+			}
+			else if (te instanceof TileFissionCore) {
+				manager = (TileFissionCore) te;
+			}
+			else if (te instanceof TileReactorCore) {
+				manager = (TileReactorCore) te;
+			}
+			else {
+				//manager = null;
+			}
+			energyStorage.setManager(manager);
 		}
 
 	}
 
-	public void setManager(TileEntity managerTileEntity) {
-
+	public void setManager(TileReactorCore managerTileEntity) {
 		manager = managerTileEntity;
 		if (managerTileEntity != null) {
 			managerXOffset = managerTileEntity.getPos().getX() - pos.getX();
 			managerYOffset = managerTileEntity.getPos().getY() - pos.getY();
 			managerZOffset = managerTileEntity.getPos().getZ() - pos.getZ();
+			energyStorage.setManager(manager);
+			markDirty();
+			IBlockState iblockstate = getWorld().getBlockState(getPos());
+			if (iblockstate != null) {
+				getWorld().notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
+			}
 		}
-	}
-
-	public TileEntity getManager() {
-		// Return the next block in sequence but never the TileEntityProxy.
-		if (world.getTileEntity(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset)) != null && !(world.getTileEntity(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset)) instanceof TileEntityProxy)) {
-			return world.getTileEntity(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset));
-		}
-
-		// Return the entire fusion generator as a whole (indicating the structure is complete).
-		if (world.getBlockState(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset)) == ModBlocks.reactor) {
-			manager = buildManagerBlock();
-			return manager;
-		}
-
-		return null;
-
-	}
-
-	private TileEntity buildManagerBlock() {
-		IBlockState state = world.getBlockState(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset));
-
-		if (state.getBlock().getMetaFromState(state) == 2) {
-			FusionTileEntity fusion = new FusionTileEntity();
-			fusion.setWorld(world);
-			fusion.setPos(new BlockPos(managerXOffset + pos.getX(), managerYOffset + pos.getY(), managerZOffset + pos.getZ()));
-
-			fusion.setBlockType(ModBlocks.reactor);
-			world.setTileEntity(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset), fusion);
-		}
-
-		state = world.getBlockState(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset));
-		if (state.getBlock().getMetaFromState(state) == 3) {
-			FissionTileEntity fission = new FissionTileEntity();
-			fission.setWorld(world);
-			fission.setPos(new BlockPos(managerXOffset + pos.getX(), managerYOffset + pos.getY(), managerZOffset + pos.getZ()));
-			fission.setBlockType(ModBlocks.reactor);
-			world.setTileEntity(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset), fission);
-		}
-		return world.getTileEntity(new BlockPos(pos.getX() + managerXOffset, pos.getY() + managerYOffset, pos.getZ() + managerZOffset));
-
 	}
 
 	@Override
 	public int getSizeInventory() {
-		if (manager != null && manager != this) {
+		if (manager != null) {
 			return ((ISidedInventory) manager).getSizeInventory();
 		}
 		return 0;
@@ -119,32 +138,32 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 
 	@Override
 	public ItemStack getStackInSlot(int i) {
-		if (getManager() != null && getManager() instanceof ISidedInventory) {
-			return ((ISidedInventory) getManager()).getStackInSlot(i);
+		if (manager != null && manager instanceof ISidedInventory) {
+			return ((ISidedInventory) manager).getStackInSlot(i);
 		}
 		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack decrStackSize(int i, int j) {
-		if (getManager() != null && getManager() instanceof ISidedInventory) {
-			return ((ISidedInventory) getManager()).decrStackSize(i, j);
+		if (manager != null && manager instanceof ISidedInventory) {
+			return ((ISidedInventory) manager).decrStackSize(i, j);
 		}
 		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int i) {
-		if (getManager() != null && getManager() instanceof ISidedInventory) {
-			return ((ISidedInventory) getManager()).removeStackFromSlot(i);
+		if (manager != null && manager instanceof ISidedInventory) {
+			return ((ISidedInventory) manager).removeStackFromSlot(i);
 		}
 		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack) {
-		if (getManager() != null && getManager() instanceof ISidedInventory) {
-			((ISidedInventory) getManager()).setInventorySlotContents(i, itemstack);
+		if (manager != null && manager instanceof ISidedInventory) {
+			((ISidedInventory) manager).setInventorySlotContents(i, itemstack);
 		}
 	}
 
@@ -160,15 +179,15 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 
 	@Override
 	public int getInventoryStackLimit() {
-		if (manager != null && manager != this) {
-			return ((ISidedInventory) getManager()).getInventoryStackLimit();
+		if (manager != null) {
+			return ((ISidedInventory) manager).getInventoryStackLimit();
 		}
 		return 0;
 	}
 
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer entityPlayer) {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -183,8 +202,8 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		if (manager != null && manager != this) {
-			return ((ISidedInventory) getManager()).isItemValidForSlot(i, itemstack);
+		if (manager != null) {
+			return ((ISidedInventory) manager).isItemValidForSlot(i, itemstack);
 		}
 		return false;
 	}
@@ -211,8 +230,8 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 
 	@Override
 	public int[] getSlotsForFace(EnumFacing enumFacing) {
-		if (manager != null && manager != this) {
-			return ((ISidedInventory) getManager()).getSlotsForFace(enumFacing);
+		if (manager != null) {
+			return ((ISidedInventory) manager).getSlotsForFace(enumFacing);
 		}
 		return new int[0];
 	}
@@ -244,4 +263,74 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 		}
 		return true;
 	}
+
+	@Override
+	public void setEnergy(int amount) {
+		if (getForgeEnergyCap() instanceof EnergySettableMultiBlock) {
+			((EnergySettableMultiBlock) getForgeEnergyCap()).setEnergy(amount);
+		}
+	}
+
+	public static class EnergySettableMultiBlock implements IEnergyStorage {
+
+		private TileReactorCore manager;
+
+		public EnergySettableMultiBlock(TileReactorCore manager) {
+			this.manager = manager;
+		}
+
+		public void setManager(TileReactorCore manager) {
+			this.manager = manager;
+		}
+
+		public TileReactorCore getManager() {
+			return manager;
+		}
+
+		@Override
+		public int receiveEnergy(int maxReceive, boolean simulate) {
+			if (!canReceive() || getManager() == null) {
+				return 0;
+			}
+			return getManager().receiveEnergy(maxReceive, simulate);
+		}
+
+		@Override
+		public int extractEnergy(int maxExtract, boolean simulate) {
+			return 0;
+		}
+
+		@Override
+		public int getEnergyStored() {
+			if (getManager() == null) {
+				return 0;
+			}
+			return getManager().getEnergyStored();
+		}
+
+		@Override
+		public int getMaxEnergyStored() {
+			if (getManager() == null) {
+				return 0;
+			}
+			return getManager().getMaxEnergyStored();
+		}
+
+		@Override
+		public boolean canExtract() {
+			return false;
+		}
+
+		@Override
+		public boolean canReceive() {
+			return true;
+		}
+
+		public void setEnergy(int amount) {
+			if (getManager() != null) {
+				getManager().setEnergy(Math.abs(amount));
+			}
+		}
+	}
+
 }

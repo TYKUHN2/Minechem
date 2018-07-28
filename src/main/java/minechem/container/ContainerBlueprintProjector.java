@@ -16,7 +16,7 @@ public class ContainerBlueprintProjector extends Container {
 	public ContainerBlueprintProjector(InventoryPlayer inventoryPlayer, TileBlueprintProjector projector) {
 		this.inventoryPlayer = inventoryPlayer;
 		this.projector = projector;
-		addSlotToContainer(new SlotBlueprint(projector, 0, 25, 47));
+		addSlotToContainer(new SlotBlueprint(projector, 0, 24, 28));
 		bindPlayerInventory(inventoryPlayer);
 	}
 
@@ -26,8 +26,8 @@ public class ContainerBlueprintProjector extends Container {
 	}
 
 	private void bindPlayerInventory(InventoryPlayer inventoryPlayer) {
-		int inventoryY = 84;
-		int hotBarY = 142;
+		int inventoryY = 122;
+		int hotBarY = 180;
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 9; j++) {
 				addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, inventoryY + i * 18));

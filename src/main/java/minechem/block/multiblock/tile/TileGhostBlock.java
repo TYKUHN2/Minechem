@@ -1,4 +1,4 @@
-package minechem.tileentity.multiblock.ghostblock;
+package minechem.block.multiblock.tile;
 
 import javax.annotation.Nullable;
 
@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class GhostBlockTileEntity extends TileMinechemBase {
+public class TileGhostBlock extends TileMinechemBase {
 
 	private IBlockState bpState;
 
@@ -27,9 +27,12 @@ public class GhostBlockTileEntity extends TileMinechemBase {
 	}
 
 	public ItemStack getBlockAsItemStack() {
-		Block block = getRenderedBlockState().getBlock();
-		int meta = block.getMetaFromState(getRenderedBlockState());
-		return new ItemStack(block, 1, meta);
+		if (bpState != null) {
+			Block block = getRenderedBlockState().getBlock();
+			int meta = block.getMetaFromState(getRenderedBlockState());
+			return new ItemStack(block, 1, meta);
+		}
+		return ItemStack.EMPTY;
 	}
 
 	@Override

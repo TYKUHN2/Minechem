@@ -24,8 +24,6 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -46,24 +44,7 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 	};
 
 	public static final int[] outputSlots = {
-			1,
-			2,
-			3,
-			4,
-			5,
-			6,
-			7,
-			8,
-			9,
-			10,
-			11,
-			12,
-			13,
-			14,
-			15,
-			16,
-			17,
-			18
+			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
 	};
 	private static final int TANK_CAPACITY = Fluid.BUCKET_VOLUME * 5;
 	public FluidTank tank = new DecomposerFluidTank(TANK_CAPACITY);
@@ -320,33 +301,6 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 		}
 	}
 
-	//TODO
-	@Override
-	public void update() {
-		super.update();
-		timer++;
-		if (timer < 5) {
-			return;
-		}
-		else {
-			timer = 0;
-		}
-		if (world.isRemote || getState() == State.jammed || isOutputInventoryFull()) {
-			return;
-		}
-		if (isCooking) {
-			processOutputBuffer();
-		}
-		else {
-			processInput();
-		}
-		markDirty();
-		IBlockState iblockstate = getWorld().getBlockState(getPos());
-		if (iblockstate != null) {
-			getWorld().notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
-		}
-	}
-
 	private boolean hasRequiredEnergy() {
 		return getEnergyStored() >= ModConfig.costDecomposition || !ModConfig.powerUseEnabled;
 	}
@@ -539,40 +493,61 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
-		tank.readFromNBT(nbt);
+		//tank.readFromNBT(nbt);
 		NBTTagList inventoryTagList = nbt.getTagList("inventory", Constants.NBT.TAG_COMPOUND);
 		NBTTagList buffer = nbt.getTagList("buffer", Constants.NBT.TAG_COMPOUND);
 		outputBuffer = MinechemUtil.readTagListToItemStackList(buffer);
 		inventory = MinechemUtil.readTagListToItemStackList(inventoryTagList);
 		isCooking = nbt.getBoolean("cooking");
+		if (nbt.hasKey("tank", Constants.NBT.TAG_COMPOUND)) {
+			NBTTagCompound mergedTankNBT = nbt.getCompoundTag("tank");
+			if (mergedTankNBT.hasKey("FluidName") && mergedTankNBT.hasKey("Amount")) {
+				NBTTagCompound tempTankNBT = new NBTTagCompound();
+				tempTankNBT.setString("FluidName", mergedTankNBT.getString("FluidName"));
+				tempTankNBT.setInteger("Amount", mergedTankNBT.getInteger("Amount"));
+				nbt.setTag("tank", tempTankNBT);
+			}
+		}
+		tank.readFromNBT(nbt.getCompoundTag("tank"));
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
-		tank.writeToNBT(nbt);
+		//tank.writeToNBT(nbt);
 		NBTTagList inventoryTagList = MinechemUtil.writeItemStackListToTagList(inventory);
 		NBTTagList buffer = MinechemUtil.writeItemStackListToTagList(outputBuffer);
 		nbt.setTag("inventory", inventoryTagList);
 		nbt.setTag("buffer", buffer);
 		nbt.setBoolean("cooking", isCooking);
+		nbt.setTag("tank", tank.writeToNBT(new NBTTagCompound()));
 		return nbt;
 	}
 
 	@Override
-	public NBTTagCompound getUpdateTag() {
-		return writeToNBT(new NBTTagCompound());
-	}
-
-	@Override
-	@Nullable
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(getPos(), 255, getUpdateTag());
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		readFromNBT(pkt.getNbtCompound());
+	public void update() {
+		super.update();
+		timer++;
+		if (timer > 5) {
+			timer = 0;
+		}
+		else {
+			return;
+		}
+		if (world.isRemote || getState() == State.jammed || isOutputInventoryFull()) {
+			return;
+		}
+		if (isCooking) {
+			processOutputBuffer();
+		}
+		else {
+			processInput();
+		}
+		markDirty();
+		IBlockState iblockstate = getWorld().getBlockState(getPos());
+		if (iblockstate != null) {
+			getWorld().notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
+		}
 	}
 
 	public String getStateString() {

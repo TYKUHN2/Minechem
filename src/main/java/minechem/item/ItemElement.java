@@ -71,6 +71,11 @@ public class ItemElement extends ItemBase {
 		ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(new ResourceLocation(ModGlobals.ID, "tube_empty"), "inventory"));
 	}
 
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+		return false;//(oldStack.equals(newStack) && !slotChanged); //!ItemStack.areItemStacksEqual(oldStack, newStack);
+	}
+
 	public static String getShortName(ItemStack itemstack) {
 		int atomicNumber = itemstack.getItemDamage();
 		return atomicNumber == 0 ? MinechemUtil.getLocalString("element.empty") : ElementEnum.getByID(atomicNumber).name();

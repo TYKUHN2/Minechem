@@ -6,8 +6,8 @@ import net.minecraft.block.state.IBlockState;
 public class BlueprintFission extends MinechemBlueprint {
 
 	private static IBlockState w = air;
-	private static IBlockState A = ModBlocks.reactor.getStateFromMeta(0);
-	private static IBlockState C = ModBlocks.reactor.getStateFromMeta(1);
+	private static IBlockState A = ModBlocks.reactor_core.getDefaultState();
+	private static IBlockState C = ModBlocks.tungsten_plating.getDefaultState();
 	//@formatter:off
 	private static IBlockState[][][] structure = {
 			{
@@ -77,6 +77,16 @@ public class BlueprintFission extends MinechemBlueprint {
 	@Override
 	public int getRenderScale() {
 		return 9;
+	}
+
+	@Override
+	public int getXOffset() {
+		return 22;
+	}
+
+	@Override
+	public int getYOffset() {
+		return 60;
 	}
 
 }

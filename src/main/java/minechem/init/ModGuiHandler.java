@@ -1,5 +1,7 @@
 package minechem.init;
 
+import minechem.block.multiblock.tile.TileFissionCore;
+import minechem.block.multiblock.tile.TileFusionCore;
 import minechem.block.tile.TileBlueprintProjector;
 import minechem.block.tile.TileDecomposer;
 import minechem.block.tile.TileEntityProxy;
@@ -9,6 +11,8 @@ import minechem.block.tile.TileSynthesis;
 import minechem.client.gui.GuiBlueprintProjector;
 import minechem.client.gui.GuiChemistJournal;
 import minechem.client.gui.GuiDecomposer;
+import minechem.client.gui.GuiFission;
+import minechem.client.gui.GuiFusion;
 import minechem.client.gui.GuiLeadedChest;
 import minechem.client.gui.GuiMicroscope;
 import minechem.client.gui.GuiPolytool;
@@ -17,16 +21,12 @@ import minechem.client.gui.GuiTableOfElements;
 import minechem.container.ChemistJournalContainer;
 import minechem.container.ContainerBlueprintProjector;
 import minechem.container.ContainerDecomposer;
+import minechem.container.ContainerFission;
+import minechem.container.ContainerFusion;
 import minechem.container.ContainerLeadedChest;
 import minechem.container.ContainerMicroscope;
 import minechem.container.ContainerPolytool;
 import minechem.container.ContainerSynthesis;
-import minechem.tileentity.multiblock.fission.FissionContainer;
-import minechem.tileentity.multiblock.fission.FissionGui;
-import minechem.tileentity.multiblock.fission.FissionTileEntity;
-import minechem.tileentity.multiblock.fusion.FusionContainer;
-import minechem.tileentity.multiblock.fusion.FusionGui;
-import minechem.tileentity.multiblock.fusion.FusionTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -63,11 +63,11 @@ public class ModGuiHandler implements IGuiHandler {
 		if (tileEntity instanceof TileSynthesis) {
 			return new ContainerSynthesis(player.inventory, (TileSynthesis) tileEntity);
 		}
-		if (tileEntity instanceof FusionTileEntity) {
-			return new FusionContainer(player.inventory, (FusionTileEntity) tileEntity);
+		if (tileEntity instanceof TileFusionCore) {
+			return new ContainerFusion(player.inventory, (TileFusionCore) tileEntity);
 		}
-		if (tileEntity instanceof FissionTileEntity) {
-			return new FissionContainer(player.inventory, (FissionTileEntity) tileEntity);
+		if (tileEntity instanceof TileFissionCore) {
+			return new ContainerFission(player.inventory, (TileFissionCore) tileEntity);
 		}
 
 		if (tileEntity instanceof TileEntityProxy) {
@@ -87,12 +87,14 @@ public class ModGuiHandler implements IGuiHandler {
 
 	public Object getServerGuiElementFromProxy(TileEntityProxy proxy, EntityPlayer player) {
 		TileEntity tileEntity = proxy.getManager();
-		if (tileEntity instanceof FusionTileEntity) {
-			return new FusionContainer(player.inventory, (FusionTileEntity) tileEntity);
-		}
+		if (tileEntity != null) {
+			if (tileEntity instanceof TileFusionCore) {
+				return new ContainerFusion(player.inventory, (TileFusionCore) tileEntity);
+			}
 
-		if (tileEntity instanceof FissionTileEntity) {
-			return new FissionContainer(player.inventory, (FissionTileEntity) tileEntity);
+			if (tileEntity instanceof TileFissionCore) {
+				return new ContainerFission(player.inventory, (TileFissionCore) tileEntity);
+			}
 		}
 		return null;
 	}
@@ -129,8 +131,8 @@ public class ModGuiHandler implements IGuiHandler {
 		if (tileEntity instanceof TileSynthesis) {
 			return new GuiSynthesis(player.inventory, (TileSynthesis) tileEntity);
 		}
-		if (tileEntity instanceof FusionTileEntity) {
-			return new FusionGui(player.inventory, (FusionTileEntity) tileEntity);
+		if (tileEntity instanceof TileFusionCore) {
+			return new GuiFusion(player.inventory, (TileFusionCore) tileEntity);
 		}
 		if (tileEntity instanceof TileEntityProxy) {
 			return getClientGuiElementFromProxy((TileEntityProxy) tileEntity, player);
@@ -138,8 +140,8 @@ public class ModGuiHandler implements IGuiHandler {
 		if (tileEntity instanceof TileBlueprintProjector) {
 			return new GuiBlueprintProjector(player.inventory, (TileBlueprintProjector) tileEntity);
 		}
-		if (tileEntity instanceof FissionTileEntity) {
-			return new FissionGui(player.inventory, (FissionTileEntity) tileEntity);
+		if (tileEntity instanceof TileFissionCore) {
+			return new GuiFission(player.inventory, (TileFissionCore) tileEntity);
 		}
 		return null;
 	}
@@ -151,12 +153,14 @@ public class ModGuiHandler implements IGuiHandler {
 
 	public Object getClientGuiElementFromProxy(TileEntityProxy proxy, EntityPlayer player) {
 		TileEntity tileEntity = proxy.getManager();
-		if (tileEntity instanceof FusionTileEntity) {
-			return new FusionGui(player.inventory, (FusionTileEntity) tileEntity);
-		}
+		if (tileEntity != null) {
+			if (tileEntity instanceof TileFusionCore) {
+				return new GuiFusion(player.inventory, (TileFusionCore) tileEntity);
+			}
 
-		if (tileEntity instanceof FissionTileEntity) {
-			return new FissionGui(player.inventory, (FissionTileEntity) tileEntity);
+			if (tileEntity instanceof TileFissionCore) {
+				return new GuiFission(player.inventory, (TileFissionCore) tileEntity);
+			}
 		}
 		return null;
 	}

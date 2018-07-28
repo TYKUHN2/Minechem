@@ -176,6 +176,16 @@ public abstract class MinechemBlueprint extends IForgeRegistryEntry.Impl<IMinech
 			public int getRenderScale() {
 				return 0;
 			}
+
+			@Override
+			public int getXOffset() {
+				return 0;
+			}
+
+			@Override
+			public int getYOffset() {
+				return 0;
+			}
 		}
 	}
 

@@ -1,22 +1,37 @@
 package minechem.client.gui;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import com.google.common.collect.Lists;
 
 import minechem.api.IMinechemBlueprint;
+import minechem.api.client.gui.widget.IGuiMaterialListSlot;
+import minechem.api.client.gui.widget.IGuiMaterialListView;
 import minechem.block.tile.TileBlueprintProjector;
+import minechem.block.tile.TileMinechemEnergyBase;
+import minechem.client.gui.widget.GuiMaterialListView;
+import minechem.client.gui.widget.GuiMaterialListView.GuiMaterialListSlot;
+import minechem.client.gui.widget.tab.TabBlueprintProjectorState;
 import minechem.client.gui.widget.tab.TabHelp;
 import minechem.container.ContainerBlueprintProjector;
 import minechem.init.ModGlobals.ModResources;
 import minechem.utils.BlueprintUtil;
 import minechem.utils.MinechemUtil;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 
 public class GuiBlueprintProjector extends GuiContainerTabbed {
 
 	TileBlueprintProjector projector;
-
+	IGuiMaterialListView materialList;
 	int[] lastClick;
 	int[] lastDrag;
 	float rotX = 0;
@@ -25,14 +40,74 @@ public class GuiBlueprintProjector extends GuiContainerTabbed {
 	public GuiBlueprintProjector(InventoryPlayer inventoryPlayer, TileBlueprintProjector projector) {
 		super(new ContainerBlueprintProjector(inventoryPlayer, projector));
 		this.projector = projector;
+		addTab(new TabBlueprintProjectorState(this, projector));
 		addTab(new TabHelp(this, MinechemUtil.getLocalString("help.projector")));
 		//addTab(new GuiTabPatreon(this));
 		rotX = 25;
 		rotY = -45;
+		ySize = 204;
+	}
+
+	@Override
+	public void initGui() {
+		super.initGui();
+		getMaterialList();
 	}
 
 	public TileBlueprintProjector getProjector() {
 		return projector;
+	}
+
+	public float getZLevel() {
+		return zLevel;
+	}
+
+	public void setZLevel(float level) {
+		zLevel = level;
+	}
+
+	public RenderItem getItemRenderer() {
+		return itemRender;
+	}
+
+	public float getItemRendererZLevel() {
+		return getItemRenderer().zLevel;
+	}
+
+	public void setItemRenderZLevel(float level) {
+		getItemRenderer().zLevel = level;
+	}
+
+	protected IGuiMaterialListView getMaterialList() {
+		if (materialList == null && getProjector().hasBlueprint()) {
+			//IGuiMaterialListView materialList = getProjector().getBlueprint().getMaterialList()
+			GuiMaterialListView matList = (GuiMaterialListView) materialList;
+			List<IGuiMaterialListSlot> slots = new ArrayList<>();
+			int i = 0;
+			for (IBlockState state : getProjector().getBlueprint().getMaterials().keySet()) {
+				ItemStack stack = state.getBlock().getPickBlock(state, null, mc.world, new BlockPos(0, 0, 0), mc.player);
+				if (!stack.isEmpty()) {
+					slots.add(new GuiMaterialListSlot(this, i, Pair.of(stack, getProjector().getBlueprint().getMaterials().get(state)), Lists.<String>newArrayList()));
+				}
+				i++;
+			}
+			materialList = new GuiMaterialListView(this, 16, 57, 49, 62, 15, slots.toArray(new GuiMaterialListSlot[slots.size()]));
+		}
+		return materialList;
+	}
+
+	@Override
+	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+		String info = MinechemUtil.getLocalString("block.blueprint_projector.name");
+		int infoWidth = fontRenderer.getStringWidth(info);
+		fontRenderer.drawString(info, (xSize - infoWidth) / 2, 5, 0x000000);
+		if (materialList != null && !getProjector().hasBlueprint()) {
+			materialList = null;
+		}
+		if (getMaterialList() != null) {
+			getMaterialList().draw();
+		}
+		super.drawGuiContainerForegroundLayer(par1, par2);
 	}
 
 	@Override
@@ -53,7 +128,11 @@ public class GuiBlueprintProjector extends GuiContainerTabbed {
 		}
 		GlStateManager.popMatrix();
 		if (projector.hasBlueprint()) {
-			BlueprintUtil.renderStructureOnScreen(projector.getBlueprint(), x + 53, y + 5, var2, var3, rotX, rotY, projector.getBlueprint().getRenderScale());
+			int stored = ((TileBlueprintProjector) mc.world.getTileEntity(getProjector().getPos())).getEnergyStored();
+			int required = ((TileMinechemEnergyBase) mc.world.getTileEntity(getProjector().getPos())).getEnergyRequired();
+			if (stored > required) {
+				BlueprintUtil.renderStructureOnScreen(projector.getBlueprint(), x + 53, y + 5, var2, var3, rotX, rotY, projector.getBlueprint().getRenderScale());
+			}
 		}
 	}
 
@@ -84,7 +163,7 @@ public class GuiBlueprintProjector extends GuiContainerTabbed {
 	}
 
 	private void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, int button) {
-		if ((clickX > 187 && clickX < 291 && mx >= 0 && mx < 1000) && (clickY >= 47 && clickY < 130 && my >= 0 && my < 1000)) {
+		if ((clickX > guiLeft + 62 && clickX < guiLeft + 165 && mx >= 0 && mx < 1000) && (clickY >= guiTop + 8 && clickY < guiTop + 80 && my >= 0 && my < 1000)) {
 			int dx = mx - lastX;
 			int dy = my - lastY;
 			rotY = rotY + (dx / 104f) * 80;

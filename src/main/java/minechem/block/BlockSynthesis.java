@@ -1,7 +1,5 @@
 package minechem.block;
 
-import java.util.ArrayList;
-
 import minechem.Minechem;
 import minechem.block.tile.TileSynthesis;
 import minechem.client.render.RenderSynthesis;
@@ -32,10 +30,6 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-/**
- * Chemical Synthesizer block. Its associated TileEntitySynthesis's inventory has many specialized slots, including some "ghost" slots whose contents don't really exist and shouldn't be able
- * to be extracted or dumped when the block is broken. See {@link minechem.block.tile.TileSynthesis} for details of the inventory slots.
- */
 public class BlockSynthesis extends BlockSimpleContainer {
 
 	public static final PropertyDirection FACING = BlockHorizontal.FACING;
@@ -162,22 +156,6 @@ public class BlockSynthesis extends BlockSimpleContainer {
 	@Override
 	public TileEntity createNewTileEntity(World world, int i) {
 		return new TileSynthesis();
-	}
-
-	//TODO:Find replacement
-	@Override
-	public void addStacksDroppedOnBlockBreak(TileEntity tileEntity, ArrayList<ItemStack> itemStacks) {
-		TileSynthesis synthesizer = (TileSynthesis) tileEntity;
-		/*
-		for (int slot : TileSynthesis.kRealSlots) {
-			if (synthesizer.isRealItemSlot(slot)) {
-				ItemStack itemstack = synthesizer.getStackInSlot(slot);
-				if (!itemstack.isEmpty()) {
-					itemStacks.add(itemstack);
-				}
-			}
-		}
-		*/
 	}
 
 	@Override

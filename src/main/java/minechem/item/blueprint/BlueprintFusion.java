@@ -6,8 +6,9 @@ import net.minecraft.block.state.IBlockState;
 public class BlueprintFusion extends MinechemBlueprint {
 
 	private static IBlockState w = air;
-	private static IBlockState C = ModBlocks.reactor.getStateFromMeta(1);
-	private static IBlockState A = ModBlocks.reactor.getDefaultState();
+	private static IBlockState C = ModBlocks.tungsten_plating.getDefaultState();
+	private static IBlockState A = ModBlocks.reactor_wall.getDefaultState();
+	private static IBlockState X = ModBlocks.reactor_core.getDefaultState();
 	private static IBlockState[][][] structure = {
 			{
 					{
@@ -79,7 +80,7 @@ public class BlueprintFusion extends MinechemBlueprint {
 					}, {
 							A, C, w, w, w, w, C, w, w, w, w, C, A
 					}, {
-							A, C, w, w, w, C, w, C, w, w, w, C, A
+							A, C, w, w, w, C, X, C, w, w, w, C, A
 					}, {
 							A, C, w, w, w, w, C, w, w, w, w, C, A
 					}, {
@@ -169,7 +170,7 @@ public class BlueprintFusion extends MinechemBlueprint {
 
 	@Override
 	public int getManagerPosY() {
-		return 1;
+		return 2;
 	}
 
 	@Override
@@ -180,6 +181,16 @@ public class BlueprintFusion extends MinechemBlueprint {
 	@Override
 	public int getRenderScale() {
 		return 6;
+	}
+
+	@Override
+	public int getXOffset() {
+		return 22;
+	}
+
+	@Override
+	public int getYOffset() {
+		return 60;
 	}
 
 }

@@ -96,6 +96,10 @@ public final class MinechemUtil {
 		return itemStack;
 	}
 
+	public static void throwItemStack(World world, ItemStack stack, BlockPos pos) {
+		throwItemStack(world, stack, pos.getX(), pos.getY(), pos.getZ());
+	}
+
 	public static void throwItemStack(World world, ItemStack itemStack, double x, double y, double z) {
 		if (!itemStack.isEmpty()) {
 			float f = random.nextFloat() * 0.8F + 0.1F;

@@ -3,19 +3,21 @@ package minechem.block.tile;
 import javax.annotation.Nullable;
 
 import minechem.init.ModConfig;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
-public abstract class TileMinechemEnergyBase extends TileMinechemBase {
+public class TileMinechemEnergyBase extends TileMinechemBase {
 	/**
 	 * Determines amount of energy we are allowed to input into the machine with a given update.
 	 */
 	private static int maxEnergyReceived = ModConfig.energyPacketSize;
 	private int maxEnergy;
-	private int energyStored;
+	public int energyStored;
 
 	public TileMinechemEnergyBase(int maxEnergy) {
 		super();
@@ -43,24 +45,35 @@ public abstract class TileMinechemEnergyBase extends TileMinechemBase {
 		}
 	}
 
-	protected EnergySettable getForgeEnergyCap() {
-		return (EnergySettable) getCapability(CapabilityEnergy.ENERGY, null);
+	protected IEnergyStorage getForgeEnergyCap() {
+		return getCapability(CapabilityEnergy.ENERGY, null);
 	}
 
-	protected int receiveEnergy(int maxReceive, boolean simulate) {
-		return getForgeEnergyCap().receiveEnergy(maxReceive, simulate);
+	public int receiveEnergy(int maxReceive, boolean simulate) {
+		if (getForgeEnergyCap() != null) {
+			return getForgeEnergyCap().receiveEnergy(maxReceive, simulate);
+		}
+		return 0;
 	}
 
 	public int getMaxEnergyStored() {
-		return getForgeEnergyCap().getMaxEnergyStored();
+		if (getForgeEnergyCap() != null) {
+			return getForgeEnergyCap().getMaxEnergyStored();
+		}
+		return 0;
 	}
 
 	public int getEnergyStored() {
-		return getForgeEnergyCap().getEnergyStored();
+		if (getForgeEnergyCap() != null) {
+			return getForgeEnergyCap().getEnergyStored();
+		}
+		return 0;
 	}
 
 	public void setEnergy(int amount) {
-		getForgeEnergyCap().setEnergy(amount);
+		if (getForgeEnergyCap() != null && getForgeEnergyCap() instanceof EnergySettable) {
+			((EnergySettable) getForgeEnergyCap()).setEnergy(amount);
+		}
 	}
 
 	public boolean useEnergy(int energy) {
@@ -96,7 +109,9 @@ public abstract class TileMinechemEnergyBase extends TileMinechemBase {
 		energyStored = nbt.getInteger("energy");
 	}
 
-	public abstract int getEnergyRequired();
+	public int getEnergyRequired() {
+		return 0;
+	}
 
 	public static class EnergySettable implements IEnergyStorage {
 
@@ -148,5 +163,61 @@ public abstract class TileMinechemEnergyBase extends TileMinechemBase {
 			tile.energyStored = Math.abs(amount);
 		}
 
+	}
+
+	@Override
+	public int getSizeInventory() {
+		return 0;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return false;
+	}
+
+	@Override
+	public boolean isUsableByPlayer(EntityPlayer player) {
+		return false;
+	}
+
+	@Override
+	public void openInventory(EntityPlayer player) {
+	}
+
+	@Override
+	public void closeInventory(EntityPlayer player) {
+	}
+
+	@Override
+	public boolean isItemValidForSlot(int index, ItemStack stack) {
+		return false;
+	}
+
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
+	@Override
+	public void clear() {
+	}
+
+	@Override
+	public String getName() {
+		return null;
+	}
+
+	@Override
+	public boolean hasCustomName() {
+		return false;
 	}
 }

@@ -371,10 +371,10 @@ public class ModRecipes {
 		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "synthesis"), null, new ItemStack(ModBlocks.synthesis), new Object[] {
 				"IRI", "IAI", "IDI", Character.valueOf('A'), minechemItemsAtomicManipulator, Character.valueOf('I'), itemIngotIron, Character.valueOf('R'), itemRedstone, Character.valueOf('D'), new ItemStack(Items.DIAMOND)
 		});
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "fusion_1"), null, new ItemStack(ModBlocks.reactor, 16, 0), new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "fusion_1"), null, new ItemStack(ModBlocks.reactor_wall, 16), new Object[] {
 				"ILI", "ILI", "ILI", Character.valueOf('I'), itemIngotIron, Character.valueOf('L'), ItemElement.createStackOf(ElementEnum.Pb, 1)
 		});
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "fusion_2"), null, new ItemStack(ModBlocks.reactor, 16, 1), new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "fusion_2"), null, new ItemStack(ModBlocks.tungsten_plating, 16), new Object[] {
 				"IWI", "IBI", "IWI", Character.valueOf('I'), itemIngotIron, Character.valueOf('W'), ItemElement.createStackOf(ElementEnum.W, 1), Character.valueOf('B'), ItemElement.createStackOf(ElementEnum.Be, 1)
 		});
 		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "projector_lens"), null, ModItems.projectorLens, new Object[] {
@@ -2159,7 +2159,7 @@ public class ModRecipes {
 
 	//TODO
 	/*
-
+	
 	//Redstone Arsenal
 	if (Loader.isModLoaded("RedstoneArsenal")) {
 		Item alloy = Item.REGISTRY.getObject(new ResourceLocation("RedstoneArsenal", "material"));
@@ -2208,7 +2208,7 @@ public class ModRecipes {
 				element(ElementEnum.Cu, 2)
 		}));
 	}
-
+	
 	//EnderIO
 	if (Loader.isModLoaded("EnderIO")) {
 		Item alloy = Item.REGISTRY.getObject(new ResourceLocation("EnderIO", "itemAlloy"));
@@ -2291,22 +2291,22 @@ public class ModRecipes {
 				})
 		}));
 	}
-
+	
 	// AE2
 	if (Loader.isModLoaded("appliedenergistics2")) {
 		MoleculeEnum certusQuartzMolecule = MoleculeEnum.aluminiumPhosphate;
 		MoleculeEnum chargedCertusQuartzMolecule = MoleculeEnum.aluminiumHypophosphite;
 		PotionChemical chargedCertusQuartzChemical = new Molecule(chargedCertusQuartzMolecule);
-
+	
 		PotionChemical[] chargedCertusQuartzDecompositionFormula = new PotionChemical[] {
 				new Molecule(chargedCertusQuartzMolecule, 4)
 		};
-
+	
 		PotionChemical[] quartzGlassDecompositionFormula = new PotionChemical[] {
 				new Molecule(certusQuartzMolecule, 5),
 				new Molecule(MoleculeEnum.siliconDioxide, 16)
 		};
-
+	
 		Item item = Item.REGISTRY.getObject(new ResourceLocation("appliedenergistics2", "item.ItemMultiMaterial"));
 		Block skyStone = Block.REGISTRY.getObject(new ResourceLocation("appliedenergistics2", "tile.BlockSkyStone"));
 		Block quartzGlass = Block.REGISTRY.getObject(new ResourceLocation("appliedenergistics2", "tile.BlockQuartzGlass"));
@@ -2314,10 +2314,10 @@ public class ModRecipes {
 		ItemStack singularity = new ItemStack(item, 1, 47);
 		ItemStack skystone = new ItemStack(skyStone);
 		ItemStack quartzglass = new ItemStack(quartzGlass);
-
+	
 		RecipeDecomposer.add(new RecipeDecomposer(charged, chargedCertusQuartzDecompositionFormula));
 		RecipeHandlerSynthesis.addShapedRecipe("charged_certus_quartz", 30000, charged, " a ", "a a", " a ", 'a', chargedCertusQuartzChemical);
-
+	
 		RecipeDecomposer.add(new RecipeDecomposer(singularity, new PotionChemical[] {
 				element(ElementEnum.Fm, 148),
 				element(ElementEnum.Md, 142),
@@ -2334,7 +2334,7 @@ public class ModRecipes {
 				element(ElementEnum.Cn, 33),
 				element(ElementEnum.Uut, 22)
 		}));
-
+	
 		RecipeDecomposer.add(new RecipeDecomposerSelect(skystone, 0.9F, new RecipeDecomposer[] {
 				new RecipeDecomposer(new PotionChemical[] {
 						element(ElementEnum.Si),
@@ -2393,11 +2393,11 @@ public class ModRecipes {
 						element(ElementEnum.Ar)
 				})
 		}));
-
+	
 		RecipeDecomposer.add(new RecipeDecomposer(quartzglass, quartzGlassDecompositionFormula));
 		RecipeHandlerSynthesis.addShapedRecipe("quartz_glass", 30000, quartzglass, "aba", "bab", "aba", 'a', certusQuartzMolecule, 'b', molecule(MoleculeEnum.siliconDioxide, 4));
 	}
-
+	
 	//RailCraft
 	if (Loader.isModLoaded("Railcraft")) {
 		Block metalPost = Block.REGISTRY.getObject(new ResourceLocation("Railcraft", "tile.railcraft.post.metal"));
@@ -2413,23 +2413,23 @@ public class ModRecipes {
 	/*
 	private void addUnusedSynthesisRecipes() {
 		Iterator<RecipeDecomposer> decomposerRecipes = RecipeDecomposer.recipes.values().iterator();
-
+	
 		while (decomposerRecipes.hasNext()) {
 			RecipeDecomposer nextDecomposerRecipe = decomposerRecipes.next();
 			if (nextDecomposerRecipe.getInput().getItemDamage() != -1) {
 				boolean check = false;
 				Iterator<RecipeSynthesisOld> synthesisRecipes = RecipeSynthesisOld.recipes.values().iterator();
-
+	
 				while (true) {
 					if (synthesisRecipes.hasNext()) {
 						RecipeSynthesisOld nextSynthesisRecipe = synthesisRecipes.next();
 						if (!MinechemUtil.stacksAreSameKind(nextSynthesisRecipe.getOutput(), nextDecomposerRecipe.getInput())) {
 							continue;
 						}
-
+	
 						check = true;
 					}
-
+	
 					if (!check) {
 						ArrayList<PotionChemical> rawDecomposerRecipe = nextDecomposerRecipe.getOutputRaw();
 						if (rawDecomposerRecipe != null) {

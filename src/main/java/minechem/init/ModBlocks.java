@@ -11,6 +11,14 @@ import minechem.block.BlockLeadedChest;
 import minechem.block.BlockMicroscope;
 import minechem.block.BlockSynthesis;
 import minechem.block.BlockUraniumOre;
+import minechem.block.multiblock.BlockGhost;
+import minechem.block.multiblock.BlockReactorCore;
+import minechem.block.multiblock.BlockReactorWall;
+import minechem.block.multiblock.BlockTungsten;
+import minechem.block.multiblock.tile.TileFissionCore;
+import minechem.block.multiblock.tile.TileFusionCore;
+import minechem.block.multiblock.tile.TileGhostBlock;
+import minechem.block.multiblock.tile.TileReactorCore;
 import minechem.block.tile.TileBlueprintProjector;
 import minechem.block.tile.TileDecomposer;
 import minechem.block.tile.TileEntityProxy;
@@ -18,16 +26,12 @@ import minechem.block.tile.TileLeadedChest;
 import minechem.block.tile.TileMicroscope;
 import minechem.block.tile.TileRadioactiveFluid;
 import minechem.block.tile.TileSynthesis;
-import minechem.tileentity.multiblock.fission.FissionTileEntity;
-import minechem.tileentity.multiblock.fusion.FusionBlock;
-import minechem.tileentity.multiblock.fusion.FusionTileEntity;
-import minechem.tileentity.multiblock.ghostblock.GhostBlock;
-import minechem.tileentity.multiblock.ghostblock.GhostBlockTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialTransparent;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -42,7 +46,9 @@ public class ModBlocks {
 	public static Block synthesis;
 	public static Block ghostBlock;
 	public static Block blueprintProjector;
-	public static Block reactor;
+	public static Block reactor_core;
+	public static Block reactor_wall;
+	public static Block tungsten_plating;
 	public static Block printer;
 	public static Block leadChest;
 
@@ -53,27 +59,32 @@ public class ModBlocks {
 
 		// Decomposer
 		BLOCK_LIST.add(decomposer = new BlockDecomposer());
-		GameRegistry.registerTileEntity(TileDecomposer.class, decomposer.getUnlocalizedName());
+		GameRegistry.registerTileEntity(TileDecomposer.class, new ResourceLocation(ModGlobals.ID, decomposer.getUnlocalizedName()));
 
 		// Microscope.
 		BLOCK_LIST.add(microscope = new BlockMicroscope());
-		GameRegistry.registerTileEntity(TileMicroscope.class, microscope.getUnlocalizedName());
+		GameRegistry.registerTileEntity(TileMicroscope.class, new ResourceLocation(ModGlobals.ID, microscope.getUnlocalizedName()));
 
 		// Chemical Synthesis Machine.
 		BLOCK_LIST.add(synthesis = new BlockSynthesis());
-		GameRegistry.registerTileEntity(TileSynthesis.class, synthesis.getUnlocalizedName());
+		GameRegistry.registerTileEntity(TileSynthesis.class, new ResourceLocation(ModGlobals.ID, synthesis.getUnlocalizedName()));
 
 		// Fusion Reactor.
-		BLOCK_LIST.add(reactor = new FusionBlock());
-		GameRegistry.registerTileEntity(FusionTileEntity.class, reactor.getUnlocalizedName());
+		BLOCK_LIST.add(reactor_core = new BlockReactorCore());
+		GameRegistry.registerTileEntity(TileReactorCore.class, new ResourceLocation(ModGlobals.ID, reactor_core.getUnlocalizedName()));
+		GameRegistry.registerTileEntity(TileFusionCore.class, new ResourceLocation(ModGlobals.ID, reactor_core.getUnlocalizedName() + "_fusion"));
+		GameRegistry.registerTileEntity(TileFissionCore.class, new ResourceLocation(ModGlobals.ID, reactor_core.getUnlocalizedName() + "_fission"));
+
+		BLOCK_LIST.add(reactor_wall = new BlockReactorWall());
+		BLOCK_LIST.add(tungsten_plating = new BlockTungsten());
 
 		// Ghost Block.
-		ghostBlock = new GhostBlock();
-		GameRegistry.registerTileEntity(GhostBlockTileEntity.class, ghostBlock.getUnlocalizedName());
+		ghostBlock = new BlockGhost();
+		GameRegistry.registerTileEntity(TileGhostBlock.class, new ResourceLocation(ModGlobals.ID, ghostBlock.getUnlocalizedName()));
 
 		// Blueprint Projector.
 		BLOCK_LIST.add(blueprintProjector = new BlockBlueprintProjector());
-		GameRegistry.registerTileEntity(TileBlueprintProjector.class, blueprintProjector.getUnlocalizedName());
+		GameRegistry.registerTileEntity(TileBlueprintProjector.class, new ResourceLocation(ModGlobals.ID, blueprintProjector.getUnlocalizedName()));
 
 		// Uranium Ore (World Gen).
 		BLOCK_LIST.add(uranium = new BlockUraniumOre());
@@ -83,13 +94,10 @@ public class ModBlocks {
 		BLOCK_LIST.add(leadChest = new BlockLeadedChest());
 		GameRegistry.registerTileEntity(TileLeadedChest.class, leadChest.getUnlocalizedName());
 
-		// Fission Reactor.
-		GameRegistry.registerTileEntity(FissionTileEntity.class, "fissionReactor");
-
 		// Tile Entity Proxy.
-		GameRegistry.registerTileEntity(TileEntityProxy.class, "minchem.tileEntityProxy");
+		GameRegistry.registerTileEntity(TileEntityProxy.class, new ResourceLocation(ModGlobals.ID, "tileEntityProxy"));
 
-		GameRegistry.registerTileEntity(TileRadioactiveFluid.class, "minechem.tileEntityRadiationFluid");
+		GameRegistry.registerTileEntity(TileRadioactiveFluid.class, new ResourceLocation(ModGlobals.ID, "tileEntityRadiationFluid"));
 
 	}
 

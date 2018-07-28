@@ -7,13 +7,10 @@ import net.minecraft.item.ItemStack;
 public class FusionItemBlock extends ItemBlock {
 
 	private static final String[] names = {
-			"fusion_wall",
-			"tungsten_plating",
-			"fusion_core"
+			"fusion_wall", "fission_wall", "tungsten_plating", "fusion_core"
 	};
 
 	public FusionItemBlock(Block block) {
-		//TODO: Find matching block
 		super(block);
 		setHasSubtypes(true);
 		setUnlocalizedName("fusion_wall");

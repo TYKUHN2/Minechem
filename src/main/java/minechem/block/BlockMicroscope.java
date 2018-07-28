@@ -1,7 +1,5 @@
 package minechem.block;
 
-import java.util.ArrayList;
-
 import minechem.Minechem;
 import minechem.block.tile.TileMicroscope;
 import minechem.client.render.RenderMicroscope;
@@ -71,7 +69,6 @@ public class BlockMicroscope extends BlockSimpleContainer {
 			else if (enumfacing == EnumFacing.EAST && iblockstate3.isFullBlock() && !iblockstate2.isFullBlock()) {
 				enumfacing = EnumFacing.WEST;
 			}
-
 			worldIn.setBlockState(pos, state.withProperty(FACING, enumfacing), 2);
 		}
 	}
@@ -84,43 +81,27 @@ public class BlockMicroscope extends BlockSimpleContainer {
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase el, ItemStack is) {
 		world.setBlockState(pos, state.withProperty(FACING, el.getHorizontalFacing().getOpposite()), 2);
-
-		//int facing = MathHelper.floor(el.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-		//world.setBlockState(pos, state.getBlock().getStateFromMeta(facing), 2);
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		EnumFacing enumfacing = EnumFacing.getFront(meta);
-
 		if (enumfacing.getAxis() == EnumFacing.Axis.Y) {
 			enumfacing = EnumFacing.NORTH;
 		}
-
 		return getDefaultState().withProperty(FACING, enumfacing);
 	}
 
-	/**
-	 * Convert the BlockState into the correct metadata value
-	 */
 	@Override
 	public int getMetaFromState(IBlockState state) {
 		return state.getValue(FACING).getIndex();
 	}
 
-	/**
-	 * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed
-	 * blockstate.
-	 */
 	@Override
 	public IBlockState withRotation(IBlockState state, Rotation rot) {
 		return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
 	}
 
-	/**
-	 * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed
-	 * blockstate.
-	 */
 	@Override
 	public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
 		return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
@@ -135,12 +116,10 @@ public class BlockMicroscope extends BlockSimpleContainer {
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if (tileEntity == null || player.isSneaking()) {
 			return false;
 		}
-
 		player.openGui(Minechem.INSTANCE, 0, world, pos.getX(), pos.getY(), pos.getZ());
 		return true;
 	}
@@ -151,17 +130,6 @@ public class BlockMicroscope extends BlockSimpleContainer {
 	}
 
 	@Override
-	public void addStacksDroppedOnBlockBreak(TileEntity tileEntity, ArrayList<ItemStack> itemStacks) {
-		TileMicroscope decomposer = (TileMicroscope) tileEntity;
-		for (int slot = 0; slot < decomposer.getSizeInventory(); slot++) {
-			ItemStack itemstack = decomposer.getStackInSlot(slot);
-			if (!itemstack.isEmpty()) {
-				itemStacks.add(itemstack);
-			}
-		}
-	}
-
-	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
@@ -169,15 +137,6 @@ public class BlockMicroscope extends BlockSimpleContainer {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerRenderer() {
-		//ModelRegistryHelper.registerItemRenderer(Item.getItemFromBlock(this), new RenderMicroscope());
-		//ModelLoader.setCustomStateMapper(this, new StateMapperBase() {
-		//@Override
-		//protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-		//	return new ModelResourceLocation(getRegistryName(), "inventory");
-		//}
-		//});
-		//ModelRegistryHelper.setParticleTexture(this, Textures.Sprite.MICROSCOPE);
-		//ClientRegistry.bindTileEntitySpecialRenderer(TileMicroscope.class, new RenderMicroscope());
 		ModRendering.setBlockRendering(this, new RenderMicroscope(), TileMicroscope.class, new ItemRenderMicroscope(), Textures.Sprite.MICROSCOPE);
 	}
 

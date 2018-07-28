@@ -1,7 +1,5 @@
 package minechem.block;
 
-import java.util.ArrayList;
-
 import minechem.Minechem;
 import minechem.block.tile.TileLeadedChest;
 import minechem.client.render.RenderLeadedChest;
@@ -139,45 +137,27 @@ public class BlockLeadedChest extends BlockSimpleContainer {
 		});
 	}
 
-	/*
 	@Override
-	public void breakBlock(World world, BlockPos blockPos, IBlockState blockState)
-	{
-	    this.dropItems(world, blockPos);
-	    super.onBlockDestroyedByPlayer(world, blockPos, blockState);
+	public void breakBlock(World world, BlockPos pos, IBlockState state) {
+		/*
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof IInventory) {
+			IInventory inventory = (IInventory) te;
+			int invSize = inventory.getSizeInventory();
+			for (int i = 0; i < invSize; i++) {
+				MinechemUtil.throwItemStack(world, inventory.getStackInSlot(i), pos);
+			}
+		}
+		if (hasTileEntity(state) && !(this instanceof BlockContainer)) {
+			world.removeTileEntity(pos);
+		}
+		*/
+		super.breakBlock(world, pos, state);
 	}
-	*/
+
 	@Override
 	public TileEntity createNewTileEntity(World world, int i) {
 		return new TileLeadedChest();
-	}
-
-	/*
-	private void dropItems(World world, BlockPos blockPos)
-	{
-
-	    TileEntity te = world.getTileEntity(blockPos);
-	    if (te instanceof IInventory)
-	    {
-	        IInventory inventory = (IInventory) te;
-
-	        int invSize = inventory.getSizeInventory();
-	        for (int i = 0; i < invSize; i++)
-	        {
-	            MinechemUtil.throwItemStack(world, inventory.getStackInSlot(i), blockPos.getX(), blockPos.getY(), blockPos.getZ());
-	        }
-	    }
-	}
-	*/
-	@Override
-	public void addStacksDroppedOnBlockBreak(TileEntity tileEntity, ArrayList<ItemStack> itemStacks) {
-		TileLeadedChest chest = (TileLeadedChest) tileEntity;
-		for (int slot = 0; slot < chest.getSizeInventory(); slot++) {
-			ItemStack itemstack = chest.getStackInSlot(slot);
-			if (!itemstack.isEmpty()) {
-				itemStacks.add(itemstack);
-			}
-		}
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 {
     "parent": "minecraft:block/cube_all",
     "textures": {
-        "all": "minechem:blocks/fusion_wall"
+        "all": "minechem:blocks/tungsten_plating"
     }
 }

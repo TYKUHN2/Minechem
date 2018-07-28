@@ -1,7 +1,7 @@
 package minechem.network.message;
 
 import io.netty.buffer.ByteBuf;
-import minechem.tileentity.multiblock.ghostblock.GhostBlockTileEntity;
+import minechem.block.multiblock.tile.TileGhostBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -16,7 +16,7 @@ public class GhostBlockMessage implements IMessage, IMessageHandler<GhostBlockMe
 
 	}
 
-	public GhostBlockMessage(GhostBlockTileEntity tile) {
+	public GhostBlockMessage(TileGhostBlock tile) {
 		posX = tile.getPos().getX();
 		posY = tile.getPos().getY();
 		posZ = tile.getPos().getZ();
@@ -39,7 +39,7 @@ public class GhostBlockMessage implements IMessage, IMessageHandler<GhostBlockMe
 	@Override
 	public IMessage onMessage(GhostBlockMessage message, MessageContext ctx) {
 		TileEntity tileEntity = FMLClientHandler.instance().getClient().world.getTileEntity(new BlockPos(message.posX, message.posY, message.posZ));
-		if (tileEntity instanceof GhostBlockTileEntity) {
+		if (tileEntity instanceof TileGhostBlock) {
 			// ((GhostBlockTileEntity) tileEntity).setBlueprintAndID(MinechemBlueprint.blueprints.get(message.blueprintID), message.ghostblockID);
 		}
 		return null;

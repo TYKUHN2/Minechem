@@ -1,7 +1,5 @@
 package minechem.block;
 
-import java.util.ArrayList;
-
 import minechem.Minechem;
 import minechem.block.tile.TileDecomposer;
 import minechem.client.render.RenderDecomposer;
@@ -47,16 +45,11 @@ public class BlockDecomposer extends BlockSimpleContainer {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerRenderer() {
-		//ModelRegistryHelper.registerItemRenderer(Item.getItemFromBlock(this), new RenderDecomposer());
-		//ModelRegistryHelper.setParticleTexture(this, Textures.Sprite.MICROSCOPE);
-		//ClientRegistry.bindTileEntitySpecialRenderer(TileDecomposer.class, new RenderDecomposer());
-		//ModelLoader.setCustomStateMapper(this, blockIn -> Collections.emptyMap());
 		ModRendering.setBlockRendering(this, new RenderDecomposer(), TileDecomposer.class, new ItemRenderDecomposer(), Textures.Sprite.DECOMPOSER);
 	}
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-
 		TileEntity tile = world.getTileEntity(pos);
 		if (tile == null || player.isSneaking() || !(tile instanceof TileDecomposer)) {
 			return false;
@@ -72,7 +65,10 @@ public class BlockDecomposer extends BlockSimpleContainer {
 								FluidStack tileFluid = decomposerTile.tank.getFluid();
 								if (bucketFluid.isFluidEqual(tileFluid)) {
 									decomposerTile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP).fill(bucketFluid, true);
-									player.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.BUCKET));
+
+									if (!player.capabilities.isCreativeMode) {
+										player.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.BUCKET));
+									}
 								}
 							}
 						}
@@ -80,22 +76,18 @@ public class BlockDecomposer extends BlockSimpleContainer {
 					else {
 						if (getFluidFromBucket(player.getHeldItemMainhand()) != null) {
 							FluidStack bucketFluid = getFluidFromBucket(player.getHeldItemMainhand());
-							FluidStack tileFluid = decomposerTile.tank.getFluid();
-							//if (bucketFluid.getFluid().getName().equals(tileFluid.getFluid().getName())) {
 							decomposerTile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP).fill(bucketFluid, true);
-							player.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.BUCKET));
-							//}
+							if (!player.capabilities.isCreativeMode) {
+								player.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.BUCKET));
+							}
 						}
 						else if (getFluidFromItemTank(player.getHeldItemMainhand()) != null) {
 							FluidStack tankFluid = getFluidFromItemTank(player.getHeldItemMainhand());
-							FluidStack tileFluid = decomposerTile.tank.getFluid();
-							//if (bucketFluid.getFluid().getName().equals(tileFluid.getFluid().getName())) {
 							int added = decomposerTile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP).fill(tankFluid, true);
 							System.out.println("" + tankFluid.amount % 1000);
 							if (!player.capabilities.isCreativeMode) {
-								getFluidItemHandler(player.getHeldItemMainhand()).drain(added, true);
+								getFluidItemHandler(player.getHeldItemMainhand()).drain(added, !player.capabilities.isCreativeMode);
 							}
-							//}
 						}
 					}
 				}
@@ -146,13 +138,6 @@ public class BlockDecomposer extends BlockSimpleContainer {
 		return null;
 	}
 
-	private FluidStack getContainedFluid(TileDecomposer tile) {
-		if (doesTileContainFluid(tile)) {
-			return tile.tank.getFluid();
-		}
-		return null;
-	}
-
 	private boolean doesTileContainFluid(TileDecomposer tile) {
 		return tile.tank.getFluid() != null;
 	}
@@ -177,19 +162,27 @@ public class BlockDecomposer extends BlockSimpleContainer {
 		return new TileDecomposer();
 	}
 
-	@Override
-	public void addStacksDroppedOnBlockBreak(TileEntity tileEntity, ArrayList<ItemStack> itemStacks) {
-		if (tileEntity instanceof TileDecomposer) {
-			TileDecomposer decomposer = (TileDecomposer) tileEntity;
-			for (int slot = 0; slot < decomposer.getSizeInventory(); slot++) {
-				ItemStack itemstack = decomposer.getStackInSlot(slot);
-				if (!itemstack.isEmpty()) {
-					itemStacks.add(itemstack);
+	/*
+		@Override
+		public void breakBlock(World world, BlockPos pos, IBlockState state) {
+			TileEntity tileEntity = world.getTileEntity(pos);
+			if (tileEntity instanceof TileDecomposer) {
+				NonNullList<ItemStack> drops = NonNullList.create();
+				TileDecomposer decomposer = (TileDecomposer) tileEntity;
+				for (int slot = 0; slot < decomposer.getSizeInventory(); slot++) {
+					ItemStack itemstack = decomposer.getStackInSlot(slot);
+					if (!itemstack.isEmpty()) {
+						drops.add(itemstack);
+					}
+				}
+				if (!drops.isEmpty()) {
+					for (ItemStack stack : drops) {
+						MinechemUtil.throwItemStack(world, stack, pos);
+					}
 				}
 			}
 		}
-	}
-
+	*/
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.MODEL;

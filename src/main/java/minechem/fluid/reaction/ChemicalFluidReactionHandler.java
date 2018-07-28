@@ -202,7 +202,6 @@ public class ChemicalFluidReactionHandler {
 					}
 				}
 			}
-
 			if (coords == null) {
 				if (!popFlowingFluid) {
 					ItemStack itemStack = MinechemUtil.createItemStack(chemical, 8);

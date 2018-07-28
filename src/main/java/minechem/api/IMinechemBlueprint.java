@@ -1,5 +1,7 @@
 package minechem.api;
 
+import java.util.WeakHashMap;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -44,5 +46,28 @@ public interface IMinechemBlueprint extends IForgeRegistryEntry<IMinechemBluepri
 		}
 		return null;
 	}
+
+	default WeakHashMap<IBlockState, Integer> getMaterials() {
+		WeakHashMap<IBlockState, Integer> tmpMap = new WeakHashMap<>();
+		for (int x = 0; x < xSize(); x++) {
+			for (int y = 0; y < ySize(); y++) {
+				for (int z = 0; z < zSize(); z++) {
+					IBlockState tmpState = getStructure()[y][x][z];
+					if (tmpMap.isEmpty() || !tmpMap.containsKey(tmpState)) {
+						tmpMap.put(tmpState, 1);
+					}
+					else {
+						int currCount = tmpMap.get(tmpState);
+						tmpMap.put(tmpState, currCount + 1);
+					}
+				}
+			}
+		}
+		return tmpMap;
+	}
+
+	int getXOffset();
+
+	int getYOffset();
 
 }
