@@ -21,6 +21,16 @@ public interface IGuiMaterialListSlot {
 
 	int getIndex();
 
-	void draw(int x, int y);
+	int getX();
+
+	int getY();
+
+	int width();
+
+	int height();
+
+	boolean isMouseOver(int mouseX, int mouseY);
+
+	void draw(int x, int y, int mouseX, int mouseY);
 
 }

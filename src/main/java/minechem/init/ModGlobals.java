@@ -10,7 +10,7 @@ public class ModGlobals {
 
 	public static final String NAME = "Minechem";
 	public static final String ID = "minechem";
-	public static final String VERSION = "2.0.9a";
+	public static final String VERSION = "2.0.10a";
 
 	public static final int TICKS_PER_SECOND = 20;
 	public static final int TICKS_PER_MINUTE = TICKS_PER_SECOND * 60;
@@ -131,23 +131,11 @@ public class ModGlobals {
 			public static final ResourceLocation FILLED_TUBE = new ResourceLocation(ModGlobals.ID, "items/filled_test_tube");
 
 			public static final ResourceLocation[] LIQUID_STATES = new ResourceLocation[] {
-					new ResourceLocation(ModGlobals.ID, "items/liquid1"),
-					new ResourceLocation(ModGlobals.ID, "items/liquid2"),
-					new ResourceLocation(ModGlobals.ID, "items/liquid3"),
-					new ResourceLocation(ModGlobals.ID, "items/liquid4"),
-					new ResourceLocation(ModGlobals.ID, "items/liquid5"),
-					new ResourceLocation(ModGlobals.ID, "items/liquid6"),
-					new ResourceLocation(ModGlobals.ID, "items/liquid7")
+					new ResourceLocation(ModGlobals.ID, "items/liquid1"), new ResourceLocation(ModGlobals.ID, "items/liquid2"), new ResourceLocation(ModGlobals.ID, "items/liquid3"), new ResourceLocation(ModGlobals.ID, "items/liquid4"), new ResourceLocation(ModGlobals.ID, "items/liquid5"), new ResourceLocation(ModGlobals.ID, "items/liquid6"), new ResourceLocation(ModGlobals.ID, "items/liquid7")
 			};
 
 			public static final ResourceLocation[] GAS_STATES = new ResourceLocation[] {
-					new ResourceLocation(ModGlobals.ID, "items/gas1"),
-					new ResourceLocation(ModGlobals.ID, "items/gas2"),
-					new ResourceLocation(ModGlobals.ID, "items/gas3"),
-					new ResourceLocation(ModGlobals.ID, "items/gas4"),
-					new ResourceLocation(ModGlobals.ID, "items/gas5"),
-					new ResourceLocation(ModGlobals.ID, "items/gas6"),
-					new ResourceLocation(ModGlobals.ID, "items/gas7")
+					new ResourceLocation(ModGlobals.ID, "items/gas1"), new ResourceLocation(ModGlobals.ID, "items/gas2"), new ResourceLocation(ModGlobals.ID, "items/gas3"), new ResourceLocation(ModGlobals.ID, "items/gas4"), new ResourceLocation(ModGlobals.ID, "items/gas5"), new ResourceLocation(ModGlobals.ID, "items/gas6"), new ResourceLocation(ModGlobals.ID, "items/gas7")
 			};
 
 			public static final ResourceLocation SOLID_STATE = new ResourceLocation(ModGlobals.ID, "items/solid");

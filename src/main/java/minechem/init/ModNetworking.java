@@ -17,16 +17,20 @@ public class ModNetworking {
 	public static int id = 0;
 
 	public static void init() {
-		//INSTANCE.registerMessage(SynthesisUpdateMessage.class, SynthesisUpdateMessage.class, id++, Side.CLIENT);
-		INSTANCE.registerMessage(PolytoolUpdateMessage.class, PolytoolUpdateMessage.class, id++, Side.CLIENT);
-		INSTANCE.registerMessage(GhostBlockMessage.class, GhostBlockMessage.class, id++, Side.CLIENT);
-		INSTANCE.registerMessage(MessageActiveItem.class, MessageActiveItem.class, id++, Side.SERVER);
-		INSTANCE.registerMessage(FissionUpdateMessage.class, FissionUpdateMessage.class, id++, Side.CLIENT);
-		INSTANCE.registerMessage(FusionUpdateMessage.class, FusionUpdateMessage.class, id++, Side.CLIENT);
-		INSTANCE.registerMessage(MessageDecomposerDumpFluid.class, MessageDecomposerDumpFluid.class, id++, Side.SERVER);
-		INSTANCE.registerMessage(MessageFakeSlotScroll.class, MessageFakeSlotScroll.class, id++, Side.SERVER);
-		INSTANCE.registerMessage(MessageSetMouseStack.class, MessageSetMouseStack.class, id++, Side.CLIENT);
-		INSTANCE.registerMessage(MessageSyncSynthesisMachine.class, MessageSyncSynthesisMachine.class, id++, Side.SERVER);
+		//INSTANCE.registerMessage(SynthesisUpdateMessage.class, SynthesisUpdateMessage.class, nextID(), Side.CLIENT);
+		INSTANCE.registerMessage(PolytoolUpdateMessage.class, PolytoolUpdateMessage.class, nextID(), Side.CLIENT);
+		INSTANCE.registerMessage(GhostBlockMessage.class, GhostBlockMessage.class, nextID(), Side.CLIENT);
+		INSTANCE.registerMessage(MessageActiveItem.class, MessageActiveItem.class, nextID(), Side.SERVER);
+		INSTANCE.registerMessage(FissionUpdateMessage.class, FissionUpdateMessage.class, nextID(), Side.CLIENT);
+		INSTANCE.registerMessage(FusionUpdateMessage.class, FusionUpdateMessage.class, nextID(), Side.CLIENT);
+		INSTANCE.registerMessage(MessageDecomposerDumpFluid.class, MessageDecomposerDumpFluid.class, nextID(), Side.SERVER);
+		INSTANCE.registerMessage(MessageFakeSlotScroll.class, MessageFakeSlotScroll.class, nextID(), Side.SERVER);
+		INSTANCE.registerMessage(MessageSetMouseStack.class, MessageSetMouseStack.class, nextID(), Side.CLIENT);
+		INSTANCE.registerMessage(MessageSyncSynthesisMachine.class, MessageSyncSynthesisMachine.class, nextID(), Side.SERVER);
+	}
+
+	public static int nextID() {
+		return id++;
 	}
 
 }

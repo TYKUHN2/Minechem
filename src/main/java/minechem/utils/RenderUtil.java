@@ -1,9 +1,11 @@
 package minechem.utils;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,6 +13,7 @@ import java.util.Random;
 
 import javax.vecmath.Vector4f;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.ImmutableList;
@@ -23,10 +26,13 @@ import minechem.item.element.ElementEnum;
 import net.minecraft.block.BlockJukebox;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -52,12 +58,10 @@ import net.minecraftforge.common.model.TRSRTransformation;
 public final class RenderUtil {
 
 	private static final EnumFacing[] HORIZONTALS = {
-			EnumFacing.UP,
-			EnumFacing.DOWN
+			EnumFacing.UP, EnumFacing.DOWN
 	};
 	private static final EnumFacing[] VERTICALS = {
-			EnumFacing.WEST,
-			EnumFacing.EAST
+			EnumFacing.WEST, EnumFacing.EAST
 	};
 	private static Map<ResourceLocation, IBakedModel> MODEL_CACHE = Maps.<ResourceLocation, IBakedModel>newHashMap();
 
@@ -573,6 +577,154 @@ public final class RenderUtil {
 				break;
 			}
 		}
+	}
+
+	public static void drawCustomTooltip(GuiScreen gui, FontRenderer fr, List<String> textList, int x, int y, int subTipColor) {
+		drawCustomTooltip(gui, fr, textList, x, y, subTipColor, false);
+	}
+
+	public static void drawCustomTooltip(GuiScreen gui, FontRenderer fr, List<String> textList, int x, int y, int subTipColor, boolean ignoremouse) {
+		if (!textList.isEmpty()) {
+			Minecraft mc = Minecraft.getMinecraft();
+			ScaledResolution scaledresolution = new ScaledResolution(mc);
+			int sf = scaledresolution.getScaleFactor();
+			GlStateManager.disableRescaleNormal();
+			RenderHelper.disableStandardItemLighting();
+			GlStateManager.disableLighting();
+			GlStateManager.disableDepth();
+			int max = 240;
+			int mx = Mouse.getEventX();
+			boolean flip = false;
+			if (!ignoremouse && (max + 24) * sf + mx > mc.displayWidth && (max = (mc.displayWidth - mx) / sf - 24) < 120) {
+				max = 240;
+				flip = true;
+			}
+			int widestLineWidth = 0;
+			Iterator<String> textLineEntry = textList.iterator();
+			boolean b = false;
+			while (textLineEntry.hasNext()) {
+				String textLine = textLineEntry.next();
+				if (fr.getStringWidth(textLine) <= max) {
+					continue;
+				}
+				b = true;
+				break;
+			}
+			if (b) {
+				ArrayList<String> tl = new ArrayList<String>();
+				for (String o : textList) {
+					String textLine = "";
+					List<String> tl2 = fr.listFormattedStringToWidth(textLine, (textLine = o).startsWith("@@") ? max * 2 : max);
+					for (Object o2 : tl2) {
+						String textLine2 = ((String) o2).trim();
+						if (textLine.startsWith("@@")) {
+							textLine2 = "@@" + textLine2;
+						}
+						tl.add(textLine2);
+					}
+				}
+				textList = tl;
+			}
+			Iterator<String> textLines = textList.iterator();
+			int totalHeight = -2;
+			while (textLines.hasNext()) {
+				String textLine = textLines.next();
+				int lineWidth = fr.getStringWidth(textLine);
+				if (textLine.startsWith("@@") && !fr.getUnicodeFlag()) {
+					lineWidth /= 2;
+				}
+				if (lineWidth > widestLineWidth) {
+					widestLineWidth = lineWidth;
+				}
+				totalHeight += textLine.startsWith("@@") && !fr.getUnicodeFlag() ? 7 : 10;
+			}
+			int sX = x + 12;
+			int sY = y - 12;
+			if (textList.size() > 1) {
+				totalHeight += 2;
+			}
+			if (sY + totalHeight > scaledresolution.getScaledHeight()) {
+				sY = scaledresolution.getScaledHeight() - totalHeight - 5;
+			}
+			if (flip) {
+				sX = sX - (widestLineWidth + 24);
+			}
+			Minecraft.getMinecraft().getRenderItem().zLevel = 300.0f;
+			int var10 = -267386864;
+			drawGradientRect(sX - 3, sY - 4, sX + widestLineWidth + 3, sY - 3, var10, var10);
+			drawGradientRect(sX - 3, sY + totalHeight + 3, sX + widestLineWidth + 3, sY + totalHeight + 4, var10, var10);
+			drawGradientRect(sX - 3, sY - 3, sX + widestLineWidth + 3, sY + totalHeight + 3, var10, var10);
+			drawGradientRect(sX - 4, sY - 3, sX - 3, sY + totalHeight + 3, var10, var10);
+			drawGradientRect(sX + widestLineWidth + 3, sY - 3, sX + widestLineWidth + 4, sY + totalHeight + 3, var10, var10);
+			int var11 = 1347420415;
+			int var12 = (var11 & 16711422) >> 1 | var11 & -16777216;
+			drawGradientRect(sX - 3, sY - 3 + 1, sX - 3 + 1, sY + totalHeight + 3 - 1, var11, var12);
+			drawGradientRect(sX + widestLineWidth + 2, sY - 3 + 1, sX + widestLineWidth + 3, sY + totalHeight + 3 - 1, var11, var12);
+			drawGradientRect(sX - 3, sY - 3, sX + widestLineWidth + 3, sY - 3 + 1, var11, var11);
+			drawGradientRect(sX - 3, sY + totalHeight + 2, sX + widestLineWidth + 3, sY + totalHeight + 3, var12, var12);
+			for (int i = 0; i < textList.size(); ++i) {
+				GL11.glPushMatrix();
+				GL11.glTranslatef(sX, sY, 0.0f);
+				String tl = textList.get(i);
+				boolean shift = false;
+				GL11.glPushMatrix();
+				if (tl.startsWith("@@") && !fr.getUnicodeFlag()) {
+					sY += 7;
+					GL11.glScalef(0.5f, 0.5f, 1.0f);
+					shift = true;
+				}
+				else {
+					sY += 10;
+				}
+				tl = tl.replaceAll("@@", "");
+				if (subTipColor != -99) {
+					tl = i == 0 ? "\u00a7" + Integer.toHexString(subTipColor) + tl : "\u00a77" + tl;
+				}
+				GL11.glTranslated(0.0, 0.0, 301.0);
+				fr.drawStringWithShadow(tl, 0.0f, shift ? 3.0f : 0.0f, -1);
+				GL11.glPopMatrix();
+				if (i == 0) {
+					sY += 2;
+				}
+				GL11.glPopMatrix();
+			}
+			Minecraft.getMinecraft().getRenderItem().zLevel = 0.0f;
+			GlStateManager.enableLighting();
+			GlStateManager.enableDepth();
+			RenderHelper.enableStandardItemLighting();
+			GlStateManager.enableRescaleNormal();
+		}
+	}
+
+	public static void drawGradientRect(int par1, int par2, int par3, int par4, int par5, int par6) {
+		boolean blendon = GL11.glIsEnabled(3042);
+		float var7 = (par5 >> 24 & 255) / 255.0f;
+		float var8 = (par5 >> 16 & 255) / 255.0f;
+		float var9 = (par5 >> 8 & 255) / 255.0f;
+		float var10 = (par5 & 255) / 255.0f;
+		float var11 = (par6 >> 24 & 255) / 255.0f;
+		float var12 = (par6 >> 16 & 255) / 255.0f;
+		float var13 = (par6 >> 8 & 255) / 255.0f;
+		float var14 = (par6 & 255) / 255.0f;
+		GL11.glDisable(3553);
+		GL11.glEnable(3042);
+		GL11.glDisable(3008);
+		GL11.glBlendFunc(770, 771);
+		GL11.glShadeModel(7425);
+		Tessellator var15 = Tessellator.getInstance();
+		var15.getBuffer().begin(7, DefaultVertexFormats.POSITION_COLOR);
+		var15.getBuffer().pos(par3, par2, 300.0).color(var8, var9, var10, var7).endVertex();
+		var15.getBuffer().pos(par1, par2, 300.0).color(var8, var9, var10, var7).endVertex();
+		var15.getBuffer().pos(par1, par4, 300.0).color(var12, var13, var14, var11).endVertex();
+		var15.getBuffer().pos(par3, par4, 300.0).color(var12, var13, var14, var11).endVertex();
+		var15.draw();
+		GL11.glShadeModel(7424);
+		GlStateManager.blendFunc(770, 771);
+		if (!blendon) {
+			GL11.glDisable(3042);
+		}
+		GL11.glEnable(3008);
+		GL11.glEnable(3553);
 	}
 
 	private static class FaceData {

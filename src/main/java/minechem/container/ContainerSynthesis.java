@@ -102,8 +102,10 @@ public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadia
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer entityPlayer, int slot) {
+		//System.out.println(slot);
 		Slot slotObject = inventorySlots.get(slot);
 		if (slotObject != null && slotObject.getHasStack()) {
+			System.out.println(slotObject.slotNumber);
 			ItemStack stackInSlot = slotObject.getStack();
 			if (slot >= 30 && slot < 66) {
 				if (stackInSlot.getItem() == ModItems.journal) {
