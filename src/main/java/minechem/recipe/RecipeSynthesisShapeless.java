@@ -37,6 +37,7 @@ public class RecipeSynthesisShapeless extends IForgeRegistryEntry.Impl<ISynthesi
 		isSimple = simple;
 	}
 
+	@Override
 	public int getEnergyCost() {
 		return energyCost;
 	}

@@ -39,8 +39,7 @@ public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 				String remainder = oreName.substring(prefix.name().length()).toLowerCase();
 				if (Arrays.asList(supportedOres).contains(remainder)) {
 					return new String[] {
-							prefix.name(),
-							remainder
+							prefix.name(), remainder
 					};
 				}
 			}
@@ -83,7 +82,7 @@ public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 		case dust:
 			RecipeDecomposer.addOreDictRecipe(oreName, ore.getComposition());
 			//unregisterIngot(ore);
-			RecipeHandlerSynthesis.addShapedOreDictRecipe(oreName, ModRecipes.COST_INGOT, startAtRow(2, ore.getComposition()));
+			RecipeHandlerSynthesis.addShapedOreDictRecipe(oreName, ModRecipes.COST_INGOT / 2, startAtRow(2, ore.getComposition()));
 			break;
 		case dustDirty:
 			RecipeDecomposer.addOreDictRecipe(oreName, scaleFloor(ore.getComposition(), 0.75d));

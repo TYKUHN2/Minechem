@@ -24,27 +24,76 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
  */
 public class PacketSynthesisRecipeTransfer implements IMessage, IMessageHandler<PacketSynthesisRecipeTransfer, IMessage> {
 
+	public Map<Integer, Integer> recipeMap;
+	public List<Integer> craftingSlots;
+	public List<Integer> inventorySlots;
+	private boolean maxTransfer;
+	private boolean requireCompleteSets;
+
 	public PacketSynthesisRecipeTransfer() {
 
 	}
 
 	public PacketSynthesisRecipeTransfer(Map<Integer, Integer> recipeMap, List<Integer> craftingSlots, List<Integer> inventorySlots, boolean maxTransfer, boolean requireCompleteSets) {
-
+		this.recipeMap = recipeMap;
+		this.craftingSlots = craftingSlots;
+		this.inventorySlots = inventorySlots;
+		this.maxTransfer = maxTransfer;
+		this.requireCompleteSets = requireCompleteSets;
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
+		int recipeMapSize = buf.readInt();
+		recipeMap = new HashMap<>(recipeMapSize);
+		for (int i = 0; i < recipeMapSize; i++) {
+			int slotIndex = buf.readInt();
+			int recipeItem = buf.readInt();
+			recipeMap.put(slotIndex, recipeItem);
+		}
 
+		int craftingSlotsSize = buf.readInt();
+		craftingSlots = new ArrayList<>(craftingSlotsSize);
+		for (int i = 0; i < craftingSlotsSize; i++) {
+			int slotIndex = buf.readInt();
+			craftingSlots.add(slotIndex);
+		}
+
+		int inventorySlotsSize = buf.readInt();
+		inventorySlots = new ArrayList<>(inventorySlotsSize);
+		for (int i = 0; i < inventorySlotsSize; i++) {
+			int slotIndex = buf.readInt();
+			inventorySlots.add(slotIndex);
+		}
+		maxTransfer = buf.readBoolean();
+		requireCompleteSets = buf.readBoolean();
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
+		buf.writeInt(recipeMap.size());
+		for (Map.Entry<Integer, Integer> recipeMapEntry : recipeMap.entrySet()) {
+			buf.writeInt(recipeMapEntry.getKey());
+			buf.writeInt(recipeMapEntry.getValue());
+		}
 
+		buf.writeInt(craftingSlots.size());
+		for (Integer craftingSlot : craftingSlots) {
+			buf.writeInt(craftingSlot);
+		}
+
+		buf.writeInt(inventorySlots.size());
+		for (Integer inventorySlot : inventorySlots) {
+			buf.writeInt(inventorySlot);
+		}
+
+		buf.writeBoolean(maxTransfer);
+		buf.writeBoolean(requireCompleteSets);
 	}
 
 	@Override
 	public IMessage onMessage(PacketSynthesisRecipeTransfer message, MessageContext ctx) {
-
+		SynthesisTransferHandlerServer.setItems(ctx.getServerHandler().player, message.recipeMap, message.craftingSlots, message.inventorySlots, message.maxTransfer, message.requireCompleteSets);
 		return null;
 	}
 

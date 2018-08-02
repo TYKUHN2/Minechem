@@ -1,7 +1,6 @@
 package minechem.client.gui;
 
 import minechem.inventory.slot.SlotSynthesisOutput;
-import minechem.utils.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -78,7 +77,69 @@ public abstract class GuiContainerBase extends GuiContainer {
 			Slot slot = inventorySlots.inventorySlots.get(i1);
 
 			if (slot.isEnabled()) {
-				drawSlotCustom(slot);
+				//drawSlotCustom(slot);
+
+				int ii = slot.xPos;
+				int jj = slot.yPos;
+				ItemStack itemstack = slot.getStack();
+				boolean flag = false;
+				boolean flag1 = slot == clickedSlot && !draggedStack.isEmpty() && !isRightMouseClick;
+				ItemStack itemstack1 = mc.player.inventory.getItemStack();
+				String ss = null;
+
+				if (slot == clickedSlot && !draggedStack.isEmpty() && isRightMouseClick && !itemstack.isEmpty()) {
+					itemstack = itemstack.copy();
+					itemstack.setCount(itemstack.getCount() / 2);
+				}
+				else if (dragSplitting && dragSplittingSlots.contains(slot) && !itemstack1.isEmpty()) {
+					if (dragSplittingSlots.size() == 1) {
+						return;
+					}
+
+					if (Container.canAddItemToSlot(slot, itemstack1, true) && inventorySlots.canDragIntoSlot(slot)) {
+						itemstack = itemstack1.copy();
+						flag = true;
+						Container.computeStackSize(dragSplittingSlots, dragSplittingLimit, itemstack, slot.getStack().isEmpty() ? 0 : slot.getStack().getCount());
+						int kk = Math.min(itemstack.getMaxStackSize(), slot.getItemStackLimit(itemstack));
+
+						if (itemstack.getCount() > kk) {
+							ss = TextFormatting.YELLOW.toString() + kk;
+							itemstack.setCount(kk);
+						}
+					}
+					else {
+						dragSplittingSlots.remove(slot);
+						//super.updateDragSplitting();
+					}
+				}
+
+				zLevel = 100.0F;
+				itemRender.zLevel = 100.0F;
+
+				if (itemstack.isEmpty() && slot.isEnabled()) {
+					TextureAtlasSprite textureatlassprite = slot.getBackgroundSprite();
+
+					if (textureatlassprite != null) {
+						GlStateManager.disableLighting();
+						mc.getTextureManager().bindTexture(slot.getBackgroundLocation());
+						this.drawTexturedModalRect(ii, jj, textureatlassprite, 16, 16);
+						GlStateManager.enableLighting();
+						flag1 = true;
+					}
+				}
+
+				if (!flag1) {
+					if (flag) {
+						drawRect(ii, jj, ii + 16, jj + 16, -2130706433);
+					}
+
+					GlStateManager.enableDepth();
+					itemRender.renderItemAndEffectIntoGUI(mc.player, itemstack, ii, jj);
+					itemRender.renderItemOverlayIntoGUI(fontRenderer, itemstack, ii, jj, ss);
+				}
+
+				itemRender.zLevel = 0.0F;
+				zLevel = 0.0F;
 			}
 
 			if (isOverSlot(slot, mouseX, mouseY) && slot.isEnabled()) {
@@ -276,11 +337,12 @@ public abstract class GuiContainerBase extends GuiContainer {
 
 				if (bakedmodel.isBuiltInRenderer()) {
 					GlStateManager.enableRescaleNormal();
-					itemstack.getItem().getTileEntityItemStackRenderer().renderByItem(itemstack);
+					//itemstack.getItem().getTileEntityItemStackRenderer().renderByItem(itemstack);
+					itemRender.renderItemAndEffectIntoGUI(mc.player, itemstack, i, j);
 				}
 				else {
-					RenderUtil.render(bakedmodel, 0xFFFFFFFF, itemstack);
-
+					//RenderUtil.render(bakedmodel, itemstack);
+					itemRender.renderItemAndEffectIntoGUI(mc.player, itemstack, i, j);
 					if (itemstack.hasEffect()) {
 						//itemRender.renderEffect(bakedmodel);
 					}

@@ -1,6 +1,7 @@
 package minechem.recipe;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Maps;
@@ -157,19 +158,60 @@ public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRe
 
 	@Override
 	public boolean matches(InventoryCrafting inv, World worldIn) {
-		for (int i = 0; i <= inv.getWidth() - 3; ++i) {
-			for (int j = 0; j <= inv.getHeight() - 3; ++j) {
-				if (checkMatch(inv, i, j, true)) {
-					return true;
+		//int ingredientCount = 0;
+		//RecipeHandlerSynthesis recipeItemHelper = new RecipeHandlerSynthesis();
+		//NonNullList<ItemStack> inputs = NonNullList.create();
+		Map<Integer, ItemStack> inputs = new HashMap<Integer, ItemStack>();
+		Map<Integer, ItemStack> inputsR = new HashMap<Integer, ItemStack>();
+		for (int i = 0; i < inv.getHeight(); ++i) {
+			for (int j = 0; j < inv.getWidth(); ++j) {
+				ItemStack itemstack = inv.getStackInRowAndColumn(j, i).copy();
+				inputs.put(j + i * 3, itemstack);
+				/*
+				if (!itemstack.isEmpty()) {
+					++ingredientCount;
+					if (inputs.containsKey(itemstack)) {
+						int currentCount = inputs.get(itemstack);
+						inputs.put(itemstack, itemstack.getCount() + currentCount);
+					}
+					else {
+						inputs.put(itemstack, itemstack.getCount());
+					}
 				}
-
-				if (checkMatch(inv, i, j, false)) {
-					return true;
-				}
+				*/
 			}
 		}
 
-		return false;
+		//if (ingredientCount != recipeItems.size()) {
+		//return false;
+		//}
+
+		for (int i = 0; i < recipeItems.size(); i++) {
+			ItemStack itemstack = recipeItems.get(i).getIngredientStack().copy();
+			inputsR.put(i, itemstack);
+			/*
+			if (!itemstack.isEmpty()) {
+				if (inputsR.containsKey(itemstack)) {
+					int currentCount = inputsR.get(itemstack);
+					inputsR.put(itemstack, itemstack.getCount() + currentCount);
+				}
+				else {
+					inputsR.put(itemstack, itemstack.getCount());
+				}
+			}
+			*/
+		}
+
+		boolean hasEnough = true;
+		for (int i = 0; i < recipeItems.size(); i++) {
+			if (!ItemStack.areItemStacksEqual(inputs.get(i), inputsR.get(i))) {
+				hasEnough = false;
+				break;
+			}
+		}
+
+		return hasEnough;
+		//return RecipeHandlerSynthesis.itemStacksMatchesShapelessRecipe(inputs, this, 1);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package minechem.init;
 
+import minechem.init.ModIntegration.Mods;
+import minechem.integration.JEI;
 import minechem.network.message.FissionUpdateMessage;
 import minechem.network.message.FusionUpdateMessage;
 import minechem.network.message.GhostBlockMessage;
@@ -27,6 +29,9 @@ public class ModNetworking {
 		INSTANCE.registerMessage(MessageFakeSlotScroll.class, MessageFakeSlotScroll.class, nextID(), Side.SERVER);
 		INSTANCE.registerMessage(MessageSetMouseStack.class, MessageSetMouseStack.class, nextID(), Side.CLIENT);
 		INSTANCE.registerMessage(MessageSyncSynthesisMachine.class, MessageSyncSynthesisMachine.class, nextID(), Side.SERVER);
+		if (Mods.JEI.isLoaded()) {
+			JEI.registerPackets();
+		}
 	}
 
 	public static int nextID() {

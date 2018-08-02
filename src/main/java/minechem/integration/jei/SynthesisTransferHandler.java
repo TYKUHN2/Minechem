@@ -7,20 +7,19 @@ import java.util.List;
 import java.util.Map;
 
 import mezz.jei.Internal;
-import mezz.jei.JustEnoughItems;
 import mezz.jei.api.gui.IGuiIngredient;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.config.ServerInfo;
 import mezz.jei.startup.StackHelper;
 import mezz.jei.transfer.BasicRecipeTransferInfo;
 import mezz.jei.util.Log;
 import mezz.jei.util.Translator;
 import minechem.container.ContainerSynthesis;
+import minechem.init.ModNetworking;
 import minechem.integration.JEI;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -34,7 +33,7 @@ public class SynthesisTransferHandler implements IRecipeTransferHandler<Containe
 
 	private final StackHelper stackHelper;
 	private final IRecipeTransferHandlerHelper handlerHelper;
-	private final IRecipeTransferInfo<ContainerSynthesis> transferHelper;
+	private final SynthesisRecipeTransferInfo transferHelper;
 
 	public SynthesisTransferHandler(IRecipeTransferHandlerHelper handlerHelper) {
 		stackHelper = Internal.getStackHelper();
@@ -76,9 +75,14 @@ public class SynthesisTransferHandler implements IRecipeTransferHandler<Containe
 			inventorySlots.put(slot.slotNumber, slot);
 		}
 
-		Map<Integer, Slot> craftingSlots = new HashMap<>();
+		Map<Integer, Slot> machineInputSlots = new HashMap<>();
 		for (Slot slot : transferHelper.getRecipeSlots(container)) {
-			craftingSlots.put(slot.slotNumber, slot);
+			machineInputSlots.put(slot.slotNumber, slot);
+		}
+
+		Map<Integer, Slot> fakeCraftingSlots = new HashMap<>();
+		for (Slot slot : transferHelper.getGhostSlots(container)) {
+			fakeCraftingSlots.put(slot.slotNumber, slot);
 		}
 
 		int inputCount = 0;
@@ -89,23 +93,23 @@ public class SynthesisTransferHandler implements IRecipeTransferHandler<Containe
 			}
 		}
 
-		if (inputCount > craftingSlots.size()) {
+		if (inputCount > machineInputSlots.size()) {
 			Log.get().error("Recipe Transfer helper {} does not work for container {}", transferHelper.getClass(), container.getClass());
 			return handlerHelper.createInternalError();
 		}
 
 		Map<Integer, ItemStack> availableItemStacks = new HashMap<>();
-		int filledCraftSlotCount = 0;
+		int filledMachineInputCount = 0;
 		int emptySlotCount = 0;
 
-		for (Slot slot : craftingSlots.values()) {
+		for (Slot slot : machineInputSlots.values()) {
 			final ItemStack stack = slot.getStack();
 			if (!stack.isEmpty()) {
 				if (!slot.canTakeStack(player)) {
 					Log.get().error("Recipe Transfer helper {} does not work for container {}. Player can't move item out of Crafting Slot number {}", transferHelper.getClass(), container.getClass(), slot.slotNumber);
 					return handlerHelper.createInternalError();
 				}
-				filledCraftSlotCount++;
+				filledMachineInputCount++;
 				availableItemStacks.put(slot.slotNumber, stack.copy());
 			}
 		}
@@ -121,7 +125,7 @@ public class SynthesisTransferHandler implements IRecipeTransferHandler<Containe
 		}
 
 		// check if we have enough inventory space to shuffle items around to their final locations
-		if (filledCraftSlotCount - inputCount > emptySlotCount) {
+		if (filledMachineInputCount - inputCount > emptySlotCount) {
 			String message = Translator.translateToLocal("jei.tooltip.error.recipe.transfer.inventory.full");
 			return handlerHelper.createUserErrorWithTooltip(message);
 		}
@@ -133,8 +137,8 @@ public class SynthesisTransferHandler implements IRecipeTransferHandler<Containe
 			return handlerHelper.createUserErrorForSlots(message, matchingItemsResult.missingItems);
 		}
 
-		List<Integer> craftingSlotIndexes = new ArrayList<>(craftingSlots.keySet());
-		Collections.sort(craftingSlotIndexes);
+		List<Integer> machineInputSlotIndexes = new ArrayList<>(machineInputSlots.keySet());
+		Collections.sort(machineInputSlotIndexes);
 
 		List<Integer> inventorySlotIndexes = new ArrayList<>(inventorySlots.keySet());
 		Collections.sort(inventorySlotIndexes);
@@ -142,7 +146,7 @@ public class SynthesisTransferHandler implements IRecipeTransferHandler<Containe
 		// check that the slots exist and can be altered
 		for (Map.Entry<Integer, Integer> entry : matchingItemsResult.matchingItems.entrySet()) {
 			int craftNumber = entry.getKey();
-			int slotNumber = craftingSlotIndexes.get(craftNumber);
+			int slotNumber = machineInputSlotIndexes.get(craftNumber);
 			if (slotNumber < 0 || slotNumber >= container.inventorySlots.size()) {
 				Log.get().error("Recipes Transfer Helper {} references slot {} outside of the inventory's size {}", transferHelper.getClass(), slotNumber, container.inventorySlots.size());
 				return handlerHelper.createInternalError();
@@ -150,8 +154,9 @@ public class SynthesisTransferHandler implements IRecipeTransferHandler<Containe
 		}
 
 		if (doTransfer) {
-			PacketSynthesisRecipeTransfer packet = new PacketSynthesisRecipeTransfer(matchingItemsResult.matchingItems, craftingSlotIndexes, inventorySlotIndexes, maxTransfer, transferHelper.requireCompleteSets());
-			JustEnoughItems.getProxy().sendPacketToServer(packet);
+			PacketSynthesisRecipeTransfer packet = new PacketSynthesisRecipeTransfer(matchingItemsResult.matchingItems, machineInputSlotIndexes, inventorySlotIndexes, true, false);
+			ModNetworking.INSTANCE.sendToServer(packet);
+			//JustEnoughItems.getProxy().sendPacketToServer(packet);
 		}
 
 		return null;
@@ -161,6 +166,20 @@ public class SynthesisTransferHandler implements IRecipeTransferHandler<Containe
 
 		public SynthesisRecipeTransferInfo() {
 			super(ContainerSynthesis.class, JEI.CAT_SYNTH, 12, 18, 30, 36);
+		}
+
+		@Override
+		public boolean canHandle(ContainerSynthesis container) {
+			return true;
+		}
+
+		public List<Slot> getGhostSlots(ContainerSynthesis container) {
+			List<Slot> slots = new ArrayList<>();
+			for (int i = 1; i < 10; i++) {
+				Slot slot = container.getSlot(i);
+				slots.add(slot);
+			}
+			return slots;
 		}
 
 	}

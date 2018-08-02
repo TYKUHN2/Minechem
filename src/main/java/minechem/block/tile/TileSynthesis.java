@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import minechem.api.recipe.ISynthesisRecipe;
 import minechem.init.ModConfig;
 import minechem.init.ModItems;
@@ -225,22 +227,31 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 	}
 
 	private Map<ItemStack, Integer> getRecipeStackCosts() {
-		Map<ItemStack, Integer> data = new HashMap<>();
+		Map<ItemStack, Integer> returnData = new HashMap<>();;
+		Map<Integer, Pair<ItemStack, Integer>> data = new HashMap<>();
 		NonNullList<ItemStack> matrixList = getMatrixStackList();
-		for (ItemStack stack : matrixList) {
+		for (int i = 0; i < matrixList.size(); i++) {
+			ItemStack stack = matrixList.get(i);
 			int count = stack.getCount();
+
 			ItemStack tmpStack = stack.copy();
 			tmpStack.setCount(1);
 
-			if (!isStackAdded(data, tmpStack)) {
-				data.put(tmpStack, count);
+			//if (!isStackAdded(data, tmpStack)) {
+			if (data.get(i) == null) {
+				data.put(i, Pair.of(tmpStack, count));
 			}
 			else {
-				count += getCount(data, tmpStack);
-				data.put(tmpStack, count);
+				count += data.get(i).getRight();
+				data.put(i, Pair.of(tmpStack, count));
 			}
 		}
-		return data;
+		for (int i = 0; i < data.size(); i++) {
+			if (!data.get(i).getLeft().isEmpty()) {
+				returnData.put(data.get(i).getLeft(), data.get(i).getRight());
+			}
+		}
+		return returnData;
 	}
 
 	private Map<ItemStack, Integer> getStorageStackAmounts() {
@@ -273,6 +284,7 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 
 	private boolean isStackAdded(Map<ItemStack, Integer> data, ItemStack scompStack) {
 		for (ItemStack stack : data.keySet()) {
+
 			if (ItemStack.areItemStacksEqual(stack, scompStack)) {
 				return true;
 			}
@@ -285,12 +297,12 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 			Map<ItemStack, Integer> storageAmounts = getStorageStackAmounts();
 			Map<ItemStack, Integer> recipeCosts = getRecipeStackCosts();
 			for (ItemStack stack : recipeCosts.keySet()) {
-				if (isStackAdded(storageAmounts, stack) && (getCount(storageAmounts, stack) >= getCount(recipeCosts, stack))) {
-					return true;
+				if (!isStackAdded(storageAmounts, stack) || (getCount(storageAmounts, stack) < getCount(recipeCosts, stack))) {
+					return false;
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 
 	private NonNullList<ItemStack> getStorageBuffer(boolean excludeEmptyStacks) {
