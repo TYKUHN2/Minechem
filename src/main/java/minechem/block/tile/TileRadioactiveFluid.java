@@ -2,8 +2,8 @@ package minechem.block.tile;
 
 import javax.annotation.Nullable;
 
-import minechem.api.RadiationInfo;
 import minechem.radiation.RadiationEnum;
+import minechem.utils.RadiationUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -12,13 +12,13 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileRadioactiveFluid extends TileEntity {
 
-	public RadiationInfo info;
+	public RadiationUtil info;
 
 	public TileRadioactiveFluid() {
 		this(null);
 	}
 
-	public TileRadioactiveFluid(RadiationInfo info) {
+	public TileRadioactiveFluid(RadiationUtil info) {
 		this.info = info;
 	}
 
@@ -29,7 +29,7 @@ public class TileRadioactiveFluid extends TileEntity {
 			info = null;
 		}
 		else {
-			info = new RadiationInfo(new ItemStack(tag.getCompoundTag("item")), tag.getLong("decayStart"), tag.getLong("lastUpdate"), tag.getInteger("dimensionID"), RadiationEnum.values()[tag.getInteger("radioactivity")]);
+			info = new RadiationUtil(new ItemStack(tag.getCompoundTag("item")), tag.getLong("decayStart"), tag.getLong("lastUpdate"), tag.getInteger("dimensionID"), RadiationEnum.values()[tag.getInteger("radioactivity")]);
 			info.radiationDamage = tag.getInteger("radiationDamage");
 		}
 	}

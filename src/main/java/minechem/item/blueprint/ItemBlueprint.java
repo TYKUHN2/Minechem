@@ -70,7 +70,7 @@ public class ItemBlueprint extends ItemBase {
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
 		if (isInCreativeTab(tab)) {
-			list.add(new ItemStack(this));
+			//list.add(new ItemStack(this));
 			list.addAll(BlueprintUtil.getAllBlueprintsAsStacks());
 		}
 	}

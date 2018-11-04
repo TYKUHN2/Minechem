@@ -46,70 +46,10 @@ public class RenderMicroscope extends TileEntitySpecialRenderer<TileMicroscope> 
 		GlStateManager.translate(x + 0.5D, y + 1.5D, z + 0.5D);
 		GlStateManager.rotate(180f, 0f, 0f, 1f);
 		GlStateManager.rotate(j * 45.0F, 0.0F, 1.0F, 0.0F);
-		//GlStateManager.enableBlend();
-		//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		bindTexture(ModResources.Model.MICROSCOPE);
 		microscopeModel.render(0.0625F);
-		//GlStateManager.disableBlend();
 		GlStateManager.popMatrix();
 	}
-	/*
-		@Override
-		public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
-			return new ArrayList<BakedQuad>();
-		}
-	
-		@Override
-		public boolean isAmbientOcclusion() {
-			return false;
-		}
-	
-		@Override
-		public boolean isGui3d() {
-			return false;
-		}
-	
-		@Override
-		public boolean isBuiltInRenderer() {
-			return true;
-		}
-	
-		@Override
-		public TextureAtlasSprite getParticleTexture() {
-			return null;
-		}
-	
-		@Override
-		public ItemCameraTransforms getItemCameraTransforms() {
-			return ItemCameraTransforms.DEFAULT;
-		}
-	
-		@Override
-		public ItemOverrideList getOverrides() {
-			return ItemOverrideList.NONE;
-		}
-	
-		@Override
-		public void renderItem(ItemStack item, TransformType transformType) {
-			RenderHelper.enableStandardItemLighting();
-			GlStateManager.pushMatrix();
-			GlStateManager.translate(0.5D, 1.5D, 0.5D);
-			GlStateManager.rotate(180f, 0f, 0f, 1f);
-			//GlStateManager.rotate((facing * 90.0F), 0.0F, 1.0F, 0.0F);
-			//GlStateManager.enableBlend();
-			//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			Minecraft.getMinecraft().renderEngine.bindTexture(ModResources.Model.MICROSCOPE);
-			microscopeModel.render(0.0625F);
-			//GlStateManager.disableBlend();
-			GlStateManager.translate(-0.5D, -1.5D, -0.5D);
-			GlStateManager.popMatrix();
-		}
-	
-		@Override
-		public IModelState getTransforms() {
-			return TransformUtils.DEFAULT_BLOCK;
-		}
-		*/
 
 	public static class ItemRenderMicroscope extends TileEntityItemStackRenderer {
 
@@ -125,14 +65,11 @@ public class RenderMicroscope extends TileEntitySpecialRenderer<TileMicroscope> 
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0.5D, 1.5D, 0.5D);
 			GlStateManager.rotate(180f, 0f, 0f, 1f);
-			//GlStateManager.rotate((facing * 90.0F), 0.0F, 1.0F, 0.0F);
-			//GlStateManager.enableBlend();
-			//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			Minecraft.getMinecraft().renderEngine.bindTexture(ModResources.Model.MICROSCOPE);
 			model.render(0.0625F);
-			//GlStateManager.disableBlend();
 			GlStateManager.translate(-0.5D, -1.5D, -0.5D);
 			GlStateManager.popMatrix();
+			RenderHelper.disableStandardItemLighting();
 		}
 
 	}

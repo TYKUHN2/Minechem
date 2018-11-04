@@ -83,8 +83,8 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 				if (!searchBar.getText().equals("") && !itemstack.isEmpty() && !(itemstack.getDisplayName().toLowerCase().contains(searchBar.getText()))) {
 					continue;
 				}
-				int xPos = (i * 18) + 18;
-				int yPos = (j * 18) + 28;
+				int xPos = (i * 18) + 20;
+				int yPos = (j * 18) + 31;
 				GuiFakeSlot slot = new GuiFakeSlot(this, player);
 				slot.setXPos(xPos);
 				slot.setYPos(yPos);
@@ -176,16 +176,16 @@ public class GuiChemistJournal extends GuiContainerTabbed implements IVerticalSc
 	}
 
 	private void showDecomposerRecipeSelect(RecipeDecomposerSelect recipe) {
-		List<RecipeDecomposer> recipes = recipe.getAllPossibleRecipes();
+		ArrayList<ArrayList<PotionChemical>> outputs = recipe.getAllPossibleOutputs();
 		if (slideShowTimer >= ModGlobals.TICKS_PER_SECOND * 8) {
 			slideShowTimer = 0;
 			currentSlide++;
-			if (currentSlide >= recipes.size()) {
+			if (currentSlide >= outputs.size()) {
 				currentSlide = 0;
 			}
 		}
 		if (slideShowTimer == 0) {
-			ArrayList<PotionChemical> potionChemicals = recipes.get(currentSlide).getOutputRaw();
+			ArrayList<PotionChemical> potionChemicals = outputs.get(currentSlide);
 			NonNullList<ItemStack> ingredients = MinechemUtil.convertChemicalsIntoItemStacks(potionChemicals);
 			showIngredients(ingredients, decomposerSlots, DECOMPOSER_X, DECOMPOSER_Y);
 		}

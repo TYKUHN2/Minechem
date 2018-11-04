@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import minechem.api.IDecomposerControl;
-import minechem.api.RadiationInfo;
 import minechem.init.ModConfig;
 import minechem.init.ModNetworking;
 import minechem.inventory.InventoryBounded;
@@ -18,6 +17,7 @@ import minechem.recipe.RecipeDecomposer;
 import minechem.recipe.RecipeDecomposerFluid;
 import minechem.recipe.handler.RecipeHandlerDecomposer;
 import minechem.utils.MinechemUtil;
+import minechem.utils.RadiationUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -151,7 +151,7 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 					isCooking = true;
 					NonNullList<ItemStack> stacks = MinechemUtil.convertChemicalsIntoItemStacks(getBrokenOutput(output, inputStack.isEmpty() ? 1.0D : getDecompositionMultiplier(inputStack)));
 					for (ItemStack stack : stacks) {
-						if (RadiationInfo.getRadioactivity(stack) != RadiationEnum.stable) {
+						if (RadiationUtil.getRadioactivity(stack) != RadiationEnum.stable) {
 							ItemElement.initiateRadioactivity(stack, getWorld());
 						}
 					}
@@ -223,7 +223,13 @@ public class TileDecomposer extends TileMinechemEnergyBase implements ISidedInve
 			recipe = RecipeDecomposer.get(tank.getFluid());
 		}
 		if (recipe != null) {
-			NonNullList<ItemStack> recipeList = MinechemUtil.convertChemicalsIntoItemStacks(recipe.getOutputAsArray());
+			//@formatter:off
+			NonNullList<ItemStack> recipeList = MinechemUtil.convertChemicalsIntoItemStacks(
+
+					recipe.getOutputAsArray()
+
+					);
+			//@formatter:on
 			for (ItemStack currentStack : recipeList) {
 				for (int i = 0; i < outputInventory.getSizeInventory(); i++) {
 					ItemStack tmpStack = outputInventory.getStackInSlot(i);

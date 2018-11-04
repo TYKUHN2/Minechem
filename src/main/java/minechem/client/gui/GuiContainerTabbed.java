@@ -57,17 +57,14 @@ public abstract class GuiContainerTabbed extends GuiContainerBase implements Gui
 		int h = 16;
 		mc.getTextureManager().bindTexture(resource);
 		GlStateManager.color(1F, 1F, 1F, 1F);
-
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();
-
 		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
 		buffer.pos(x + 0, y + h, _zLevel - 1).tex(0D, 1D).endVertex();
 		buffer.pos(x + w, y + h, _zLevel - 1).tex(1D, 1D).endVertex();
 		buffer.pos(x + w, y + 0, _zLevel - 1).tex(1D, 0D).endVertex();
 		buffer.pos(x + 0, y + 0, _zLevel - 1).tex(0D, 0D).endVertex();
 		tessellator.draw();
-
 	}
 
 	public GuiContainerTabbed(Container container) {

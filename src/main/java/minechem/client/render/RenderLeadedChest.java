@@ -36,54 +36,13 @@ public class RenderLeadedChest extends TileEntitySpecialRenderer<TileLeadedChest
 		if (tileentity == null) {
 			return;
 		}
-		/*
-		int facing = 0;
-
-		if (leadedChest.hasWorld()) {
-			Block var10 = leadedChest.getBlockType();
-			facing = leadedChest.getBlockMetadata();
-
-			if (var10 != null && facing == 0) {
-				facing = leadedChest.getBlockMetadata();
-			}
-		}
-		else {
-			facing = 0;
-		}
-
-		GlStateManager.pushMatrix();
-		//GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		GlStateManager.translate((float) xCoord, (float) yCoord + 1.0F, (float) zCoord + 1.0F);
-		GlStateManager.scale(1.0F, -1.0F, -1.0F);
-		GlStateManager.translate(0.5F, 0.5F, 0.5F);
-		short var11 = 0;
-
-		if (facing == 2) {
-			var11 = 180;
-		}
-
-		if (facing == 3) {
-			var11 = 0;
-		}
-
-		if (facing == 4) {
-			var11 = 90;
-		}
-
-		if (facing == 5) {
-			var11 = -90;
-		}
-
-		GlStateManager.rotate(var11, 0.0F, 1.0F, 0.0F);
-		GlStateManager.translate(-0.5F, -0.5F, -0.5F);
-		*/
 		World world = Minecraft.getMinecraft().world;
 		IBlockState state = world.getBlockState(tileentity.getPos());
 		int facing = state.getBlock().getMetaFromState(state);
 
 		GlStateManager.pushMatrix();
 		GlStateManager.enableRescaleNormal();
+		//RenderHelper.enableGUIStandardItemLighting();
 		if (ii >= 0) {
 			bindTexture(DESTROY_STAGES[ii]);
 			GlStateManager.matrixMode(5890);
@@ -133,59 +92,8 @@ public class RenderLeadedChest extends TileEntitySpecialRenderer<TileLeadedChest
 			GlStateManager.popMatrix();
 			GlStateManager.matrixMode(5888);
 		}
-		//GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-		//GlStateManager.translate(-0.5F, -0.5F, -0.5F);
-		//GlStateManager.popMatrix();
-		//GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
 	}
-	/*
-		@Override
-		public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
-			return new ArrayList<BakedQuad>();
-		}
-	
-		@Override
-		public boolean isAmbientOcclusion() {
-			return false;
-		}
-	
-		@Override
-		public boolean isGui3d() {
-			return false;
-		}
-	
-		@Override
-		public boolean isBuiltInRenderer() {
-			return true;
-		}
-	
-		@Override
-		public TextureAtlasSprite getParticleTexture() {
-			return null;
-		}
-	
-		@Override
-		public ItemCameraTransforms getItemCameraTransforms() {
-			return ItemCameraTransforms.DEFAULT;
-		}
-	
-		@Override
-		public ItemOverrideList getOverrides() {
-			return ItemOverrideList.NONE;
-		}
-	
-		@Override
-		public void renderItem(ItemStack item, TransformType transforms) {
-			RenderHelper.enableStandardItemLighting();
-			TileEntityRendererDispatcher.instance.render(new TileLeadedChest(), 0.0D, 0.0D, 0.0D, 0.0F);
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		}
-	
-		@Override
-		public IModelState getTransforms() {
-			return TransformUtils.DEFAULT_BLOCK;
-		}
-		*/
 
 	public static class ItemRenderLeadedChest extends TileEntityItemStackRenderer {
 

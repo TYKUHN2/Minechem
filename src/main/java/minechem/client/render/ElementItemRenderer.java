@@ -64,10 +64,6 @@ public class ElementItemRenderer extends TileEntityItemStackRenderer {
 			if (model != null) {
 				model.handlePerspective(transformType);
 			}
-			if (transformType == TransformType.GUI) {
-				//RenderHelper.enableStandardItemLighting();
-				//RenderHelper.disableStandardItemLighting();
-			}
 			if (transformType == TransformType.FIXED) {
 				GlStateManager.translate(1.0, 0, 1.0);
 				GlStateManager.rotate(180.0f, 0, 1.0f, 0);

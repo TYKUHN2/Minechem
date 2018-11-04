@@ -96,15 +96,7 @@ public final class RenderUtil {
 	}
 
 	public static void render(IBakedModel model, int color, ItemStack stack) {
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder vertexbuffer = tessellator.getBuffer();
-		//vertexbuffer.begin(7, DefaultVertexFormats.ITEM);
-		for (EnumFacing enumfacing : EnumFacing.values()) {
-			//renderQuads(vertexbuffer, model.getQuads((IBlockState) null, enumfacing, 0L), color, stack);
-		}
-		//renderQuads(vertexbuffer, model.getQuads((IBlockState) null, (EnumFacing) null, 0L), color, stack);
 		renderQuads(model.getQuads((IBlockState) null, (EnumFacing) null, 0L), 0.0F);
-		//tessellator.draw();
 	}
 
 	public static void renderQuads(List<BakedQuad> quads, float alphaOverride) {

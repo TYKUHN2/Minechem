@@ -51,7 +51,6 @@ public class GuiSynthesis extends GuiContainerTabbed {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-
 		mc.renderEngine.bindTexture(ModResources.Gui.SYNTHESIS);
 		int x = (width - guiWidth) / 2;
 		int y = (height - guiHeight) / 2;
@@ -61,7 +60,6 @@ public class GuiSynthesis extends GuiContainerTabbed {
 	@Override
 	public void handleMouseInput() throws IOException {
 		super.handleMouseInput();
-
 		final int i = Mouse.getEventDWheel();
 		if (i != 0 && isShiftKeyDown() && isOverSynthesisMatrixSlot()) {
 			final int x = Mouse.getEventX() * width / mc.displayWidth;

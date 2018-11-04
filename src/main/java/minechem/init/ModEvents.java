@@ -25,7 +25,6 @@ import minechem.fluid.FluidMolecule;
 import minechem.fluid.reaction.ChemicalFluidReactionHandler;
 import minechem.handler.HandlerElementDecay;
 import minechem.init.ModGlobals.Textures;
-import minechem.item.ItemElement;
 import minechem.item.element.ElementEnum;
 import minechem.item.molecule.MoleculeEnum;
 import minechem.potion.PharmacologyEffectRegistry;
@@ -50,7 +49,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.crafting.IRecipe;
@@ -67,10 +65,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootEntryItem;
+import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraft.world.storage.loot.functions.SetNBT;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.GuiContainerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -89,6 +89,7 @@ import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -100,8 +101,6 @@ import net.minecraftforge.oredict.OreDictionary;
  *
  */
 public class ModEvents {
-
-	private static boolean tablesLoaded = false;
 
 	public static void init() {
 		MinecraftForge.EVENT_BUS.register(new ModEvents());
@@ -134,10 +133,8 @@ public class ModEvents {
 		// @formatter:on
 		for (char chr : charList) {
 			map.setTextureEntry(CharacterSprite.getSpriteForChar(chr));
-			//map.setTextureEntry(CharacterSprite.getSpriteForChar(Character.toUpperCase(chr)));
 		}
 		for (char chr : charList) {
-			//map.setTextureEntry(CharacterSprite.getSpriteForChar(chr));
 			map.setTextureEntry(CharacterSprite.getSpriteForChar(Character.toUpperCase(chr)));
 		}
 	}
@@ -171,45 +168,7 @@ public class ModEvents {
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onGuiForegroundDraw(GuiContainerEvent.DrawForeground event) {
-		List<Slot> slots = event.getGuiContainer().inventorySlots.inventorySlots;
-		for (Slot slot : slots) {
-			if (slot.getHasStack() && slot.getStack().getItem() instanceof ItemElement && slot.getStack().getItemDamage() > 0) {
-				/*
-				int x = slot.xPos;
-				int y = slot.yPos;
-				float scale = 0.5F;
-				ItemStack stack = slot.getStack();
-				ElementEnum chemicalBase = MinechemUtil.getElement(stack);
-				FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-				GlStateManager.enableAlpha();
-				GlStateManager.enableBlend();
-				RenderHelper.disableStandardItemLighting();
-				RenderUtil.resetOpenGLColour();
-				GlStateManager.pushMatrix();
-				//GlStateManager.rotate(45.0F, 1.0F, 0.0F, 0.0F);
-				//GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-				//GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-				GlStateManager.scale(scale, scale, scale);
-				//GlStateManager.translate(0.0F, 0.0F, -16.0F);
-				//boolean oldBidiFlag = font.getBidiFlag();
-				//font.setBidiFlag(true);
-				font.drawString(chemicalBase.name(), x, y - 28, 0x000000);
-				//Tessellator tess = Tessellator.getInstance();
-				//BufferBuilder buffer = tess.getBuffer();
-				//buffer.begin(0x07, DefaultVertexFormats.ITEM);
-				//SimpleModelFontRenderer fr = new SimpleModelFontRenderer(Minecraft.getMinecraft().gameSettings, font, Minecraft.getMinecraft().getTextureManager(), false, m, format);
-				//tess.draw();
-				GlStateManager.translate(0.0F, 0.0F, 15.999F);
-				//GlStateManager.translate(1.0F, 1.0F, -15.999F);
-				font.drawString(chemicalBase.name(), x, y - 28, 0xEEEEEE);
-				//font.setBidiFlag(oldBidiFlag);
-				//GlStateManager.translate(-1.0F, -1.0F, 15.999F);
-				GlStateManager.scale(scale + scale, scale + scale, scale + scale);
-				//RenderHelper.enableStandardItemLighting();
-				GlStateManager.popMatrix();
-				*/
-			}
-		}
+
 	}
 
 	@SubscribeEvent
@@ -229,13 +188,28 @@ public class ModEvents {
 
 	@SubscribeEvent
 	public void onLootTableLoadEvent(LootTableLoadEvent event) {
-		if (event.getName().equals(LootTableList.CHESTS_SIMPLE_DUNGEON) && !tablesLoaded) {
+		//@formatter:off
+		if (event.getName() != null && event.getTable() != null && (
+				event.getName().equals(LootTableList.CHESTS_SIMPLE_DUNGEON) ||
+				event.getName().equals(LootTableList.CHESTS_ABANDONED_MINESHAFT) ||
+				event.getName().equals(LootTableList.CHESTS_NETHER_BRIDGE) ||
+				event.getName().equals(LootTableList.CHESTS_JUNGLE_TEMPLE) ||
+				event.getName().equals(LootTableList.CHESTS_END_CITY_TREASURE) ||
+				event.getName().equals(LootTableList.CHESTS_IGLOO_CHEST) ||
+				event.getName().equals(LootTableList.CHESTS_DESERT_PYRAMID)
+				)) {
 			ModLogger.debug("Adding blueprints to dungeon loot...");
 			LootTable table = event.getTable();
-			table.getPool("main").addEntry(new LootEntryItem(ModItems.blueprint, 1, 0, new LootFunction[0], new LootCondition[0], "blueprint1"));
-			table.getPool("main").addEntry(new LootEntryItem(ModItems.blueprint, 1, 1, new LootFunction[0], new LootCondition[0], "blueprint2"));
-			tablesLoaded = true;
+			LootCondition[] emptyCondition = new LootCondition[0];
+			LootPool pool = table.getPool("main");
+			if (pool != null) {
+				LootFunction fissionNBTFunc = new SetNBT(emptyCondition,BlueprintUtil.createStack(ModBlueprints.fission).getTagCompound());
+				LootFunction fusionNBTFunc = new SetNBT(emptyCondition,BlueprintUtil.createStack(ModBlueprints.fusion).getTagCompound());
+				pool.addEntry(new LootEntryItem(ModItems.blueprint, 5, 0, new LootFunction[]{fissionNBTFunc}, emptyCondition, ModItems.blueprint.getRegistryName().toString()+"_fission"));
+				pool.addEntry(new LootEntryItem(ModItems.blueprint, 5, 0, new LootFunction[]{fusionNBTFunc}, emptyCondition, ModItems.blueprint.getRegistryName().toString()+"_fusion"));
+			}
 		}
+		//@formatter:on
 	}
 
 	@SubscribeEvent
@@ -262,7 +236,7 @@ public class ModEvents {
 		ModRecipes.registerRecipes();
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOW)
 	public void onISynthesisRecipeRegister(RegistryEvent.Register<ISynthesisRecipe> event) {
 		ModRecipes.registerSynthesisRecipes();
 	}
@@ -511,7 +485,7 @@ public class ModEvents {
 			World world = event.getWorld();
 			BlockPos pos = event.getPos();
 			IBlockState iblockstate = world.getBlockState(pos);
-			Block block = iblockstate.getBlock();
+			//Block block = iblockstate.getBlock();
 			TileEntity tileentity = world.getTileEntity(pos);
 			ItemStack droppedStack = ItemStack.EMPTY;
 			if (tileentity != null && tileentity instanceof TileBlueprintProjector) {

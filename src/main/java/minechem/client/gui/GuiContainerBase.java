@@ -39,7 +39,6 @@ public abstract class GuiContainerBase extends GuiContainer {
 		inventorySlots = container;
 		fontRenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
 		renderItem = itemRenderer == null ? Minecraft.getMinecraft().getRenderItem() : itemRenderer;
-		//itemRender = renderItem;
 	}
 
 	@Override

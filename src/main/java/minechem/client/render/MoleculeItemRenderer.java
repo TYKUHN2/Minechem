@@ -25,9 +25,7 @@ public class MoleculeItemRenderer extends TileEntityItemStackRenderer {
 			layers.add(new IconLayer(Textures.Sprite.MOLECULE_PASS_1, true, false));
 			layers.add(new IconLayer(Textures.Sprite.MOLECULE_PASS_2, true));
 			GlStateManager.pushMatrix();
-			//RenderHelper.disableStandardItemLighting();
 			GlStateManager.enableRescaleNormal();
-			//GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			GlStateManager.translate(1.0, 0, 1.0);
 			GlStateManager.rotate(180.0f, 0, 1.0f, 0);
 			layers.get(0).render();
@@ -36,10 +34,6 @@ public class MoleculeItemRenderer extends TileEntityItemStackRenderer {
 			layers.get(0).render();
 			GlStateManager.disableRescaleNormal();
 			GlStateManager.popMatrix();
-			//RenderHelper.enableStandardItemLighting();
-			//GlStateManager.disableLighting();
-			//GlStateManager.enableLighting();
-			//GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 	}
 

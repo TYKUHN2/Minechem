@@ -12,6 +12,7 @@ import minechem.api.recipe.ISynthesisRecipe;
 import minechem.init.ModGlobals;
 import minechem.potion.PotionChemical;
 import minechem.utils.MinechemUtil;
+import minechem.utils.RadiationUtil;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -158,60 +159,31 @@ public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRe
 
 	@Override
 	public boolean matches(InventoryCrafting inv, World worldIn) {
-		//int ingredientCount = 0;
-		//RecipeHandlerSynthesis recipeItemHelper = new RecipeHandlerSynthesis();
-		//NonNullList<ItemStack> inputs = NonNullList.create();
 		Map<Integer, ItemStack> inputs = new HashMap<Integer, ItemStack>();
 		Map<Integer, ItemStack> inputsR = new HashMap<Integer, ItemStack>();
 		for (int i = 0; i < inv.getHeight(); ++i) {
 			for (int j = 0; j < inv.getWidth(); ++j) {
 				ItemStack itemstack = inv.getStackInRowAndColumn(j, i).copy();
 				inputs.put(j + i * 3, itemstack);
-				/*
-				if (!itemstack.isEmpty()) {
-					++ingredientCount;
-					if (inputs.containsKey(itemstack)) {
-						int currentCount = inputs.get(itemstack);
-						inputs.put(itemstack, itemstack.getCount() + currentCount);
-					}
-					else {
-						inputs.put(itemstack, itemstack.getCount());
-					}
-				}
-				*/
 			}
 		}
-
-		//if (ingredientCount != recipeItems.size()) {
-		//return false;
-		//}
 
 		for (int i = 0; i < recipeItems.size(); i++) {
 			ItemStack itemstack = recipeItems.get(i).getIngredientStack().copy();
 			inputsR.put(i, itemstack);
-			/*
-			if (!itemstack.isEmpty()) {
-				if (inputsR.containsKey(itemstack)) {
-					int currentCount = inputsR.get(itemstack);
-					inputsR.put(itemstack, itemstack.getCount() + currentCount);
-				}
-				else {
-					inputsR.put(itemstack, itemstack.getCount());
-				}
-			}
-			*/
 		}
 
 		boolean hasEnough = true;
 		for (int i = 0; i < recipeItems.size(); i++) {
-			if (!ItemStack.areItemStacksEqual(inputs.get(i), inputsR.get(i))) {
+			//ItemStack tmp1 = RadiationUtil.getStackWithoutRadiation(inputs.get(i).copy());
+			ItemStack tmp2 = RadiationUtil.getStackWithoutRadiation(inputs.get(i).copy());
+			if (!ItemStack.areItemStacksEqual(inputsR.get(i), tmp2)) {
 				hasEnough = false;
 				break;
 			}
 		}
 
 		return hasEnough;
-		//return RecipeHandlerSynthesis.itemStacksMatchesShapelessRecipe(inputs, this, 1);
 	}
 
 	@Override

@@ -884,100 +884,25 @@ public class ModRecipes {
 	}
 
 	public void registerDecomposerRecipes() {
-		RecipeDecomposer.add(new RecipeDecomposerSelect(blockStone, 0.2F, new RecipeDecomposer[] {
-				new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Fe), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Mg), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Ti), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Pb), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Zn), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Al), element(ElementEnum.O)
-				})
-		}));
+		/*
+		RecipeDecomposer.add((new RecipeDecomposerChance(blockStone, 0.2F, new PotionChemical[] {
+				element(ElementEnum.Si)
+		})));
+		*/
+		// Smooth Stone
+		RecipeDecomposer.add(new RecipeDecomposerSelect(blockStone, 0.07F, Lists.<ArrayList<PotionChemical>>newArrayList(Lists.<PotionChemical>newArrayList(element(ElementEnum.Si), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Fe), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Mg), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Ti), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Pb), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Zn), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Al), element(ElementEnum.O)))));
 
 		// Grass Block
-
-		RecipeDecomposer.add(new RecipeDecomposerSelect(blockGrass, 0.07F, new RecipeDecomposer[] {
-				new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Fe), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Mg), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Ti), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Pb), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Zn), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Ga), element(ElementEnum.As)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						moleculeCellulose
-				})
-		}));
+		RecipeDecomposer.add(new RecipeDecomposerSelect(blockGrass, 0.07F, Lists.<ArrayList<PotionChemical>>newArrayList(Lists.<PotionChemical>newArrayList(element(ElementEnum.Si), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Fe), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Mg), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Ti), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Pb), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Zn), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(moleculeCellulose))));
 
 		// Dirt
+		RecipeDecomposer.add(new RecipeDecomposerSelect(blockDirt, 0.07F, Lists.<ArrayList<PotionChemical>>newArrayList(Lists.<PotionChemical>newArrayList(element(ElementEnum.Si), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Fe), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Mg), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Ti), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Pb), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Zn), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Ga), element(ElementEnum.O)))));
 
-		RecipeDecomposer.add(new RecipeDecomposerSelect(blockDirt, 0.07F, new RecipeDecomposer[] {
-				new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Fe), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Mg), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Ti), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Pb), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Zn), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Ga), element(ElementEnum.As)
-				})
-		}));
-		RecipeDecomposer.add(new RecipeDecomposerSelect(blockPodzol, 0.07F, new RecipeDecomposer[] {
-				new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Fe), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Mg), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Ti), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Pb), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Zn), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Ga), element(ElementEnum.As)
-				})
-		}));
+		RecipeDecomposer.add(new RecipeDecomposerSelect(blockPodzol, 0.07F, Lists.<ArrayList<PotionChemical>>newArrayList(Lists.<PotionChemical>newArrayList(element(ElementEnum.Si), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Fe), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Mg), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Ti), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Pb), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Zn), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Ga), element(ElementEnum.O)))));
 
 		// Cobblestone
 
-		RecipeDecomposer.add(new RecipeDecomposerSelect(blockCobblestone, 0.1F, new RecipeDecomposer[] {
-				new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Fe), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Mg), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Ti), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Pb), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Na), element(ElementEnum.Cl)
-				})
-		}));
+		RecipeDecomposer.add(new RecipeDecomposerSelect(blockCobblestone, 0.07F, Lists.<ArrayList<PotionChemical>>newArrayList(Lists.<PotionChemical>newArrayList(element(ElementEnum.Si), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Fe), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Mg), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Ti), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Pb), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Na), element(ElementEnum.Cl)))));
 
 		// Planks
 
@@ -1441,35 +1366,11 @@ public class ModRecipes {
 
 		// Netherrack
 
-		RecipeDecomposer.add(new RecipeDecomposerSelect(blockNetherrack, 0.1F, new RecipeDecomposer[] {
-				new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 2), element(ElementEnum.O), element(ElementEnum.Fe)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 2), element(ElementEnum.Ni), element(ElementEnum.Tc)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 3), element(ElementEnum.Ti), element(ElementEnum.Fe)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 1), element(ElementEnum.W, 4), element(ElementEnum.Cr, 2)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 10), element(ElementEnum.W, 1), element(ElementEnum.Zn, 8), element(ElementEnum.Be, 4)
-				})
-		}));
+		RecipeDecomposer.add(new RecipeDecomposerSelect(blockNetherrack, 0.15F, Lists.<ArrayList<PotionChemical>>newArrayList(Lists.<PotionChemical>newArrayList(element(ElementEnum.Si, 2), element(ElementEnum.O), element(ElementEnum.Fe)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Si, 2), element(ElementEnum.Ni), element(ElementEnum.Tc)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Si, 3), element(ElementEnum.Ti), element(ElementEnum.Fe)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Si), element(ElementEnum.W, 4), element(ElementEnum.Cr, 2)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Si, 10), element(ElementEnum.W), element(ElementEnum.Zn, 8), element(ElementEnum.Be, 4)))));
 
 		// Nether Brick
 
-		RecipeDecomposer.add(new RecipeDecomposerSelect(itemNetherbrick, 0.15F, new RecipeDecomposer[] {
-				new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 2), element(ElementEnum.C), element(ElementEnum.Fe)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 2), element(ElementEnum.Ni), element(ElementEnum.Tc)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 3), element(ElementEnum.Ti), element(ElementEnum.Fe)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 1), element(ElementEnum.W, 4), element(ElementEnum.Cr, 2)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 10), element(ElementEnum.W, 1), element(ElementEnum.Zn, 8), element(ElementEnum.Be, 4)
-				})
-		}));
+		RecipeDecomposer.add(new RecipeDecomposerSelect(itemNetherbrick, 0.15F, Lists.<ArrayList<PotionChemical>>newArrayList(Lists.<PotionChemical>newArrayList(element(ElementEnum.Si, 2), element(ElementEnum.C), element(ElementEnum.Fe)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Si, 2), element(ElementEnum.Ni), element(ElementEnum.Tc)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Si, 3), element(ElementEnum.Ti), element(ElementEnum.Fe)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Si), element(ElementEnum.W, 4), element(ElementEnum.Cr, 2)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Si, 10), element(ElementEnum.W), element(ElementEnum.Zn, 8), element(ElementEnum.Be, 4)))));
 
 		// Water Bottle
 
@@ -1485,19 +1386,7 @@ public class ModRecipes {
 
 		// Soul Sand
 
-		RecipeDecomposer.add(new RecipeDecomposerSelect(blockSlowSand, 0.2F, new RecipeDecomposer[] {
-				new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Pb, 3), element(ElementEnum.Be, 1), element(ElementEnum.Si, 2), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Pb, 1), element(ElementEnum.Si, 5), element(ElementEnum.O, 2)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 2), element(ElementEnum.O)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 6), element(ElementEnum.O, 2)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Es, 1), element(ElementEnum.O, 2)
-				})
-		}));
+		RecipeDecomposer.add(new RecipeDecomposerSelect(blockSlowSand, 0.2F, Lists.<ArrayList<PotionChemical>>newArrayList(Lists.<PotionChemical>newArrayList(element(ElementEnum.Pb, 2), element(ElementEnum.Be), element(ElementEnum.Si, 2), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Pb), element(ElementEnum.Si, 5), element(ElementEnum.O, 2)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Si, 2), element(ElementEnum.O)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Si, 6), element(ElementEnum.O, 2)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Es), element(ElementEnum.O, 2)))));
 
 		// Glowstone
 
@@ -1513,35 +1402,7 @@ public class ModRecipes {
 
 		// End Stone
 
-		RecipeDecomposer.add(new RecipeDecomposerSelect(blockWhiteStone, 0.8F, new RecipeDecomposer[] {
-				new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 2), element(ElementEnum.O), element(ElementEnum.H, 4), element(ElementEnum.Li)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Es)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Pu)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Fr)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Nd)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Si, 2), element(ElementEnum.O, 4)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.H, 4)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Be, 8)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Li, 2)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Zr)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Na)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Rb)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Ga), element(ElementEnum.As)
-				})
-		}));
+		RecipeDecomposer.add(new RecipeDecomposerSelect(blockWhiteStone, 0.8F, Lists.<ArrayList<PotionChemical>>newArrayList(Lists.<PotionChemical>newArrayList(element(ElementEnum.Si, 2), element(ElementEnum.O), element(ElementEnum.H, 4), element(ElementEnum.Li)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Es)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Pu)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Fr)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Nd)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Nd)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Si, 2), element(ElementEnum.O, 4)), Lists.<PotionChemical>newArrayList(element(ElementEnum.H, 4)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Be, 8)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Li, 2)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Zr)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Rb)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Ga), element(ElementEnum.As)))));
 
 		// Emerald Ore
 
@@ -1733,17 +1594,7 @@ public class ModRecipes {
 
 		//Compass
 
-		RecipeDecomposer.add(new RecipeDecomposerSelect(itemCompass, 1.0F, new RecipeDecomposer[] {
-				new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Fe, 64)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Fe, 64), molecule(MoleculeEnum.iron3oxide)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Fe, 64), molecule(MoleculeEnum.iron3oxide), element(ElementEnum.Cu)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Fe, 64), element(ElementEnum.Cu)
-				})
-		}));
+		RecipeDecomposer.add(new RecipeDecomposerSelect(itemCompass, 1.0F, Lists.<ArrayList<PotionChemical>>newArrayList(Lists.<PotionChemical>newArrayList(element(ElementEnum.Fe, 64)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Fe, 64), molecule(MoleculeEnum.iron3oxide)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Fe, 64), molecule(MoleculeEnum.iron3oxide), element(ElementEnum.Cu)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Fe, 64), element(ElementEnum.Cu)))));
 
 		// Map
 
@@ -1759,15 +1610,7 @@ public class ModRecipes {
 
 		// Slimeball
 
-		RecipeDecomposer.add(new RecipeDecomposerSelect(itemSlimeBall, 0.9F, new RecipeDecomposer[] {
-				new RecipeDecomposer(new PotionChemical[] {
-						molecule(MoleculeEnum.pmma)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						element(ElementEnum.Hg)
-				}), new RecipeDecomposer(new PotionChemical[] {
-						molecule(MoleculeEnum.water, 10)
-				})
-		}));
+		RecipeDecomposer.add(new RecipeDecomposerSelect(itemCompass, 1.0F, Lists.<ArrayList<PotionChemical>>newArrayList(Lists.<PotionChemical>newArrayList(molecule(MoleculeEnum.pmma)), Lists.<PotionChemical>newArrayList(element(ElementEnum.Hg)), Lists.<PotionChemical>newArrayList(molecule(MoleculeEnum.water, 10)))));
 
 		// Glowstone Dust
 

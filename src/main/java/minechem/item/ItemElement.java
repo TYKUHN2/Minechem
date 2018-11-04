@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 
 import org.lwjgl.input.Keyboard;
 
-import minechem.api.RadiationInfo;
 import minechem.block.tile.TileRadioactiveFluid;
 import minechem.fluid.FluidElement;
 import minechem.init.ModCreativeTab;
@@ -20,6 +19,7 @@ import minechem.item.molecule.MoleculeEnum;
 import minechem.item.polytool.PolytoolHelper;
 import minechem.radiation.RadiationEnum;
 import minechem.utils.MinechemUtil;
+import minechem.utils.RadiationUtil;
 import minechem.utils.TickTimeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -126,13 +126,13 @@ public class ItemElement extends ItemBase {
 
 		list.add(ModGlobals.TEXT_MODIFIER + "9" + getShortName(itemstack) + " (" + (itemstack.getItemDamage()) + ")");
 
-		RadiationEnum radioactivity = RadiationInfo.getRadioactivity(itemstack);
+		RadiationEnum radioactivity = RadiationUtil.getRadioactivity(itemstack);
 		String radioactivityColor = radioactivity.getColour();
 		String radioactiveName = MinechemUtil.getLocalString("element.property." + radioactivity.name(), true);
 		String timeLeft = "";
-		if (RadiationInfo.getRadioactivity(itemstack) != RadiationEnum.stable && itemstack.getTagCompound() != null) {
+		if (RadiationUtil.getRadioactivity(itemstack) != RadiationEnum.stable && itemstack.getTagCompound() != null) {
 			long worldTime = world.getTotalWorldTime();
-			long ticks = RadiationInfo.getRadioactivity(itemstack).getLife() - (worldTime - itemstack.getTagCompound().getLong("decayStart"));
+			long ticks = RadiationUtil.getRadioactivity(itemstack).getLife() - (worldTime - itemstack.getTagCompound().getLong("decayStart"));
 			timeLeft = TickTimeUtil.getTimeFromTicks(ticks);
 		}
 		list.add(radioactivityColor + radioactiveName + (timeLeft.equals("") ? "" : " (" + timeLeft + ")"));
@@ -177,10 +177,10 @@ public class ItemElement extends ItemBase {
 		return new ItemStack(ModItems.element, amount, element.atomicNumber());
 	}
 
-	public static RadiationInfo getRadiationInfo(ItemStack element, World world) {
-		RadiationEnum radioactivity = RadiationInfo.getRadioactivity(element);
+	public static RadiationUtil getRadiationInfo(ItemStack element, World world) {
+		RadiationEnum radioactivity = RadiationUtil.getRadioactivity(element);
 		if (radioactivity == RadiationEnum.stable) {
-			return new RadiationInfo(element, radioactivity);
+			return new RadiationUtil(element, radioactivity);
 		}
 		else {
 			NBTTagCompound stackTag = element.getTagCompound();
@@ -191,22 +191,22 @@ public class ItemElement extends ItemBase {
 				int dimensionID = stackTag.getInteger("dimensionID");
 				long lastUpdate = stackTag.getLong("lastUpdate");
 				long decayStart = stackTag.getLong("decayStart");
-				RadiationInfo info = new RadiationInfo(element, decayStart, lastUpdate, dimensionID, radioactivity);
+				RadiationUtil info = new RadiationUtil(element, decayStart, lastUpdate, dimensionID, radioactivity);
 				return info;
 			}
 		}
 	}
 
-	public static RadiationInfo initiateRadioactivity(ItemStack element, World world) {
-		RadiationEnum radioactivity = RadiationInfo.getRadioactivity(element);
+	public static RadiationUtil initiateRadioactivity(ItemStack element, World world) {
+		RadiationEnum radioactivity = RadiationUtil.getRadioactivity(element);
 		int dimensionID = world.provider.getDimension();
 		long lastUpdate = world.getTotalWorldTime();
-		RadiationInfo info = new RadiationInfo(element, lastUpdate, lastUpdate, dimensionID, radioactivity);
-		RadiationInfo.setRadiationInfo(info, element);
+		RadiationUtil info = new RadiationUtil(element, lastUpdate, lastUpdate, dimensionID, radioactivity);
+		RadiationUtil.setRadiationInfo(info, element);
 		return info;
 	}
 
-	public static RadiationInfo decay(ItemStack element, World world) {
+	public static RadiationUtil decay(ItemStack element, World world) {
 		int atomicMass = element.getItemDamage();
 		element.setItemDamage(atomicMass - 1);
 		return initiateRadioactivity(element, world);
@@ -309,7 +309,7 @@ public class ItemElement extends ItemBase {
 						stack.setCount(8);
 						TileEntity tile = world.getTileEntity(rayTrace.getBlockPos());
 						if (tile instanceof TileRadioactiveFluid && ((TileRadioactiveFluid) tile).info != null) {
-							RadiationInfo.setRadiationInfo(((TileRadioactiveFluid) tile).info, stack);
+							RadiationUtil.setRadiationInfo(((TileRadioactiveFluid) tile).info, stack);
 						}
 
 						world.setBlockToAir(rayTrace.getBlockPos());
@@ -357,7 +357,7 @@ public class ItemElement extends ItemBase {
 		}
 
 		if (world.isAirBlock(pos)) {
-			RadiationInfo radioactivity = getRadiationInfo(itemStack, world);
+			RadiationUtil radioactivity = getRadiationInfo(itemStack, world);
 			long worldtime = world.getTotalWorldTime();
 			long leftTime = radioactivity.radioactivity.getLife() - (worldtime - radioactivity.decayStarted);
 			Fluid fluid = ModFluids.FLUID_ELEMENTS.get(MinechemUtil.getElement(itemStack));
@@ -386,7 +386,7 @@ public class ItemElement extends ItemBase {
 					Iterator<ItemStack> it = otherItemsStacks.iterator();
 					while (it.hasNext()) {
 						ItemStack stack = it.next();
-						RadiationInfo anotherRadiation = getRadiationInfo(stack, world);
+						RadiationUtil anotherRadiation = getRadiationInfo(stack, world);
 						long anotherLeft = anotherRadiation.radioactivity.getLife() - (worldtime - anotherRadiation.decayStarted);
 						if (anotherLeft < leftTime) {
 							radioactivity = anotherRadiation;
@@ -428,8 +428,8 @@ public class ItemElement extends ItemBase {
 	@Override
 	public void onCreated(ItemStack itemStack, World world, EntityPlayer player) {
 		super.onCreated(itemStack, world, player);
-		if (RadiationInfo.getRadioactivity(itemStack) != RadiationEnum.stable && itemStack.getTagCompound() == null) {
-			RadiationInfo.setRadiationInfo(new RadiationInfo(itemStack, world.getTotalWorldTime(), world.getTotalWorldTime(), world.provider.getDimension(), RadiationInfo.getRadioactivity(itemStack)), itemStack);
+		if (RadiationUtil.getRadioactivity(itemStack) != RadiationEnum.stable && itemStack.getTagCompound() == null) {
+			RadiationUtil.setRadiationInfo(new RadiationUtil(itemStack, world.getTotalWorldTime(), world.getTotalWorldTime(), world.provider.getDimension(), RadiationUtil.getRadioactivity(itemStack)), itemStack);
 		}
 	}
 }

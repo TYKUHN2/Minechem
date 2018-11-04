@@ -12,6 +12,7 @@ import minechem.client.gui.widget.tab.TabHelp;
 import minechem.container.ContainerMicroscope;
 import minechem.init.ModGlobals;
 import minechem.init.ModGlobals.ModResources;
+import minechem.potion.PotionChemical;
 import minechem.recipe.RecipeDecomposer;
 import minechem.recipe.RecipeDecomposerChance;
 import minechem.recipe.RecipeDecomposerSelect;
@@ -206,7 +207,7 @@ public class GuiMicroscope extends GuiContainerTabbed {
 		if (recipe != null) {
 			NonNullList<ItemStack> output = MinechemUtil.convertChemicalsIntoItemStacks(recipe.getOutputRaw());
 			if (recipe instanceof RecipeDecomposerSelect) {
-				drawDecomposerRecipeSelectMatrix(((RecipeDecomposerSelect) recipe).getAllPossibleRecipes(), x, y);
+				drawDecomposerRecipeSelectMatrix(((RecipeDecomposerSelect) recipe).getAllPossibleOutputs(), x, y);
 			}
 			else {
 				drawDecomposerRecipeMatrix(output, x, y);
@@ -226,20 +227,20 @@ public class GuiMicroscope extends GuiContainerTabbed {
 		}
 	}
 
-	private void drawDecomposerRecipeSelectMatrix(ArrayList<RecipeDecomposer> recipes, int x, int y) {
+	private void drawDecomposerRecipeSelectMatrix(ArrayList<ArrayList<PotionChemical>> outputs, int x, int y) {
 		if (slideShowTimer == ModGlobals.TICKS_PER_SECOND * 8) {
 			slideShowTimer = 0;
 			currentSlide++;
 		}
 
-		if (currentSlide == recipes.size()) {
+		if (currentSlide == outputs.size()) {
 			currentSlide = 0;
 		}
 
 		slideShowTimer++;
-		RecipeDecomposer recipe = recipes.get(currentSlide);
-		NonNullList<ItemStack> output = MinechemUtil.convertChemicalsIntoItemStacks(recipe.getOutputRaw());
-		drawDecomposerRecipeMatrix(output, x, y);
+		ArrayList<PotionChemical> output = outputs.get(currentSlide);
+		NonNullList<ItemStack> outputStack = MinechemUtil.convertChemicalsIntoItemStacks(output);
+		drawDecomposerRecipeMatrix(outputStack, x, y);
 	}
 
 	private void drawDecomposerChance(RecipeDecomposer recipe, int x, int y) {

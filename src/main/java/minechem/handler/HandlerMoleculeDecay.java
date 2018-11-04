@@ -10,7 +10,6 @@ import java.util.WeakHashMap;
 
 import javax.annotation.Nonnull;
 
-import minechem.api.RadiationInfo;
 import minechem.init.ModFluids;
 import minechem.init.ModItems;
 import minechem.item.ItemElement;
@@ -22,6 +21,7 @@ import minechem.item.molecule.MoleculeEnum;
 import minechem.potion.PotionChemical;
 import minechem.radiation.RadiationEnum;
 import minechem.utils.MinechemUtil;
+import minechem.utils.RadiationUtil;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -48,7 +48,7 @@ public class HandlerMoleculeDecay {
 		initDecayedMoleculesPre();
 	}
 
-	public RadiationInfo handleRadiationMoleculeBucket(World world, @Nonnull ItemStack itemStack, IInventory inventory, double x, double y, double z) {
+	public RadiationUtil handleRadiationMoleculeBucket(World world, @Nonnull ItemStack itemStack, IInventory inventory, double x, double y, double z) {
 		PotionChemical[] decayedChemicals = getDecayedMolecule((MoleculeEnum) MinechemUtil.getChemicalTypeFromBucket(itemStack));
 		for (int i = 0; i < decayedChemicals.length; i++) {
 			decayedChemicals[i].amount *= 8 * itemStack.getCount();
@@ -76,7 +76,7 @@ public class HandlerMoleculeDecay {
 		return ItemElement.initiateRadioactivity(itemStack, world);
 	}
 
-	public RadiationInfo handleRadiationMolecule(World world, ItemStack itemStack, IInventory inventory, double x, double y, double z) {
+	public RadiationUtil handleRadiationMolecule(World world, ItemStack itemStack, IInventory inventory, double x, double y, double z) {
 		PotionChemical[] decayedChemicals = getDecayedMolecule(MinechemUtil.getMolecule(itemStack));
 		for (int i = 0; i < decayedChemicals.length; i++) {
 			decayedChemicals[i].amount *= itemStack.getCount();

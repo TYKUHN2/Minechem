@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 
 import org.lwjgl.input.Keyboard;
 
-import minechem.api.RadiationInfo;
 import minechem.block.tile.TileRadioactiveFluid;
 import minechem.init.ModConfig;
 import minechem.init.ModCreativeTab;
@@ -21,6 +20,7 @@ import minechem.potion.PharmacologyEffect;
 import minechem.potion.PharmacologyEffectRegistry;
 import minechem.radiation.RadiationEnum;
 import minechem.utils.MinechemUtil;
+import minechem.utils.RadiationUtil;
 import minechem.utils.TickTimeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -113,14 +113,14 @@ public class ItemMolecule extends ItemBase {
 	public void addInformation(ItemStack itemstack, @Nullable World world, List<String> list, ITooltipFlag flagIn) {
 		list.add("\u00A79" + getFormulaWithSubscript(itemstack));
 
-		RadiationEnum radioactivity = RadiationInfo.getRadioactivity(itemstack);
+		RadiationEnum radioactivity = RadiationUtil.getRadioactivity(itemstack);
 		String radioactivityColor = radioactivity.getColour();
 
 		String radioactiveName = MinechemUtil.getLocalString("element.property." + radioactivity.name(), true);
 		String timeLeft = "";
-		if (RadiationInfo.getRadioactivity(itemstack) != RadiationEnum.stable && itemstack.getTagCompound() != null) {
+		if (RadiationUtil.getRadioactivity(itemstack) != RadiationEnum.stable && itemstack.getTagCompound() != null) {
 			long worldTime = world.getTotalWorldTime();
-			timeLeft = TickTimeUtil.getTimeFromTicks(RadiationInfo.getRadioactivity(itemstack).getLife() - (worldTime - itemstack.getTagCompound().getLong("decayStart")));
+			timeLeft = TickTimeUtil.getTimeFromTicks(RadiationUtil.getRadioactivity(itemstack).getLife() - (worldTime - itemstack.getTagCompound().getLong("decayStart")));
 		}
 		list.add(radioactivityColor + radioactiveName + (timeLeft.equals("") ? "" : " (" + timeLeft + ")"));
 		list.add(getRoomState(itemstack));
@@ -269,7 +269,7 @@ public class ItemMolecule extends ItemBase {
 		}
 
 		if (world.isAirBlock(pos)) {
-			RadiationInfo radioactivity = ItemElement.getRadiationInfo(itemStack, world);
+			RadiationUtil radioactivity = ItemElement.getRadiationInfo(itemStack, world);
 			long worldtime = world.getTotalWorldTime();
 			long leftTime = radioactivity.radioactivity.getLife() - (worldtime - radioactivity.decayStarted);
 			MoleculeEnum molecule = MinechemUtil.getMolecule(itemStack);
@@ -299,7 +299,7 @@ public class ItemMolecule extends ItemBase {
 					Iterator<ItemStack> it = otherItemsStacks.iterator();
 					while (it.hasNext()) {
 						ItemStack stack = it.next();
-						RadiationInfo anotherRadiation = ItemElement.getRadiationInfo(stack, world);
+						RadiationUtil anotherRadiation = ItemElement.getRadiationInfo(stack, world);
 						long anotherLeft = anotherRadiation.radioactivity.getLife() - (worldtime - anotherRadiation.decayStarted);
 						if (anotherLeft < leftTime) {
 							radioactivity = anotherRadiation;
@@ -349,8 +349,8 @@ public class ItemMolecule extends ItemBase {
 	@Override
 	public void onCreated(ItemStack itemStack, World world, EntityPlayer player) {
 		super.onCreated(itemStack, world, player);
-		if (RadiationInfo.getRadioactivity(itemStack) != RadiationEnum.stable && itemStack.getTagCompound() == null) {
-			RadiationInfo.setRadiationInfo(new RadiationInfo(itemStack, world.getTotalWorldTime(), world.getTotalWorldTime(), world.provider.getDimension(), RadiationInfo.getRadioactivity(itemStack)), itemStack);
+		if (RadiationUtil.getRadioactivity(itemStack) != RadiationEnum.stable && itemStack.getTagCompound() == null) {
+			RadiationUtil.setRadiationInfo(new RadiationUtil(itemStack, world.getTotalWorldTime(), world.getTotalWorldTime(), world.provider.getDimension(), RadiationUtil.getRadioactivity(itemStack)), itemStack);
 		}
 	}
 }

@@ -14,6 +14,7 @@ import minechem.init.ModItems;
 import minechem.network.message.MessageSyncSynthesisMachine;
 import minechem.recipe.handler.RecipeHandlerSynthesis;
 import minechem.utils.MinechemUtil;
+import minechem.utils.RadiationUtil;
 import minechem.utils.RecipeUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.RecipeItemHelper;
@@ -259,7 +260,7 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 		NonNullList<ItemStack> storageList = getStorageBuffer(true);
 		for (ItemStack stack : storageList) {
 			int count = stack.getCount();
-			ItemStack tmpStack = stack.copy();
+			ItemStack tmpStack = RadiationUtil.getStackWithoutRadiation(stack.copy());
 			tmpStack.setCount(1);
 
 			if (!isStackAdded(data, tmpStack)) {
@@ -275,8 +276,8 @@ public class TileSynthesis extends TileMinechemEnergyBase implements ISidedInven
 
 	private int getCount(Map<ItemStack, Integer> data, ItemStack scompStack) {
 		for (ItemStack stack : data.keySet()) {
-			if (ItemStack.areItemStacksEqual(stack, scompStack)) {
-				return data.get(stack);
+			if (ItemStack.areItemStacksEqual(RadiationUtil.getStackWithoutRadiation(stack), RadiationUtil.getStackWithoutRadiation(scompStack))) {
+				return data.get(RadiationUtil.getStackWithoutRadiation(stack));
 			}
 		}
 		return 0;

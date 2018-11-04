@@ -1,16 +1,16 @@
-package minechem.api;
+package minechem.utils;
 
 import minechem.init.ModItems;
 import minechem.item.element.ElementEnum;
 import minechem.item.molecule.MoleculeEnum;
 import minechem.radiation.RadiationEnum;
-import minechem.utils.MinechemUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.UniversalBucket;
 
-public class RadiationInfo implements Cloneable {
+public class RadiationUtil implements Cloneable {
 
 	public long decayStarted;
 	public long lastDecayUpdate;
@@ -19,7 +19,7 @@ public class RadiationInfo implements Cloneable {
 	public ItemStack itemstack;
 	public RadiationEnum radioactivity;
 
-	public RadiationInfo(ItemStack itemstack, long decayStarted, long lastDecayUpdate, int dimensionID, RadiationEnum radioactivity) {
+	public RadiationUtil(ItemStack itemstack, long decayStarted, long lastDecayUpdate, int dimensionID, RadiationEnum radioactivity) {
 		this.itemstack = itemstack;
 		this.decayStarted = decayStarted;
 		this.dimensionID = dimensionID;
@@ -27,7 +27,7 @@ public class RadiationInfo implements Cloneable {
 		this.radioactivity = radioactivity;
 	}
 
-	public RadiationInfo(ItemStack itemstack, RadiationEnum radioactivity) {
+	public RadiationUtil(ItemStack itemstack, RadiationEnum radioactivity) {
 		this.itemstack = itemstack;
 		this.radioactivity = radioactivity;
 		decayStarted = 0;
@@ -40,8 +40,8 @@ public class RadiationInfo implements Cloneable {
 	}
 
 	@Override
-	public RadiationInfo clone() {
-		return new RadiationInfo(itemstack.copy(), decayStarted, lastDecayUpdate, dimensionID, radioactivity);
+	public RadiationUtil clone() {
+		return new RadiationUtil(itemstack.copy(), decayStarted, lastDecayUpdate, dimensionID, radioactivity);
 	}
 
 	public static RadiationEnum getRadioactivity(ItemStack itemstack) {
@@ -64,15 +64,39 @@ public class RadiationInfo implements Cloneable {
 		return RadiationEnum.stable;
 	}
 
-	public static void setRadiationInfo(RadiationInfo radiationInfo, ItemStack itemStack) {
-		NBTTagCompound stackTag = itemStack.getTagCompound();
-		if (stackTag == null) {
-			stackTag = new NBTTagCompound();
+	public static void setRadiationInfo(RadiationUtil radiationInfo, ItemStack stack) {
+		NBTTagCompound nbt = stack.getTagCompound();
+		if (nbt == null) {
+			nbt = new NBTTagCompound();
 		}
-		stackTag.setLong("lastUpdate", radiationInfo.lastDecayUpdate);
-		stackTag.setLong("decayStart", radiationInfo.decayStarted);
-		stackTag.setInteger("dimensionID", radiationInfo.dimensionID);
-		itemStack.setTagCompound(stackTag);
+		nbt.setLong("lastUpdate", radiationInfo.lastDecayUpdate);
+		nbt.setLong("decayStart", radiationInfo.decayStarted);
+		nbt.setInteger("dimensionID", radiationInfo.dimensionID);
+		stack.setTagCompound(nbt);
+	}
+
+	public static ItemStack getStackWithoutRadiation(ItemStack stack) {
+		if (stack.hasTagCompound()) {
+			NBTTagCompound nbt = stack.getTagCompound();
+			if (nbt.hasKey("lastUpdate", Constants.NBT.TAG_LONG)) {
+				nbt.removeTag("lastUpdate");
+			}
+			if (nbt.hasKey("decayStart", Constants.NBT.TAG_LONG)) {
+				nbt.removeTag("decayStart");
+			}
+			if (nbt.hasKey("dimensionID", Constants.NBT.TAG_INT)) {
+				nbt.removeTag("dimensionID");
+			}
+			ItemStack returnStack = stack.copy();
+			if (nbt.hasNoTags()) {
+				returnStack.setTagCompound(null);
+			}
+			else {
+				returnStack.setTagCompound(nbt);
+			}
+			return returnStack;
+		}
+		return stack;
 	}
 
 }
