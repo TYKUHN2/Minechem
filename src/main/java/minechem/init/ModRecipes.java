@@ -2001,6 +2001,18 @@ public class ModRecipes {
 		registry.register(new RecipePotionCoating());
 		registry.register(new RecipePotionSpiking());
 		registry.register(new RecipeCloneChemistJournal());
+
+		for (String oreName : OreDictionary.getOreNames()) {
+			ModLogger.debug("Checking oredict " + oreName);
+			if (ModRecipes.getOreDictionaryHandlers() != null) {
+				for (IOreDictionaryHandler handler : ModRecipes.getOreDictionaryHandlers()) {
+					if (handler.canHandle(oreName)) {
+						handler.handle(oreName);
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	//TODO
