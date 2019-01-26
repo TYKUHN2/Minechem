@@ -401,19 +401,6 @@ public class ModEvents {
 	}
 
 	@SubscribeEvent
-	public void onOreEvent(OreDictionary.OreRegisterEvent event) {
-		String oreName = event.getName();
-		if (ModRecipes.getOreDictionaryHandlers() != null) {
-			for (IOreDictionaryHandler handler : ModRecipes.getOreDictionaryHandlers()) {
-				if (handler.canHandle(oreName)) {
-					handler.handle(oreName);
-					return;
-				}
-			}
-		}
-	}
-
-	@SubscribeEvent
 	public void onDecayEvent(RadiationDecayEvent event) {
 		if (event.getPlayer() != null) {
 			String nameBeforeDecay = event.getLongName(event.getBefore());
