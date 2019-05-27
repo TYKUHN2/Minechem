@@ -12,11 +12,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BuiltInModel;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -35,34 +31,30 @@ public class ModRendering {
 	private static final ModelResourceLocation TEISR_LOC = new ModelResourceLocation(new ResourceLocation(ModGlobals.ID, "teisr"), "inventory");
 	public static final ModelResourceLocation ITEM_ELEMENT_LOC = new ModelResourceLocation(new ResourceLocation(ModGlobals.ID, "tube_filled"), "inventory");
 	public static final ModelResourceLocation ITEM_MOLECULE_LOC = new ModelResourceLocation(new ResourceLocation(ModGlobals.ID, "molecule"), "inventory");
-	private static List<Pair<ModelResourceLocation, IBakedModel>> particleModels = new LinkedList<Pair<ModelResourceLocation, IBakedModel>>();
+	private static List<Pair<ModelResourceLocation, IBakedModel>> particleModels = new LinkedList<>();
 
-	public static void setItemTEISR(Item item, TileEntityItemStackRenderer renderer) {
-		//ModelLoader.setCustomModelResourceLocation(item, 0, TEISR_LOC);
-		//item.setTileEntityItemStackRenderer(renderer);
+	public static void setItemTEISR(final Item item, final TileEntityItemStackRenderer renderer) {
 		setItemTEISR(item, renderer, 0);
 	}
 
-	public static void setItemTEISR(Item item, TileEntityItemStackRenderer renderer, int meta) {
-		//ModelLoader.setCustomModelResourceLocation(item, meta, TEISR_LOC);
-		//item.setTileEntityItemStackRenderer(renderer);
+	public static void setItemTEISR(final Item item, final TileEntityItemStackRenderer renderer, final int meta) {
 		setItemTEISR(item, renderer, meta, TEISR_LOC);
 	}
 
-	public static void setItemTEISR(Item item, TileEntityItemStackRenderer renderer, int meta, ModelResourceLocation location) {
+	public static void setItemTEISR(final Item item, final TileEntityItemStackRenderer renderer, final int meta, final ModelResourceLocation location) {
 		ModelLoader.setCustomModelResourceLocation(item, meta, location);
 		item.setTileEntityItemStackRenderer(renderer);
 	}
 
-	public static void setBlockTEISR(Block block, TileEntityItemStackRenderer renderer) {
+	public static void setBlockTEISR(final Block block, final TileEntityItemStackRenderer renderer) {
 		setItemTEISR(Item.getItemFromBlock(block), renderer);
 	}
 
-	public static void registerParticle(ModelResourceLocation location, IBakedModel model) {
-		particleModels.add(new ImmutablePair<ModelResourceLocation, IBakedModel>(location, model));
+	public static void registerParticle(final ModelResourceLocation location, final IBakedModel model) {
+		particleModels.add(new ImmutablePair<>(location, model));
 	}
 
-	public static <T extends TileEntity> void setBlockRendering(Block block, TileEntitySpecialRenderer<? super T> blockRenderer, Class<T> tile, TileEntityItemStackRenderer itemRenderer, ResourceLocation particleTexture) {
+	public static <T extends TileEntity> void setBlockRendering(final Block block, final TileEntitySpecialRenderer<? super T> blockRenderer, final Class<T> tile, final TileEntityItemStackRenderer itemRenderer, final ResourceLocation particleTexture) {
 		setItemTEISR(Item.getItemFromBlock(block), itemRenderer);
 		ClientRegistry.bindTileEntitySpecialRenderer(tile, blockRenderer);
 

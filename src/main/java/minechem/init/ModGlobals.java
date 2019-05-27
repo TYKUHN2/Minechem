@@ -5,13 +5,14 @@ import java.util.Arrays;
 import minechem.Minechem;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ModMetadata;
+import p455w0rdslib.LibGlobals;
 
 public class ModGlobals {
 
 	public static final String NAME = "Minechem";
 	public static final String ID = "minechem";
 	public static final String VERSION = "2.0.133a";
-	public static final String DEPENDENCIES = "required-after:forge@[14.23.2.2638,);";
+	public static final String DEPENDENCIES = "required-after:forge@[14.23.2.2638,);" + LibGlobals.REQUIRE_DEP;
 
 	public static final int TICKS_PER_SECOND = 20;
 	public static final int TICKS_PER_MINUTE = TICKS_PER_SECOND * 60;
@@ -30,7 +31,7 @@ public class ModGlobals {
 		 * @return edited metadata object
 		 */
 		public static void preInit() {
-			ModMetadata metadata = new ModMetadata();
+			final ModMetadata metadata = new ModMetadata();
 			metadata.modId = ModGlobals.ID;
 			metadata.name = ModGlobals.NAME;
 			metadata.description = ModGlobals.NAME + " is a mod about chemistry, allowing you to research blocks and items, and then break them down into their base compounds and elements.";

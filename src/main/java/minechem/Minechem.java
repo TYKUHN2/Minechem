@@ -4,15 +4,10 @@ import minechem.init.ModEvents;
 import minechem.init.ModGlobals;
 import minechem.proxy.CommonProxy;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ModMetadata;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.common.event.*;
 
-@Mod(modid = ModGlobals.ID, name = ModGlobals.NAME, version = ModGlobals.VERSION, useMetadata = false, acceptedMinecraftVersions = "[1.12.2]", dependencies = ModGlobals.DEPENDENCIES)
+@Mod(modid = ModGlobals.ID, name = ModGlobals.NAME, version = ModGlobals.VERSION, useMetadata = false, acceptedMinecraftVersions = "[1.12.2]", certificateFingerprint = "@FINGERPRINT@", dependencies = ModGlobals.DEPENDENCIES)
 public class Minechem {
 
 	@Mod.Instance(value = ModGlobals.ID)
@@ -30,23 +25,23 @@ public class Minechem {
 	}
 
 	@Mod.EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
+	public void preInit(final FMLPreInitializationEvent event) {
 		//INSTANCE = this;
 		PROXY.preInit(event);
 	}
 
 	@Mod.EventHandler
-	public void init(FMLInitializationEvent event) {
+	public void init(final FMLInitializationEvent event) {
 		PROXY.init(event);
 	}
 
 	@Mod.EventHandler
-	public void postInit(FMLPostInitializationEvent event) {
+	public void postInit(final FMLPostInitializationEvent event) {
 		PROXY.postInit(event);
 	}
 
 	@Mod.EventHandler
-	public void loadComplete(FMLLoadCompleteEvent event) {
+	public void loadComplete(final FMLLoadCompleteEvent event) {
 		PROXY.loadComplete(event);
 	}
 
