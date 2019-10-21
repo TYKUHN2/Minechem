@@ -6,9 +6,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.common.ForgeModContainer;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.UniversalBucket;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -17,22 +15,22 @@ public class ModCreativeTab extends CreativeTabs {
 	public static CreativeTabs CREATIVE_TAB_ELEMENTS = new ModCreativeTab(ModGlobals.NAME + ".Elements", 1);
 	public static CreativeTabs CREATIVE_TAB_BUCKETS = new ModCreativeTab(ModGlobals.NAME + ".buckets", 2);
 
-	private int tabIcon;
+	private final int tabIcon;
 
-	public ModCreativeTab(String tabName, int i) {
+	public ModCreativeTab(final String tabName, final int i) {
 		super(tabName);
 		tabIcon = i;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void displayAllRelevantItems(NonNullList<ItemStack> stackList) {
+	public void displayAllRelevantItems(final NonNullList<ItemStack> stackList) {
 		if (tabIcon == 2) {
-			for (FluidElement fluid : ModFluids.FLUID_ELEMENTS.values()) {
-				stackList.add(UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid));
+			for (final FluidElement fluid : ModFluids.FLUID_ELEMENTS.values()) {
+				stackList.add(FluidUtil.getFilledBucket(new FluidStack(fluid, 1000)));
 			}
-			for (Fluid fluid : ModFluids.FLUID_MOLECULES.values()) {
-				stackList.add(UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid));
+			for (final Fluid fluid : ModFluids.FLUID_MOLECULES.values()) {
+				stackList.add(FluidUtil.getFilledBucket(new FluidStack(fluid, 1000)));
 			}
 		}
 		else {
@@ -48,7 +46,7 @@ public class ModCreativeTab extends CreativeTabs {
 		case 1:
 			return new ItemStack(ModItems.element, 1, ElementEnum.U.atomicNumber());
 		case 2:
-			return UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, ModFluids.FLUID_ELEMENTS.get(ElementEnum.Ne));
+			return FluidUtil.getFilledBucket(new FluidStack(ModFluids.FLUID_ELEMENTS.get(ElementEnum.Ne), 1000));
 		default:
 			return new ItemStack(Items.FERMENTED_SPIDER_EYE);
 		}

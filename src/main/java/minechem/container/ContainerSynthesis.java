@@ -7,10 +7,7 @@ import minechem.api.INoDecay;
 import minechem.api.IRadiationShield;
 import minechem.block.tile.TileSynthesis;
 import minechem.init.ModItems;
-import minechem.inventory.slot.SlotChemical;
-import minechem.inventory.slot.SlotChemistJournal;
-import minechem.inventory.slot.SlotFake;
-import minechem.inventory.slot.SlotSynthesisOutput;
+import minechem.inventory.slot.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
@@ -19,20 +16,20 @@ import net.minecraft.item.ItemStack;
 public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadiationShield, INoDecay {
 
 	private final TileSynthesis synthesis;
-	private InventoryPlayer playerInventory;
+	private final InventoryPlayer playerInventory;
 
-	public ContainerSynthesis(InventoryPlayer playerInventory, TileSynthesis synthesis) {
+	public ContainerSynthesis(final InventoryPlayer playerInventory, final TileSynthesis synthesis) {
 		this.synthesis = synthesis;
 		this.playerInventory = playerInventory;
 		addSlotToContainer(new SlotChemistJournal(synthesis, TileSynthesis.SLOT_ID_CHEMISTS_JOURNAL, 26, 36));
 		bindRecipeMatrixSlots();
-		addSlotToContainer(new SlotSynthesisOutput(synthesis, playerInventory.player, TileSynthesis.SLOT_ID_OUTPUT_JOURNAL, 80, 84).setLocked(true));
-		addSlotToContainer(new SlotSynthesisOutput(synthesis, playerInventory.player, TileSynthesis.SLOT_ID_OUTPUT_MATRIX, 133, 36));
+		addSlotToContainer(new SlotSynthesisOutput(synthesis, TileSynthesis.SLOT_ID_OUTPUT_JOURNAL, 80, 84).setLocked(true));
+		addSlotToContainer(new SlotSynthesisOutput(synthesis, TileSynthesis.SLOT_ID_OUTPUT_MATRIX, 133, 36));
 		bindStorageSlots();
 		bindPlayerInventory(playerInventory);
 	}
 
-	private void bindPlayerInventory(InventoryPlayer inventoryPlayer) {
+	private void bindPlayerInventory(final InventoryPlayer inventoryPlayer) {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 9; j++) {
 				addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, 160 + i * 18));
@@ -48,9 +45,9 @@ public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadia
 		int slot = 0;
 		for (int row = 0; row < 3; row++) {
 			for (int col = 0; col < 3; col++) {
-				addSlotToContainer(new SlotFake(synthesis, TileSynthesis.SLOT_IDS_MATRIX[0] + slot, 62 + (col * 18), 18 + (row * 18)) {
+				addSlotToContainer(new SlotFake(synthesis, TileSynthesis.SLOT_IDS_MATRIX[0] + slot, 62 + col * 18, 18 + row * 18) {
 					@Override
-					public boolean isItemValid(ItemStack itemstack) {
+					public boolean isItemValid(final ItemStack itemstack) {
 						return itemstack.getItem() == ModItems.element || itemstack.getItem() == ModItems.molecule;
 					}
 				});
@@ -63,20 +60,20 @@ public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadia
 		int slot = 0;
 		for (int row = 0; row < 2; row++) {
 			for (int col = 0; col < 9; col++) {
-				addSlotToContainer(new SlotChemical(synthesis, TileSynthesis.SLOT_IDS_STORAGE_BUFFER[0] + slot, 8 + (col * 18), 114 + (row * 18)));
+				addSlotToContainer(new SlotChemical(synthesis, TileSynthesis.SLOT_IDS_STORAGE_BUFFER[0] + slot, 8 + col * 18, 114 + row * 18));
 				slot++;
 			}
 		}
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer var1) {
+	public boolean canInteractWith(final EntityPlayer var1) {
 		return synthesis.isUsableByPlayer(var1);
 	}
 
 	@Override
 	public List<ItemStack> getPlayerInventory() {
-		List<ItemStack> playerInventoryStacks = new ArrayList<ItemStack>();
+		final List<ItemStack> playerInventoryStacks = new ArrayList<>();
 		for (int i = 0; i < playerInventory.getSizeInventory(); i++) {
 			playerInventoryStacks.add(playerInventory.getStackInSlot(i));
 		}
@@ -84,15 +81,15 @@ public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadia
 	}
 
 	@Override
-	public float getRadiationReductionFactor(int baseDamage, ItemStack itemstack, EntityPlayer player) {
+	public float getRadiationReductionFactor(final int baseDamage, final ItemStack itemstack, final EntityPlayer player) {
 		return 0.4F;
 	}
 
 	@Override
 	public List<ItemStack> getStorageInventory() {
-		List<ItemStack> storageInventory = new ArrayList<ItemStack>();
-		for (int element : TileSynthesis.SLOT_IDS_STORAGE_BUFFER) {
-			ItemStack stack = getSlot(element).getStack();
+		final List<ItemStack> storageInventory = new ArrayList<>();
+		for (final int element : TileSynthesis.SLOT_IDS_STORAGE_BUFFER) {
+			final ItemStack stack = getSlot(element).getStack();
 			if (!stack.isEmpty()) {
 				storageInventory.add(stack);
 			}
@@ -101,12 +98,12 @@ public class ContainerSynthesis extends ContainerWithFakeSlots implements IRadia
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer entityPlayer, int slot) {
+	public ItemStack transferStackInSlot(final EntityPlayer entityPlayer, final int slot) {
 		//System.out.println(slot);
-		Slot slotObject = inventorySlots.get(slot);
+		final Slot slotObject = inventorySlots.get(slot);
 		if (slotObject != null && slotObject.getHasStack()) {
 			System.out.println(slotObject.slotNumber);
-			ItemStack stackInSlot = slotObject.getStack();
+			final ItemStack stackInSlot = slotObject.getStack();
 			if (slot >= 30 && slot < 66) {
 				if (stackInSlot.getItem() == ModItems.journal) {
 					if (!mergeItemStack(stackInSlot, 0, 1, false)) {

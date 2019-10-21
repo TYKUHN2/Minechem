@@ -33,7 +33,7 @@ public class FontModelUtil {
 			EnumFacing.WEST,
 			EnumFacing.EAST
 	};
-	private static final ResourceLocation FONT_TEXTURE = new ResourceLocation(ModGlobals.ID, "textures/models/font.png");;
+	private static final ResourceLocation FONT_TEXTURE = new ResourceLocation(ModGlobals.MODID, "textures/models/font.png");;
 
 	public static ResourceLocation getFontTexture() {
 		return FONT_TEXTURE;

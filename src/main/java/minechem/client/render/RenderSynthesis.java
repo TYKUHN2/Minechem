@@ -8,7 +8,6 @@ import minechem.init.ModGlobals.ModResources;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
@@ -23,11 +22,11 @@ public class RenderSynthesis extends TileEntitySpecialRenderer<TileSynthesis> {/
 	}
 
 	@Override
-	public void render(TileSynthesis tileEntity, double x, double y, double z, float scale, int i, float alpha) {
+	public void render(final TileSynthesis tileEntity, final double x, final double y, final double z, final float scale, final int i, final float alpha) {
 		if (tileEntity instanceof TileSynthesis) {
-			World world = Minecraft.getMinecraft().world;
-			IBlockState state = world.getBlockState(tileEntity.getPos());
-			int facing = state.getBlock().getMetaFromState(state);
+			final World world = Minecraft.getMinecraft().world;
+			final IBlockState state = world.getBlockState(tileEntity.getPos());
+			final int facing = state.getBlock().getMetaFromState(state);
 			int j = 0;
 			if (facing == 2) {
 				j = 0;
@@ -71,8 +70,8 @@ public class RenderSynthesis extends TileEntitySpecialRenderer<TileSynthesis> {/
 		}
 
 		@Override
-		public void renderByItem(ItemStack stack, float partialTicks) {
-			RenderHelper.enableStandardItemLighting();
+		public void renderByItem(final ItemStack stack, final float partialTicks) {
+			//RenderHelper.enableStandardItemLighting();
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0.5D, 1.5D, 0.5D);
 			GlStateManager.rotate(180f, 0f, 0f, 1f);

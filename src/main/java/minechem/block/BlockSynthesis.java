@@ -36,7 +36,7 @@ public class BlockSynthesis extends BlockSimpleContainer {
 
 	public BlockSynthesis() {
 		super(Material.IRON);
-		setRegistryName(ModGlobals.ID + ":chemical_synthesizer");
+		setRegistryName(ModGlobals.MODID + ":chemical_synthesizer");
 		setUnlocalizedName("chemical_synthesizer");
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		ForgeRegistries.BLOCKS.register(this);

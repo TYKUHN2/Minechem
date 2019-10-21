@@ -1,15 +1,7 @@
 package minechem.utils;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import javax.vecmath.Vector4f;
 
@@ -19,21 +11,13 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
-import minechem.client.model.generated.ModelProperties;
-import minechem.client.model.generated.PerspectiveAwareBakedModel;
-import minechem.client.model.generated.Transforms;
+import minechem.client.model.generated.*;
 import minechem.item.element.ElementEnum;
 import net.minecraft.block.BlockJukebox;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -49,10 +33,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.ItemLayerModel;
-import net.minecraftforge.client.model.pipeline.LightUtil;
+import net.minecraftforge.client.model.pipeline.*;
 import net.minecraftforge.client.model.pipeline.LightUtil.ItemConsumer;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
-import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 public final class RenderUtil {
@@ -65,14 +47,14 @@ public final class RenderUtil {
 	};
 	private static Map<ResourceLocation, IBakedModel> MODEL_CACHE = Maps.<ResourceLocation, IBakedModel>newHashMap();
 
-	public static void drawTextureIn3D(ResourceLocation texture, int color) {
-		float scale = 1.0F;
+	public static void drawTextureIn3D(final ResourceLocation texture, final int color) {
+		final float scale = 1.0F;
 		GlStateManager.translate(-scale / 2, -scale / 2, 0.0F);
-		IBakedModel model = getModel(texture);
+		final IBakedModel model = getModel(texture);
 		render(model, color);
 	}
 
-	public static IBakedModel getModel(ResourceLocation loc) {
+	public static IBakedModel getModel(final ResourceLocation loc) {
 		if (!getModelCache().containsKey(loc)) {
 			getModelCache().put(loc, new PerspectiveAwareBakedModel(ItemLayerModel.getQuadsForSprite(0, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(loc.toString()), DefaultVertexFormats.ITEM, Optional.of(TRSRTransformation.identity())), Transforms.DEFAULT_ITEM, ModelProperties.DEFAULT_ITEM));
 		}
@@ -83,43 +65,43 @@ public final class RenderUtil {
 		return MODEL_CACHE;
 	}
 
-	public static void render(IBakedModel model, ItemStack stack) {
+	public static void render(final IBakedModel model, final ItemStack stack) {
 		render(model, -1, stack);
 	}
 
-	public static void render(IBakedModel model, int color) {
+	public static void render(final IBakedModel model, final int color) {
 		render(model, color, ItemStack.EMPTY);
 	}
 
-	public static void render(IBakedModel model) {
+	public static void render(final IBakedModel model) {
 		render(model, 0x00);
 	}
 
-	public static void render(IBakedModel model, int color, ItemStack stack) {
+	public static void render(final IBakedModel model, final int color, final ItemStack stack) {
 		renderQuads(model.getQuads((IBlockState) null, (EnumFacing) null, 0L), 0.0F);
 	}
 
-	public static void renderQuads(List<BakedQuad> quads, float alphaOverride) {
-		Tessellator tess = Tessellator.getInstance();
-		BufferBuilder buffer = tess.getBuffer();
+	public static void renderQuads(final List<BakedQuad> quads, final float alphaOverride) {
+		final Tessellator tess = Tessellator.getInstance();
+		final BufferBuilder buffer = tess.getBuffer();
 		buffer.begin(0x07, DefaultVertexFormats.ITEM);
 
-		int alpha = (int) (alphaOverride * 255F) & 0xFF;
-		for (BakedQuad quad : quads) {
+		final int alpha = (int) (alphaOverride * 255F) & 0xFF;
+		for (final BakedQuad quad : quads) {
 			int colour = -1;
-			colour |= (alpha << 24);
+			colour |= alpha << 24;
 			boolean doParty = false;
-			Minecraft mc = Minecraft.getMinecraft();
-			World world = mc.world;
-			EntityPlayer player = mc.player;
-			BlockPos pos = player.getPosition();
-			int distance = 2;
+			final Minecraft mc = Minecraft.getMinecraft();
+			final World world = mc.world;
+			final EntityPlayer player = mc.player;
+			final BlockPos pos = player.getPosition();
+			final int distance = 2;
 			for (int x = -distance; x < distance; x++) {
 				for (int y = -distance; y < distance; y++) {
 					for (int z = -distance; z < distance; z++) {
-						BlockPos checkingPos = pos.add(x, y, z);
+						final BlockPos checkingPos = pos.add(x, y, z);
 						if (world.getBlockState(checkingPos).getBlock() == Blocks.JUKEBOX) {
-							IBlockState state = world.getBlockState(checkingPos);
+							final IBlockState state = world.getBlockState(checkingPos);
 							if (state.getValue(BlockJukebox.HAS_RECORD).booleanValue()) {
 								doParty = true;
 								break;
@@ -129,10 +111,10 @@ public final class RenderUtil {
 				}
 			}
 			if (doParty) {
-				Random rand = world.rand;
-				int red = rand.nextInt(255);
-				int green = rand.nextInt(255);
-				int blue = rand.nextInt(255);
+				final Random rand = world.rand;
+				final int red = rand.nextInt(255);
+				final int green = rand.nextInt(255);
+				final int blue = rand.nextInt(255);
 				colour = (colour << 8) + red;
 				colour = (colour << 8) + green;
 				colour = (colour << 8) + blue;
@@ -143,26 +125,26 @@ public final class RenderUtil {
 		tess.draw();
 	}
 
-	public static void renderQuadsColored(List<BakedQuad> quads, int color, float alphaOverride) {
-		Tessellator tess = Tessellator.getInstance();
-		BufferBuilder buffer = tess.getBuffer();
+	public static void renderQuadsColored(final List<BakedQuad> quads, int color, final float alphaOverride) {
+		final Tessellator tess = Tessellator.getInstance();
+		final BufferBuilder buffer = tess.getBuffer();
 		buffer.begin(0x07, DefaultVertexFormats.ITEM);
 
-		int alpha = (int) (alphaOverride * 255F) & 0xFF;
-		for (BakedQuad quad : quads) {
-			color |= (alpha << 24);
+		final int alpha = (int) (alphaOverride * 255F) & 0xFF;
+		for (final BakedQuad quad : quads) {
+			color |= alpha << 24;
 			boolean doParty = false;
-			Minecraft mc = Minecraft.getMinecraft();
-			World world = mc.world;
-			EntityPlayer player = mc.player;
-			BlockPos pos = player.getPosition();
-			int distance = 2;
+			final Minecraft mc = Minecraft.getMinecraft();
+			final World world = mc.world;
+			final EntityPlayer player = mc.player;
+			final BlockPos pos = player.getPosition();
+			final int distance = 2;
 			for (int x = -distance; x < distance; x++) {
 				for (int y = -distance; y < distance; y++) {
 					for (int z = -distance; z < distance; z++) {
-						BlockPos checkingPos = pos.add(x, y, z);
+						final BlockPos checkingPos = pos.add(x, y, z);
 						if (world.getBlockState(checkingPos).getBlock() == Blocks.JUKEBOX) {
-							IBlockState state = world.getBlockState(checkingPos);
+							final IBlockState state = world.getBlockState(checkingPos);
 							if (state.getValue(BlockJukebox.HAS_RECORD).booleanValue()) {
 								doParty = true;
 								break;
@@ -172,10 +154,10 @@ public final class RenderUtil {
 				}
 			}
 			if (doParty) {
-				Random rand = world.rand;
-				int red = rand.nextInt(255);
-				int green = rand.nextInt(255);
-				int blue = rand.nextInt(255);
+				final Random rand = world.rand;
+				final int red = rand.nextInt(255);
+				final int green = rand.nextInt(255);
+				final int blue = rand.nextInt(255);
 				color = (color << 8) + red;
 				color = (color << 8) + green;
 				color = (color << 8) + blue;
@@ -186,13 +168,14 @@ public final class RenderUtil {
 		tess.draw();
 	}
 
-	public static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, int color, ItemStack stack) {
-		boolean flag = (color == -1) && (!stack.isEmpty());
+	@SuppressWarnings("deprecation")
+	public static void renderQuads(final BufferBuilder renderer, final List<BakedQuad> quads, final int color, final ItemStack stack) {
+		final boolean flag = color == -1 && !stack.isEmpty();
 		int i = 0;
-		for (int j = quads.size(); i < j; i++) {
-			BakedQuad bakedquad = quads.get(i);
+		for (final int j = quads.size(); i < j; i++) {
+			final BakedQuad bakedquad = quads.get(i);
 			int k = color;
-			if ((!flag)) {
+			if (!flag) {
 				k = color == -1 ? 0xFFFFFFFF : color;
 				if (EntityRenderer.anaglyphEnable) {
 					k = TextureUtil.anaglyphColor(k);
@@ -211,10 +194,10 @@ public final class RenderUtil {
 				else {
 					cons = new ItemConsumer(new VertexBufferConsumer(renderer));
 				}
-				float b = (float) (k & 0xFF) / 0xFF;
-				float g = (float) ((k >>> 8) & 0xFF) / 0xFF;
-				float r = (float) ((k >>> 16) & 0xFF) / 0xFF;
-				float a = (float) ((k >>> 24) & 0xFF) / 0xFF;
+				final float b = (float) (k & 0xFF) / 0xFF;
+				final float g = (float) (k >>> 8 & 0xFF) / 0xFF;
+				final float r = (float) (k >>> 16 & 0xFF) / 0xFF;
+				final float a = (float) (k >>> 24 & 0xFF) / 0xFF;
 
 				cons.setAuxColor(r, g, b, a);
 				bakedquad.pipe(cons);
@@ -227,8 +210,8 @@ public final class RenderUtil {
 	 *
 	 * @param colour in int form
 	 */
-	public static void setOpenGLColour(int colour) {
-		Color color = new Color(colour);
+	public static void setOpenGLColour(final int colour) {
+		final Color color = new Color(colour);
 		GlStateManager.color(color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, color.getAlpha() / 255.0F);
 	}
 
@@ -244,11 +227,11 @@ public final class RenderUtil {
 	 *
 	 * @param greyscale the greyscale in float form where 0.0F is black and 1.0F is white
 	 */
-	public static void setGreyscaleOpenGLColour(float greyscale) {
+	public static void setGreyscaleOpenGLColour(final float greyscale) {
 		GlStateManager.color(greyscale, greyscale, greyscale, 1.0F);
 	}
 
-	public static void setColorForElement(ElementEnum element) {
+	public static void setColorForElement(final ElementEnum element) {
 		switch (element.classification()) {
 		case actinide:
 			GlStateManager.color(1.0F, 0.0F, 0.0F);
@@ -285,7 +268,7 @@ public final class RenderUtil {
 		}
 	}
 
-	public static int getColorForElement(ElementEnum element) {
+	public static int getColorForElement(final ElementEnum element) {
 		switch (element.classification()) {
 		case actinide:
 			return 0xFFFF0000;
@@ -312,14 +295,14 @@ public final class RenderUtil {
 		}
 	}
 
-	public static void startScissor(Minecraft minecraft, int x, int y, int w, int h) {
-		ScaledResolution scaledRes = new ScaledResolution(minecraft);
-		int scale = scaledRes.getScaleFactor();
+	public static void startScissor(final Minecraft minecraft, final int x, final int y, final int w, final int h) {
+		final ScaledResolution scaledRes = new ScaledResolution(minecraft);
+		final int scale = scaledRes.getScaleFactor();
 
-		int scissorWidth = w * scale;
-		int scissorHeight = h * scale;
-		int scissorX = x * scale;
-		int scissorY = minecraft.displayHeight - scissorHeight - (y * scale);
+		final int scissorWidth = w * scale;
+		final int scissorHeight = h * scale;
+		final int scissorX = x * scale;
+		final int scissorY = minecraft.displayHeight - scissorHeight - y * scale;
 
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		GL11.glScissor(scissorX, scissorY, scissorWidth, scissorHeight);
@@ -329,27 +312,27 @@ public final class RenderUtil {
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 	}
 
-	public static ImmutableList<BakedQuad> getQuadsForSprites(VertexFormat format, Optional<TRSRTransformation> transform, TextureAtlasSprite... sprites) {
-		int tint = 0;
-		ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
+	public static ImmutableList<BakedQuad> getQuadsForSprites(final VertexFormat format, final Optional<TRSRTransformation> transform, final TextureAtlasSprite... sprites) {
+		final int tint = 0;
+		final ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
 		float horizontalPixelPos = 0;
-		for (TextureAtlasSprite sprite : sprites) {
-			int uMax = sprite.getIconWidth();
-			int vMax = sprite.getIconHeight();
+		for (final TextureAtlasSprite sprite : sprites) {
+			final int uMax = sprite.getIconWidth();
+			final int vMax = sprite.getIconHeight();
 
-			FaceData faceData = new FaceData(uMax, vMax);
+			final FaceData faceData = new FaceData(uMax, vMax);
 			boolean translucent = false;
 
 			for (int f = 0; f < sprite.getFrameCount(); f++) {
-				int[] pixels = sprite.getFrameTextureData(f)[0];
+				final int[] pixels = sprite.getFrameTextureData(f)[0];
 				boolean ptu;
-				boolean[] ptv = new boolean[uMax];
+				final boolean[] ptv = new boolean[uMax];
 				Arrays.fill(ptv, true);
 				for (int v = 0; v < vMax; v++) {
 					ptu = true;
 					for (int u = 0; u < uMax; u++) {
-						int alpha = getAlpha(pixels, uMax, vMax, u, v);
-						boolean t = alpha / 255f <= 0.1f;
+						final int alpha = getAlpha(pixels, uMax, vMax, u, v);
+						final boolean t = alpha / 255f <= 0.1f;
 
 						if (!t && alpha < 255) {
 							translucent = true;
@@ -389,12 +372,12 @@ public final class RenderUtil {
 			}
 
 			// horizontal quads
-			for (EnumFacing facing : HORIZONTALS) {
+			for (final EnumFacing facing : HORIZONTALS) {
 				for (int v = 0; v < vMax; v++) {
 					int uStart = 0, uEnd = uMax;
 					boolean building = false;
 					for (int u = 0; u < uMax; u++) {
-						boolean face = faceData.get(facing, u, v);
+						final boolean face = faceData.get(facing, u, v);
 						if (!translucent) {
 							if (face) {
 								if (!building) {
@@ -408,7 +391,7 @@ public final class RenderUtil {
 							if (building && !face) // finish current quad
 							{
 								// make quad [uStart, u]
-								int off = facing == EnumFacing.DOWN ? 1 : 0;
+								final int off = facing == EnumFacing.DOWN ? 1 : 0;
 								builder.add(buildSideQuad(format, transform, facing, tint, sprite, uStart, v + off, u - uStart, horizontalPixelPos));
 								building = false;
 							}
@@ -422,19 +405,19 @@ public final class RenderUtil {
 					if (building) // build remaining quad
 					{
 						// make quad [uStart, uEnd]
-						int off = facing == EnumFacing.DOWN ? 1 : 0;
+						final int off = facing == EnumFacing.DOWN ? 1 : 0;
 						builder.add(buildSideQuad(format, transform, facing, tint, sprite, uStart, v + off, uEnd - uStart, horizontalPixelPos));
 					}
 				}
 			}
 
 			// vertical quads
-			for (EnumFacing facing : VERTICALS) {
+			for (final EnumFacing facing : VERTICALS) {
 				for (int u = 0; u < uMax; u++) {
 					int vStart = 0, vEnd = vMax;
 					boolean building = false;
 					for (int v = 0; v < vMax; v++) {
-						boolean face = faceData.get(facing, u, v);
+						final boolean face = faceData.get(facing, u, v);
 						if (!translucent) {
 							if (face) {
 								if (!building) {
@@ -448,7 +431,7 @@ public final class RenderUtil {
 							if (building && !face) // finish current quad
 							{
 								// make quad [vStart, v]
-								int off = facing == EnumFacing.EAST ? 1 : 0;
+								final int off = facing == EnumFacing.EAST ? 1 : 0;
 								builder.add(buildSideQuad(format, transform, facing, tint, sprite, u + off, vStart, v - vStart, horizontalPixelPos));
 								building = false;
 							}
@@ -462,7 +445,7 @@ public final class RenderUtil {
 					if (building) // build remaining quad
 					{
 						// make quad [vStart, vEnd]
-						int off = facing == EnumFacing.EAST ? 1 : 0;
+						final int off = facing == EnumFacing.EAST ? 1 : 0;
 						builder.add(buildSideQuad(format, transform, facing, tint, sprite, u + off, vStart, vEnd - vStart, horizontalPixelPos));
 					}
 				}
@@ -477,18 +460,18 @@ public final class RenderUtil {
 		return builder.build();
 	}
 
-	private static int getAlpha(int[] pixels, int uMax, int vMax, int u, int v) {
+	private static int getAlpha(final int[] pixels, final int uMax, final int vMax, final int u, final int v) {
 		return pixels[u + (vMax - 1 - v) * uMax] >> 24 & 0xFF;
 	}
 
-	private static BakedQuad buildSideQuad(VertexFormat format, Optional<TRSRTransformation> transform, EnumFacing side, int tint, TextureAtlasSprite sprite, int u, int v, int size, float horizontalOffset) {
+	private static BakedQuad buildSideQuad(final VertexFormat format, final Optional<TRSRTransformation> transform, final EnumFacing side, final int tint, final TextureAtlasSprite sprite, final int u, final int v, final int size, final float horizontalOffset) {
 		final float eps = 1e-2f;
 
-		int width = sprite.getIconWidth();
-		int height = sprite.getIconHeight();
+		final int width = sprite.getIconWidth();
+		final int height = sprite.getIconHeight();
 
-		float x0 = (float) u / width;
-		float y0 = (float) v / height;
+		final float x0 = (float) u / width;
+		final float y0 = (float) v / height;
 		float x1 = x0, y1 = y0;
 		float z0 = 7.5f / 16f, z1 = 8.5f / 16f;
 
@@ -509,24 +492,24 @@ public final class RenderUtil {
 			throw new IllegalArgumentException("can't handle z-oriented side");
 		}
 
-		float dx = side.getDirectionVec().getX() * eps / width;
-		float dy = side.getDirectionVec().getY() * eps / height;
+		final float dx = side.getDirectionVec().getX() * eps / width;
+		final float dy = side.getDirectionVec().getY() * eps / height;
 
-		float u0 = 16f * (x0 - dx);
-		float u1 = 16f * (x1 - dx);
-		float v0 = 16f * (1f - y0 - dy);
-		float v1 = 16f * (1f - y1 - dy);
+		final float u0 = 16f * (x0 - dx);
+		final float u1 = 16f * (x1 - dx);
+		final float v0 = 16f * (1f - y0 - dy);
+		final float v1 = 16f * (1f - y1 - dy);
 
 		return buildQuad(format, transform, remap(side), sprite, tint, x0 + horizontalOffset, y0, z0, sprite.getInterpolatedU(u0), sprite.getInterpolatedV(v0), x1 + horizontalOffset, y1, z0, sprite.getInterpolatedU(u1), sprite.getInterpolatedV(v1), x1 + horizontalOffset, y1, z1, sprite.getInterpolatedU(u1), sprite.getInterpolatedV(v1), x0 + horizontalOffset, y0, z1, sprite.getInterpolatedU(u0), sprite.getInterpolatedV(v0));
 	}
 
-	private static EnumFacing remap(EnumFacing side) {
+	private static EnumFacing remap(final EnumFacing side) {
 		// getOpposite is related to the swapping of V direction
 		return side.getAxis() == EnumFacing.Axis.Y ? side.getOpposite() : side;
 	}
 
-	private static BakedQuad buildQuad(VertexFormat format, Optional<TRSRTransformation> transform, EnumFacing side, TextureAtlasSprite sprite, int tint, float x0, float y0, float z0, float u0, float v0, float x1, float y1, float z1, float u1, float v1, float x2, float y2, float z2, float u2, float v2, float x3, float y3, float z3, float u3, float v3) {
-		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
+	private static BakedQuad buildQuad(final VertexFormat format, final Optional<TRSRTransformation> transform, final EnumFacing side, final TextureAtlasSprite sprite, final int tint, final float x0, final float y0, final float z0, final float u0, final float v0, final float x1, final float y1, final float z1, final float u1, final float v1, final float x2, final float y2, final float z2, final float u2, final float v2, final float x3, final float y3, final float z3, final float u3, final float v3) {
+		final UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
 		builder.setQuadTint(tint);
 		builder.setQuadOrientation(side);
 		builder.setTexture(sprite);
@@ -537,8 +520,8 @@ public final class RenderUtil {
 		return builder.build();
 	}
 
-	private static void putVertex(UnpackedBakedQuad.Builder builder, VertexFormat format, Optional<TRSRTransformation> transform, EnumFacing side, float x, float y, float z, float u, float v) {
-		Vector4f vec = new Vector4f();
+	private static void putVertex(final UnpackedBakedQuad.Builder builder, final VertexFormat format, final Optional<TRSRTransformation> transform, final EnumFacing side, final float x, final float y, final float z, final float u, final float v) {
+		final Vector4f vec = new Vector4f();
 		for (int e = 0; e < format.getElementCount(); e++) {
 			switch (format.getElement(e).getUsage()) {
 			case POSITION:
@@ -572,31 +555,31 @@ public final class RenderUtil {
 		}
 	}
 
-	public static void drawCustomTooltip(GuiScreen gui, FontRenderer fr, List<String> textList, int x, int y, int subTipColor) {
+	public static void drawCustomTooltip(final GuiScreen gui, final FontRenderer fr, final List<String> textList, final int x, final int y, final int subTipColor) {
 		drawCustomTooltip(gui, fr, textList, x, y, subTipColor, false);
 	}
 
-	public static void drawCustomTooltip(GuiScreen gui, FontRenderer fr, List<String> textList, int x, int y, int subTipColor, boolean ignoremouse) {
+	public static void drawCustomTooltip(final GuiScreen gui, final FontRenderer fr, List<String> textList, final int x, final int y, final int subTipColor, final boolean ignoremouse) {
 		if (!textList.isEmpty()) {
-			Minecraft mc = Minecraft.getMinecraft();
-			ScaledResolution scaledresolution = new ScaledResolution(mc);
-			int sf = scaledresolution.getScaleFactor();
+			final Minecraft mc = Minecraft.getMinecraft();
+			final ScaledResolution scaledresolution = new ScaledResolution(mc);
+			final int sf = scaledresolution.getScaleFactor();
 			GlStateManager.disableRescaleNormal();
 			RenderHelper.disableStandardItemLighting();
 			GlStateManager.disableLighting();
 			GlStateManager.disableDepth();
 			int max = 240;
-			int mx = Mouse.getEventX();
+			final int mx = Mouse.getEventX();
 			boolean flip = false;
 			if (!ignoremouse && (max + 24) * sf + mx > mc.displayWidth && (max = (mc.displayWidth - mx) / sf - 24) < 120) {
 				max = 240;
 				flip = true;
 			}
 			int widestLineWidth = 0;
-			Iterator<String> textLineEntry = textList.iterator();
+			final Iterator<String> textLineEntry = textList.iterator();
 			boolean b = false;
 			while (textLineEntry.hasNext()) {
-				String textLine = textLineEntry.next();
+				final String textLine = textLineEntry.next();
 				if (fr.getStringWidth(textLine) <= max) {
 					continue;
 				}
@@ -604,11 +587,11 @@ public final class RenderUtil {
 				break;
 			}
 			if (b) {
-				ArrayList<String> tl = new ArrayList<String>();
-				for (String o : textList) {
+				final ArrayList<String> tl = new ArrayList<>();
+				for (final String o : textList) {
 					String textLine = "";
-					List<String> tl2 = fr.listFormattedStringToWidth(textLine, (textLine = o).startsWith("@@") ? max * 2 : max);
-					for (Object o2 : tl2) {
+					final List<String> tl2 = fr.listFormattedStringToWidth(textLine, (textLine = o).startsWith("@@") ? max * 2 : max);
+					for (final Object o2 : tl2) {
 						String textLine2 = ((String) o2).trim();
 						if (textLine.startsWith("@@")) {
 							textLine2 = "@@" + textLine2;
@@ -618,10 +601,10 @@ public final class RenderUtil {
 				}
 				textList = tl;
 			}
-			Iterator<String> textLines = textList.iterator();
+			final Iterator<String> textLines = textList.iterator();
 			int totalHeight = -2;
 			while (textLines.hasNext()) {
-				String textLine = textLines.next();
+				final String textLine = textLines.next();
 				int lineWidth = fr.getStringWidth(textLine);
 				if (textLine.startsWith("@@") && !fr.getUnicodeFlag()) {
 					lineWidth /= 2;
@@ -643,14 +626,14 @@ public final class RenderUtil {
 				sX = sX - (widestLineWidth + 24);
 			}
 			Minecraft.getMinecraft().getRenderItem().zLevel = 300.0f;
-			int var10 = -267386864;
+			final int var10 = -267386864;
 			drawGradientRect(sX - 3, sY - 4, sX + widestLineWidth + 3, sY - 3, var10, var10);
 			drawGradientRect(sX - 3, sY + totalHeight + 3, sX + widestLineWidth + 3, sY + totalHeight + 4, var10, var10);
 			drawGradientRect(sX - 3, sY - 3, sX + widestLineWidth + 3, sY + totalHeight + 3, var10, var10);
 			drawGradientRect(sX - 4, sY - 3, sX - 3, sY + totalHeight + 3, var10, var10);
 			drawGradientRect(sX + widestLineWidth + 3, sY - 3, sX + widestLineWidth + 4, sY + totalHeight + 3, var10, var10);
-			int var11 = 1347420415;
-			int var12 = (var11 & 16711422) >> 1 | var11 & -16777216;
+			final int var11 = 1347420415;
+			final int var12 = (var11 & 16711422) >> 1 | var11 & -16777216;
 			drawGradientRect(sX - 3, sY - 3 + 1, sX - 3 + 1, sY + totalHeight + 3 - 1, var11, var12);
 			drawGradientRect(sX + widestLineWidth + 2, sY - 3 + 1, sX + widestLineWidth + 3, sY + totalHeight + 3 - 1, var11, var12);
 			drawGradientRect(sX - 3, sY - 3, sX + widestLineWidth + 3, sY - 3 + 1, var11, var11);
@@ -689,22 +672,22 @@ public final class RenderUtil {
 		}
 	}
 
-	public static void drawGradientRect(int par1, int par2, int par3, int par4, int par5, int par6) {
-		boolean blendon = GL11.glIsEnabled(3042);
-		float var7 = (par5 >> 24 & 255) / 255.0f;
-		float var8 = (par5 >> 16 & 255) / 255.0f;
-		float var9 = (par5 >> 8 & 255) / 255.0f;
-		float var10 = (par5 & 255) / 255.0f;
-		float var11 = (par6 >> 24 & 255) / 255.0f;
-		float var12 = (par6 >> 16 & 255) / 255.0f;
-		float var13 = (par6 >> 8 & 255) / 255.0f;
-		float var14 = (par6 & 255) / 255.0f;
+	public static void drawGradientRect(final int par1, final int par2, final int par3, final int par4, final int par5, final int par6) {
+		final boolean blendon = GL11.glIsEnabled(3042);
+		final float var7 = (par5 >> 24 & 255) / 255.0f;
+		final float var8 = (par5 >> 16 & 255) / 255.0f;
+		final float var9 = (par5 >> 8 & 255) / 255.0f;
+		final float var10 = (par5 & 255) / 255.0f;
+		final float var11 = (par6 >> 24 & 255) / 255.0f;
+		final float var12 = (par6 >> 16 & 255) / 255.0f;
+		final float var13 = (par6 >> 8 & 255) / 255.0f;
+		final float var14 = (par6 & 255) / 255.0f;
 		GL11.glDisable(3553);
 		GL11.glEnable(3042);
 		GL11.glDisable(3008);
 		GL11.glBlendFunc(770, 771);
 		GL11.glShadeModel(7425);
-		Tessellator var15 = Tessellator.getInstance();
+		final Tessellator var15 = Tessellator.getInstance();
 		var15.getBuffer().begin(7, DefaultVertexFormats.POSITION_COLOR);
 		var15.getBuffer().pos(par3, par2, 300.0).color(var8, var9, var10, var7).endVertex();
 		var15.getBuffer().pos(par1, par2, 300.0).color(var8, var9, var10, var7).endVertex();
@@ -725,7 +708,7 @@ public final class RenderUtil {
 
 		private final int vMax;
 
-		FaceData(int uMax, int vMax) {
+		FaceData(final int uMax, final int vMax) {
 			this.vMax = vMax;
 
 			data.put(EnumFacing.WEST, new BitSet(uMax * vMax));
@@ -734,15 +717,15 @@ public final class RenderUtil {
 			data.put(EnumFacing.DOWN, new BitSet(uMax * vMax));
 		}
 
-		public void set(EnumFacing facing, int u, int v) {
+		public void set(final EnumFacing facing, final int u, final int v) {
 			data.get(facing).set(getIndex(u, v));
 		}
 
-		public boolean get(EnumFacing facing, int u, int v) {
+		public boolean get(final EnumFacing facing, final int u, final int v) {
 			return data.get(facing).get(getIndex(u, v));
 		}
 
-		private int getIndex(int u, int v) {
+		private int getIndex(final int u, final int v) {
 			return v * vMax + u;
 		}
 	}

@@ -1,19 +1,18 @@
 package minechem;
 
-import minechem.init.ModEvents;
 import minechem.init.ModGlobals;
 import minechem.proxy.CommonProxy;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.event.*;
 
-@Mod(modid = ModGlobals.ID, name = ModGlobals.NAME, version = ModGlobals.VERSION, useMetadata = false, acceptedMinecraftVersions = "[1.12.2]", certificateFingerprint = "@FINGERPRINT@", dependencies = ModGlobals.DEPENDENCIES)
+@Mod(modid = ModGlobals.MODID, name = ModGlobals.NAME, version = ModGlobals.VERSION, useMetadata = false, acceptedMinecraftVersions = "[1.12.2]", certificateFingerprint = "@FINGERPRINT@", dependencies = ModGlobals.DEPENDENCIES)
 public class Minechem {
 
-	@Mod.Instance(value = ModGlobals.ID)
+	@Mod.Instance(value = ModGlobals.MODID)
 	public static Minechem INSTANCE;
 
-	@Mod.Metadata(ModGlobals.ID)
+	@Mod.Metadata(ModGlobals.MODID)
 	public static ModMetadata metadata;
 
 	@SidedProxy(clientSide = "minechem.proxy.ClientProxy", serverSide = "minechem.proxy.CommonProxy")
@@ -21,12 +20,10 @@ public class Minechem {
 
 	static {
 		FluidRegistry.enableUniversalBucket();
-		ModEvents.init();
 	}
 
 	@Mod.EventHandler
 	public void preInit(final FMLPreInitializationEvent event) {
-		//INSTANCE = this;
 		PROXY.preInit(event);
 	}
 

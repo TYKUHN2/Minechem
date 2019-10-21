@@ -19,7 +19,7 @@ public class BlockUraniumOre extends Block implements ICustomRenderer {
 		super(Material.IRON);
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		setUnlocalizedName("uranium_ore");
-		setRegistryName(ModGlobals.ID + ":uranium_ore");
+		setRegistryName(ModGlobals.MODID + ":uranium_ore");
 		setHardness(4F);
 		ForgeRegistries.BLOCKS.register(this);
 		ForgeRegistries.ITEMS.register(new ItemBlock(this).setRegistryName(getRegistryName()));

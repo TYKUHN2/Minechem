@@ -41,7 +41,7 @@ public class BlockLeadedChest extends BlockSimpleContainer {
 		setHardness(2.0F);
 		setResistance(5.0F);
 		setUnlocalizedName("leaded_chest");
-		this.setRegistryName(ModGlobals.ID + ":leaded_chest");
+		this.setRegistryName(ModGlobals.MODID + ":leaded_chest");
 		ForgeRegistries.BLOCKS.register(this);
 		ForgeRegistries.ITEMS.register(new ItemBlock(this).setRegistryName(getRegistryName()));
 		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));

@@ -73,7 +73,7 @@ public class Position {
 		moveRight(-step);
 	}
 
-	public void moveForwards(double step) {
+	public void moveForward(double step) {
 		switch (orientation) {
 		case UP:
 			y = y + step;
@@ -97,8 +97,8 @@ public class Position {
 		}
 	}
 
-	public void moveBackwards(double step) {
-		moveForwards(-step);
+	public void moveBackward(double step) {
+		moveForward(-step);
 	}
 
 	public void moveUp(double step) {

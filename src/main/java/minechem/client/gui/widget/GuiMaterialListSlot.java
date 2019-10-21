@@ -24,7 +24,7 @@ public class GuiMaterialListSlot implements IGuiMaterialListSlot {
 	final int width = 49;
 	final int height = 10;
 
-	public GuiMaterialListSlot(GuiBlueprintProjector gui, int index, int x, int y, Pair<ItemStack, Integer> listItem, List<String> tooltip) {
+	public GuiMaterialListSlot(final GuiBlueprintProjector gui, final int index, final int x, final int y, final Pair<ItemStack, Integer> listItem, final List<String> tooltip) {
 		this.gui = gui;
 		this.index = index;
 		this.x = x;
@@ -35,9 +35,9 @@ public class GuiMaterialListSlot implements IGuiMaterialListSlot {
 	}
 
 	@Override
-	public boolean isMouseOver(int mouseX, int mouseY) {
+	public boolean isMouseOver(final int mouseX, final int mouseY) {
 		if (getGui().getProjector().hasBlueprint()) {
-			int yOffset = getGui().guiTop() + getY() + 50;
+			final int yOffset = getGui().guiTop() + getY() + 50;
 			return mouseX >= getGui().guiLeft() + getX() + 1 && mouseX < getGui().guiLeft() + getX() + width() && mouseY >= yOffset + getIndex() && mouseY < yOffset + height();
 		}
 		return false;
@@ -84,13 +84,12 @@ public class GuiMaterialListSlot implements IGuiMaterialListSlot {
 	}
 
 	@Override
-	public void draw(int x, int y, int mouseX, int mouseY) {
+	public void draw(final int x, final int y, final int mouseX, final int mouseY) {
 		this.x = x;
 		this.y = y;
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(0.6, 0.6, 0.6);
-		int round = y / 10;
-		drawItem(x + 8, (y * 2 + 77) - getIndex(), get().getLeft());
+		drawItem(x + 8, y * 2 + 77 - getIndex(), get().getLeft());
 
 		GlStateManager.popMatrix();
 

@@ -18,7 +18,7 @@ public class TileGhostBlock extends TileMinechemBase {
 
 	private IBlockState bpState;
 
-	public void setRenderedBlockState(IBlockState bpState) {
+	public void setRenderedBlockState(final IBlockState bpState) {
 		this.bpState = bpState;
 	}
 
@@ -28,26 +28,27 @@ public class TileGhostBlock extends TileMinechemBase {
 
 	public ItemStack getBlockAsItemStack() {
 		if (bpState != null) {
-			Block block = getRenderedBlockState().getBlock();
-			int meta = block.getMetaFromState(getRenderedBlockState());
+			final Block block = getRenderedBlockState().getBlock();
+			final int meta = block.getMetaFromState(getRenderedBlockState());
 			return new ItemStack(block, 1, meta);
 		}
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
+	public NBTTagCompound writeToNBT(final NBTTagCompound nbtTagCompound) {
 		super.writeToNBT(nbtTagCompound);
 		nbtTagCompound.setString("blockID", getRenderedBlockState().getBlock().getRegistryName().toString());
 		nbtTagCompound.setInteger("blockMeta", getRenderedBlockState().getBlock().getMetaFromState(getRenderedBlockState()));
 		return nbtTagCompound;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	public void readFromNBT(NBTTagCompound nbtTagCompound) {
+	public void readFromNBT(final NBTTagCompound nbtTagCompound) {
 		super.readFromNBT(nbtTagCompound);
 		if (nbtTagCompound.hasKey("blockID") && nbtTagCompound.hasKey("blockMeta")) {
-			Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbtTagCompound.getString("blockID")));
+			final Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbtTagCompound.getString("blockID")));
 			if (block != null) {
 				setRenderedBlockState(block.getStateFromMeta(nbtTagCompound.getInteger("blockMeta")));
 			}
@@ -73,7 +74,7 @@ public class TileGhostBlock extends TileMinechemBase {
 
 	@Nullable
 	@Override
-	public ItemStack removeStackFromSlot(int i) {
+	public ItemStack removeStackFromSlot(final int i) {
 		return ItemStack.EMPTY;
 	}
 
@@ -88,17 +89,17 @@ public class TileGhostBlock extends TileMinechemBase {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
+	public boolean isItemValidForSlot(final int i, final ItemStack itemstack) {
 		return false;
 	}
 
 	@Override
-	public int getField(int i) {
+	public int getField(final int i) {
 		return 0;
 	}
 
 	@Override
-	public void setField(int i, int i1) {
+	public void setField(final int i, final int i1) {
 
 	}
 
@@ -113,17 +114,17 @@ public class TileGhostBlock extends TileMinechemBase {
 	}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer entityplayer) {
+	public boolean isUsableByPlayer(final EntityPlayer entityplayer) {
 		return false;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer entityplayer) {
+	public void openInventory(final EntityPlayer entityplayer) {
 
 	}
 
 	@Override
-	public void closeInventory(EntityPlayer entityplayer) {
+	public void closeInventory(final EntityPlayer entityplayer) {
 
 	}
 

@@ -8,7 +8,7 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 public class GuiConfiguration extends GuiConfig {
 
 	public GuiConfiguration(GuiScreen guiScreen) {
-		super(guiScreen, ModConfig.getConfigElements(), ModGlobals.ID, false, false, GuiConfiguration.getAbridgedConfigPath(ModConfig.config.toString()));
+		super(guiScreen, ModConfig.getConfigElements(), ModGlobals.MODID, false, false, GuiConfiguration.getAbridgedConfigPath(ModConfig.config.toString()));
 	}
 
 }

@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class ModNetworking {
-	public static SimpleNetworkWrapper INSTANCE = new SimpleNetworkWrapper(ModGlobals.ID);
+	public static SimpleNetworkWrapper INSTANCE = new SimpleNetworkWrapper(ModGlobals.MODID);
 	public static int id = 0;
 
 	public static void init() {

@@ -21,8 +21,8 @@ public class ModBlueprints {
 	public static BlueprintFusion fusion;
 
 	public static void init() {
-		BLUEPRINT_LIST.add(fission = (BlueprintFission) new BlueprintFission().setRegistryName(new ResourceLocation(ModGlobals.ID, "fission")));
-		BLUEPRINT_LIST.add(fusion = (BlueprintFusion) new BlueprintFusion().setRegistryName(new ResourceLocation(ModGlobals.ID, "fusion")));
+		BLUEPRINT_LIST.add(fission = (BlueprintFission) new BlueprintFission().setRegistryName(new ResourceLocation(ModGlobals.MODID, "fission")));
+		BLUEPRINT_LIST.add(fusion = (BlueprintFusion) new BlueprintFusion().setRegistryName(new ResourceLocation(ModGlobals.MODID, "fusion")));
 	}
 
 	public static List<IMinechemBlueprint> getList() {

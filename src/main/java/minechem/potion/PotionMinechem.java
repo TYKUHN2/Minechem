@@ -31,7 +31,7 @@ public class PotionMinechem extends Potion {
 	}
 
 	public static ResourceLocation getRegName(String name) {
-		return new ResourceLocation(ModGlobals.ID, "effect." + name);
+		return new ResourceLocation(ModGlobals.MODID, "effect." + name);
 	}
 
 }

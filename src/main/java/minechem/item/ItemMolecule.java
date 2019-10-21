@@ -61,7 +61,7 @@ public class ItemMolecule extends ItemBase {
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ELEMENTS);
 		setHasSubtypes(true);
 		setUnlocalizedName("molecule");
-		setRegistryName(ModGlobals.ID + ":molecule");
+		setRegistryName(ModGlobals.MODID + ":molecule");
 		ForgeRegistries.ITEMS.register(this);
 	}
 

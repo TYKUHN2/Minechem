@@ -16,27 +16,27 @@ public class TileMinechemEnergyBase extends TileMinechemBase {
 	 * Determines amount of energy we are allowed to input into the machine with a given update.
 	 */
 	private static int maxEnergyReceived = ModConfig.energyPacketSize;
-	private int maxEnergy;
+	private final int maxEnergy;
 	public int energyStored;
 
-	public TileMinechemEnergyBase(int maxEnergy) {
+	public TileMinechemEnergyBase(final int maxEnergy) {
 		super();
 		this.maxEnergy = maxEnergy;
 		energyStored = 0;
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-		return capability == CapabilityEnergy.ENERGY;
+	public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
+		return capability == CapabilityEnergy.ENERGY ? true : super.hasCapability(capability, facing);
 	}
 
 	@Override
 	@Nullable
-	public <T> T getCapability(Capability<T> capability, @Nullable net.minecraft.util.EnumFacing facing) {
-		return hasCapability(capability, facing) ? CapabilityEnergy.ENERGY.cast(new EnergySettable(this)) : null;
+	public <T> T getCapability(final Capability<T> capability, @Nullable final net.minecraft.util.EnumFacing facing) {
+		return capability == CapabilityEnergy.ENERGY ? CapabilityEnergy.ENERGY.cast(new EnergySettable(this)) : super.getCapability(capability, facing);
 	}
 
-	public void syncEnergyValue(int syncAt) {
+	public void syncEnergyValue(final int syncAt) {
 		if (getEnergyStored() > syncAt) {
 			useEnergy(getEnergyStored() - syncAt);
 		}
@@ -49,7 +49,7 @@ public class TileMinechemEnergyBase extends TileMinechemBase {
 		return getCapability(CapabilityEnergy.ENERGY, null);
 	}
 
-	public int receiveEnergy(int maxReceive, boolean simulate) {
+	public int receiveEnergy(final int maxReceive, final boolean simulate) {
 		if (getForgeEnergyCap() != null) {
 			return getForgeEnergyCap().receiveEnergy(maxReceive, simulate);
 		}
@@ -70,13 +70,13 @@ public class TileMinechemEnergyBase extends TileMinechemBase {
 		return 0;
 	}
 
-	public void setEnergy(int amount) {
+	public void setEnergy(final int amount) {
 		if (getForgeEnergyCap() != null && getForgeEnergyCap() instanceof EnergySettable) {
 			((EnergySettable) getForgeEnergyCap()).setEnergy(amount);
 		}
 	}
 
-	public boolean useEnergy(int energy) {
+	public boolean useEnergy(final int energy) {
 		if (!ModConfig.powerUseEnabled) {
 			return true;
 		}
@@ -92,19 +92,19 @@ public class TileMinechemEnergyBase extends TileMinechemBase {
 		return true;
 	}
 
-	public int getPowerRemainingScaled(double scale) {
+	public int getPowerRemainingScaled(final double scale) {
 		return (int) (getEnergyStored() * (scale / getMaxEnergyStored()));
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public NBTTagCompound writeToNBT(final NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 		nbt.setInteger("energy", getEnergyStored());
 		return nbt;
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
+	public void readFromNBT(final NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 		energyStored = nbt.getInteger("energy");
 	}
@@ -117,17 +117,17 @@ public class TileMinechemEnergyBase extends TileMinechemBase {
 
 		private final TileMinechemEnergyBase tile;
 
-		public EnergySettable(TileMinechemEnergyBase tile) {
+		public EnergySettable(final TileMinechemEnergyBase tile) {
 			this.tile = tile;
 		}
 
 		@Override
-		public int receiveEnergy(int maxReceive, boolean simulate) {
+		public int receiveEnergy(final int maxReceive, final boolean simulate) {
 			if (!canReceive()) {
 				return 0;
 			}
 
-			int energyReceived = Math.min(tile.maxEnergy - tile.energyStored, Math.min(maxEnergyReceived, maxReceive));
+			final int energyReceived = Math.min(tile.maxEnergy - tile.energyStored, Math.min(maxEnergyReceived, maxReceive));
 			if (!simulate) {
 				tile.energyStored += energyReceived;
 			}
@@ -135,7 +135,7 @@ public class TileMinechemEnergyBase extends TileMinechemBase {
 		}
 
 		@Override
-		public int extractEnergy(int maxExtract, boolean simulate) {
+		public int extractEnergy(final int maxExtract, final boolean simulate) {
 			return 0;
 		}
 
@@ -159,8 +159,9 @@ public class TileMinechemEnergyBase extends TileMinechemBase {
 			return true;
 		}
 
-		public void setEnergy(int amount) {
+		public void setEnergy(final int amount) {
 			tile.energyStored = Math.abs(amount);
+			tile.markDirty();
 		}
 
 	}
@@ -176,30 +177,30 @@ public class TileMinechemEnergyBase extends TileMinechemBase {
 	}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
+	public boolean isUsableByPlayer(final EntityPlayer player) {
 		return false;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {
+	public void openInventory(final EntityPlayer player) {
 	}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {
+	public void closeInventory(final EntityPlayer player) {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
+	public boolean isItemValidForSlot(final int index, final ItemStack stack) {
 		return false;
 	}
 
 	@Override
-	public int getField(int id) {
+	public int getField(final int id) {
 		return 0;
 	}
 
 	@Override
-	public void setField(int id, int value) {
+	public void setField(final int id, final int value) {
 	}
 
 	@Override

@@ -49,7 +49,7 @@ public class ItemPolytool extends ItemPickaxe implements ICustomRenderer {
 		instance = this;
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		setUnlocalizedName("polytool");
-		setRegistryName(ModGlobals.ID + ":polytool");
+		setRegistryName(ModGlobals.MODID + ":polytool");
 		ForgeRegistries.ITEMS.register(this);
 	}
 

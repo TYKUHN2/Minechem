@@ -7,27 +7,27 @@ import net.minecraft.item.ItemStack;
 
 public class SlotSynthesisOutput extends Slot {
 
-	private final TileSynthesis synthesis;
+	//private final TileSynthesis synthesis;
 	private boolean locked = false;
-	private final EntityPlayer player;
+	//private final EntityPlayer player;
 
-	public SlotSynthesisOutput(TileSynthesis inv, EntityPlayer player, int id, int x, int y) {
+	public SlotSynthesisOutput(final TileSynthesis inv, final int id, final int x, final int y) {
 		super(inv, id, x, y);
-		synthesis = inv;
-		this.player = player;
+		//synthesis = inv;
+		//this.player = player;
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack par1ItemStack) {
+	public boolean isItemValid(final ItemStack par1ItemStack) {
 		return false;
 	}
 
 	@Override
-	public boolean canTakeStack(EntityPlayer par1EntityPlayer) {
+	public boolean canTakeStack(final EntityPlayer par1EntityPlayer) {
 		return !locked;//synthesis.canTakeOutputStack(false);
 	}
 
-	public SlotSynthesisOutput setLocked(boolean doLock) {
+	public SlotSynthesisOutput setLocked(final boolean doLock) {
 		locked = doLock;
 		return this;
 	}

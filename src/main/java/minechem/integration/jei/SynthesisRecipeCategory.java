@@ -3,16 +3,11 @@ package minechem.integration.jei;
 import java.util.List;
 
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.ICraftingGridHelper;
-import mezz.jei.api.gui.IDrawable;
-import mezz.jei.api.gui.IGuiItemStackGroup;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.*;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import mezz.jei.api.recipe.wrapper.ICraftingRecipeWrapper;
-import mezz.jei.api.recipe.wrapper.ICustomCraftingRecipeWrapper;
-import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
+import mezz.jei.api.recipe.wrapper.*;
 import mezz.jei.config.Constants;
 import mezz.jei.startup.ForgeModIdHelper;
 import mezz.jei.util.Translator;
@@ -42,9 +37,9 @@ public class SynthesisRecipeCategory implements IRecipeCategory<IRecipeWrapper> 
 	private final String localizedName;
 	private final ICraftingGridHelper craftingGridHelper;
 
-	public SynthesisRecipeCategory(IGuiHelper guiHelper) {
+	public SynthesisRecipeCategory(final IGuiHelper guiHelper) {
 		//Texture
-		ResourceLocation location = Constants.RECIPE_GUI_VANILLA;
+		final ResourceLocation location = Constants.RECIPE_GUI_VANILLA;
 		background = guiHelper.createDrawable(location, 0, 60, width, height);
 		icon = guiHelper.createDrawableIngredient(new ItemStack(ModBlocks.synthesis));
 		localizedName = Translator.translateToLocal("gui.title.synthesis");
@@ -76,30 +71,31 @@ public class SynthesisRecipeCategory implements IRecipeCategory<IRecipeWrapper> 
 		return icon;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
+	public void setRecipe(final IRecipeLayout recipeLayout, final IRecipeWrapper recipeWrapper, final IIngredients ingredients) {
+		final IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 
 		guiItemStacks.init(craftOutputSlot, false, 94, 18);
 
 		for (int y = 0; y < 3; ++y) {
 			for (int x = 0; x < 3; ++x) {
-				int index = craftInputSlot1 + x + (y * 3);
+				final int index = craftInputSlot1 + x + y * 3;
 				guiItemStacks.init(index, true, x * 18, y * 18);
 			}
 		}
 
 		if (recipeWrapper instanceof ICustomCraftingRecipeWrapper) {
-			ICustomCraftingRecipeWrapper customWrapper = (ICustomCraftingRecipeWrapper) recipeWrapper;
+			final ICustomCraftingRecipeWrapper customWrapper = (ICustomCraftingRecipeWrapper) recipeWrapper;
 			customWrapper.setRecipe(recipeLayout, ingredients);
 			return;
 		}
 
-		List<List<ItemStack>> inputs = ingredients.getInputs(ItemStack.class);
-		List<List<ItemStack>> outputs = ingredients.getOutputs(ItemStack.class);
+		final List<List<ItemStack>> inputs = ingredients.getInputs(ItemStack.class);
+		final List<List<ItemStack>> outputs = ingredients.getOutputs(ItemStack.class);
 
 		if (recipeWrapper instanceof IShapedCraftingRecipeWrapper) {
-			IShapedCraftingRecipeWrapper wrapper = (IShapedCraftingRecipeWrapper) recipeWrapper;
+			final IShapedCraftingRecipeWrapper wrapper = (IShapedCraftingRecipeWrapper) recipeWrapper;
 			craftingGridHelper.setInputs(guiItemStacks, inputs, wrapper.getWidth(), wrapper.getHeight());
 		}
 		else {
@@ -109,28 +105,28 @@ public class SynthesisRecipeCategory implements IRecipeCategory<IRecipeWrapper> 
 		guiItemStacks.set(craftOutputSlot, outputs.get(0));
 
 		if (recipeWrapper instanceof ICraftingRecipeWrapper) {
-			ICraftingRecipeWrapper craftingRecipeWrapper = (ICraftingRecipeWrapper) recipeWrapper;
-			ResourceLocation registryName = craftingRecipeWrapper.getRegistryName();
+			final ICraftingRecipeWrapper craftingRecipeWrapper = (ICraftingRecipeWrapper) recipeWrapper;
+			final ResourceLocation registryName = craftingRecipeWrapper.getRegistryName();
 			if (registryName != null) {
 				guiItemStacks.addTooltipCallback((slotIndex, input, ingredient, tooltip) -> {
 					if (slotIndex == craftOutputSlot) {
-						String recipeModId = registryName.getResourceDomain();
+						final String recipeModId = registryName.getResourceDomain();
 
 						boolean modIdDifferent = false;
-						ResourceLocation itemRegistryName = ingredient.getItem().getRegistryName();
+						final ResourceLocation itemRegistryName = ingredient.getItem().getRegistryName();
 						if (itemRegistryName != null) {
-							String itemModId = itemRegistryName.getResourceDomain();
+							final String itemModId = itemRegistryName.getResourceDomain();
 							modIdDifferent = !recipeModId.equals(itemModId);
 						}
 
 						if (modIdDifferent) {
-							String modName = ForgeModIdHelper.getInstance().getFormattedModNameForModId(recipeModId);
+							final String modName = ForgeModIdHelper.getInstance().getFormattedModNameForModId(recipeModId);
 							if (modName != null) {
 								tooltip.add(TextFormatting.GRAY + Translator.translateToLocalFormatted("jei.tooltip.recipe.by", modName));
 							}
 						}
 
-						boolean showAdvanced = Minecraft.getMinecraft().gameSettings.advancedItemTooltips || GuiScreen.isShiftKeyDown();
+						final boolean showAdvanced = Minecraft.getMinecraft().gameSettings.advancedItemTooltips || GuiScreen.isShiftKeyDown();
 						if (showAdvanced) {
 							tooltip.add(TextFormatting.DARK_GRAY + Translator.translateToLocalFormatted("jei.tooltip.recipe.id", registryName.toString()));
 						}

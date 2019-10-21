@@ -17,11 +17,7 @@ import minechem.item.blueprint.MinechemBlueprint;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -30,13 +26,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldType;
+import net.minecraft.world.*;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -46,25 +38,26 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author p455w0rd
  *
  */
+@SuppressWarnings("deprecation")
 public class BlueprintUtil {
 
-	public static IMinechemBlueprint getBlueprint(ItemStack stack) {
+	public static IMinechemBlueprint getBlueprint(final ItemStack stack) {
 		if (stack.hasTagCompound()) {
-			NBTTagCompound nbt = stack.getTagCompound();
+			final NBTTagCompound nbt = stack.getTagCompound();
 			if (nbt.hasKey(MinechemBlueprint.BLUEPRINT_NBT_KEY, Constants.NBT.TAG_STRING)) {
-				ResourceLocation regName = new ResourceLocation(nbt.getString(MinechemBlueprint.BLUEPRINT_NBT_KEY));
+				final ResourceLocation regName = new ResourceLocation(nbt.getString(MinechemBlueprint.BLUEPRINT_NBT_KEY));
 				return ModRegistries.MINECHEM_BLUEPRINTS.getValue(regName);
 			}
 		}
 		return null;
 	}
 
-	public static ItemStack createStack(IMinechemBlueprint blueprint) {
-		ItemStack blueprintStack = new ItemStack(ModItems.blueprint);
+	public static ItemStack createStack(final IMinechemBlueprint blueprint) {
+		final ItemStack blueprintStack = new ItemStack(ModItems.blueprint);
 		if (!blueprintStack.hasTagCompound()) {
 			blueprintStack.setTagCompound(new NBTTagCompound());
 		}
-		NBTTagCompound nbt = blueprintStack.getTagCompound();
+		final NBTTagCompound nbt = blueprintStack.getTagCompound();
 		nbt.setString(MinechemBlueprint.BLUEPRINT_NBT_KEY, "");
 		if (blueprint == null) {
 			nbt.removeTag(MinechemBlueprint.BLUEPRINT_NBT_KEY);
@@ -75,11 +68,11 @@ public class BlueprintUtil {
 		return blueprintStack;
 	}
 
-	public static boolean isBlueprintBlank(ItemStack blueprint) {
+	public static boolean isBlueprintBlank(final ItemStack blueprint) {
 		if (blueprint.hasTagCompound()) {
-			NBTTagCompound nbt = blueprint.getTagCompound();
+			final NBTTagCompound nbt = blueprint.getTagCompound();
 			if (nbt.hasKey(MinechemBlueprint.BLUEPRINT_NBT_KEY, Constants.NBT.TAG_STRING)) {
-				String regName = nbt.getString(MinechemBlueprint.BLUEPRINT_NBT_KEY);
+				final String regName = nbt.getString(MinechemBlueprint.BLUEPRINT_NBT_KEY);
 				return regName.isEmpty();
 			}
 		}
@@ -91,14 +84,14 @@ public class BlueprintUtil {
 	}
 
 	public static NonNullList<ItemStack> getAllBlueprintsAsStacks() {
-		NonNullList<ItemStack> stackList = NonNullList.<ItemStack>create();
-		for (IMinechemBlueprint blueprint : getAllBlueprints()) {
+		final NonNullList<ItemStack> stackList = NonNullList.<ItemStack>create();
+		for (final IMinechemBlueprint blueprint : getAllBlueprints()) {
 			stackList.add(createStack(blueprint));
 		}
 		return stackList;
 	}
 
-	public static Pair<IMinechemBlueprint, EnumFacing> getBlueprintFromStructure(World world, BlockPos pos) {
+	public static Pair<IMinechemBlueprint, EnumFacing> getBlueprintFromStructure(final World world, final BlockPos pos) {
 		/*
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null && te instanceof TileReactorCore) {
@@ -131,15 +124,15 @@ public class BlueprintUtil {
 			}
 		}
 		*/
-		List<IMinechemBlueprint> bpList = ModRegistries.MINECHEM_BLUEPRINTS.getValues();
-		for (IMinechemBlueprint bp : bpList) {
-			for (EnumFacing facing : EnumFacing.HORIZONTALS) {
-				LocalPosition position = new LocalPosition(pos.getX(), pos.getY(), pos.getZ(), facing);
+		final List<IMinechemBlueprint> bpList = ModRegistries.MINECHEM_BLUEPRINTS.getValues();
+		for (final IMinechemBlueprint bp : bpList) {
+			for (final EnumFacing facing : EnumFacing.HORIZONTALS) {
+				final LocalPosition position = new LocalPosition(pos.getX(), pos.getY(), pos.getZ(), facing);
 
-				position.moveForwards(Math.floor(bp.xSize() / 2));
+				position.moveForward(Math.floor(bp.xSize() / 2));
 				position.moveLeft(Math.floor(bp.zSize() / 2));
 				position.moveDown(Math.floor(bp.ySize() / 2));
-				LocalPosition.Pos3 worldPos = position.getLocalPos(pos);
+				//LocalPosition.Pos3 worldPos = position.getLocalPos(pos);
 				if (isStructureComplete(bp, facing, world, pos)) {
 					return Pair.of(bp, facing);
 				}
@@ -148,35 +141,35 @@ public class BlueprintUtil {
 		return null;
 	}
 
-	public static boolean isStructureComplete(World world, BlockPos pos) {
+	public static boolean isStructureComplete(final World world, final BlockPos pos) {
 		return getBlueprintFromStructure(world, pos) != null;
 	}
 
-	public static boolean isStructureComplete(IMinechemBlueprint blueprint, EnumFacing structureFacing, World world, BlockPos pos) {
+	public static boolean isStructureComplete(final IMinechemBlueprint blueprint, final EnumFacing structureFacing, final World world, final BlockPos pos) {
 		if (blueprint == null || structureFacing == null || world == null || pos == null) {
 			return false;
 		}
-		LocalPosition position = new LocalPosition(pos.getX(), pos.getY(), pos.getZ(), structureFacing);
+		final LocalPosition position = new LocalPosition(pos.getX(), pos.getY(), pos.getZ(), structureFacing);
 		//LocalPosition worldPos = new LocalPosition(blueprint.getManagerPosX(), blueprint.getManagerPosY(), blueprint.getManagerPosZ(), structureFacing);
-		position.moveForwards(Math.floor(blueprint.zSize() / 2));
+		position.moveForward(Math.floor(blueprint.zSize() / 2));
 		position.moveRight(Math.floor(blueprint.xSize() / 2));
 		position.moveDown(Math.floor(blueprint.ySize() / 2));
-		IBlockState[][][] resultStructure = blueprint.getStructure();
+		final IBlockState[][][] resultStructure = blueprint.getStructure();
 		for (int x = 0; x < blueprint.xSize(); ++x) {
 			for (int y = 0; y < blueprint.ySize(); ++y) {
 				for (int z = 0; z < blueprint.zSize(); ++z) {
 					if (x == blueprint.getManagerPosX() && y == blueprint.getManagerPosY() && z == blueprint.getManagerPosZ()) {
 						continue;
 					}
-					LocalPosition.Pos3 worldPos = position.getLocalPos(new BlockPos(x, y, z));
-					BlockPos wPos = new BlockPos(pos.getX() - blueprint.getManagerPosX() + x, pos.getY() - blueprint.getManagerPosY() + y, pos.getZ() - blueprint.getManagerPosZ() + z);
-					IBlockState bpState = resultStructure[y][x][z];
+					final LocalPosition.Pos3 worldPos = position.getLocalPos(new BlockPos(x, y, z));
+					final BlockPos wPos = new BlockPos(pos.getX() - blueprint.getManagerPosX() + x, pos.getY() - blueprint.getManagerPosY() + y, pos.getZ() - blueprint.getManagerPosZ() + z);
+					final IBlockState bpState = resultStructure[y][x][z];
 					IBlockState worldState = world.getBlockState(wPos);
 
-					Block bpBlock = bpState.getBlock();
+					final Block bpBlock = bpState.getBlock();
 					Block worldBlock = worldState.getBlock();
 
-					int bpMeta = bpBlock.getMetaFromState(bpState);
+					final int bpMeta = bpBlock.getMetaFromState(bpState);
 					int worldMeta = worldBlock.getMetaFromState(worldState);
 					if (bpBlock != worldBlock || bpMeta != worldMeta) {
 						worldState = world.getBlockState(new BlockPos(worldPos.x, worldPos.y, worldPos.z));
@@ -197,20 +190,20 @@ public class BlueprintUtil {
 	public static int currentLayer = 0;
 
 	@SideOnly(Side.CLIENT)
-	public static void renderStructureOnScreen(IMinechemBlueprint blueprint, int x, int y, int mx, int my, float rotX, float rotY, int scale) {
+	public static void renderStructureOnScreen(final IMinechemBlueprint blueprint, final int x, final int y, final int mx, final int my, final float rotX, final float rotY, final int scale) {
 		boolean openBuffer = false;
-		int stackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
+		final int stackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
 
 		try {
 
-			int structureLength = blueprint.zSize();
-			int structureWidth = blueprint.xSize();
-			int structureHeight = blueprint.ySize();
-			double squirt = Math.sqrt(structureHeight * structureHeight + structureWidth * structureWidth + structureLength * structureLength);
-			float transX = x + 40 + blueprint.getXOffset();
-			float transY = y + 0 + blueprint.getYOffset();
+			final int structureLength = blueprint.zSize();
+			final int structureWidth = blueprint.xSize();
+			final int structureHeight = blueprint.ySize();
+			//double squirt = Math.sqrt(structureHeight * structureHeight + structureWidth * structureWidth + structureLength * structureLength);
+			final float transX = x + 40 + blueprint.getXOffset();
+			final float transY = y + 0 + blueprint.getYOffset();
 
-			int yOffTotal = (int) (transY - y + scale * squirt / 2);
+			//int yOffTotal = (int) (transY - y + scale * squirt / 2);
 
 			GlStateManager.enableRescaleNormal();
 			GlStateManager.pushMatrix();
@@ -218,12 +211,12 @@ public class BlueprintUtil {
 			//			GL11.glEnable(GL11.GL_DEPTH_TEST);
 			//			GL11.glDepthFunc(GL11.GL_ALWAYS);
 			//			GL11.glDisable(GL11.GL_CULL_FACE);
-			int i = 0;
-			ItemStack highlighted = ItemStack.EMPTY;
+			//int i = 0;
+			//ItemStack highlighted = ItemStack.EMPTY;
 
 			final BlockRendererDispatcher blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
 
-			float f = (float) Math.sqrt(structureHeight * structureHeight + structureWidth * structureWidth + structureLength * structureLength);
+			//float f = (float) Math.sqrt(structureHeight * structureHeight + structureWidth * structureWidth + structureLength * structureLength);
 
 			GlStateManager.translate(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
 			GlStateManager.scale(scale, -scale, 1);
@@ -242,20 +235,20 @@ public class BlueprintUtil {
 			}
 
 			Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-			int idx = 0;
+			//int idx = 0;
 
 			for (int h = 0; h < structureHeight; h++) {
 				for (int l = 0; l < structureLength; l++) {
 					for (int w = 0; w < structureWidth; w++) {
-						BlockPos pos = new BlockPos(l, h, w);
+						final BlockPos pos = new BlockPos(l, h, w);
 						if (blockAccess != null && !blockAccess.isAirBlock(pos)) {
 							GlStateManager.translate(l, h, w);
 							//boolean b = multiblock.overwriteBlockRender(renderInfo.data[h][l][w], idx++);
 							GlStateManager.translate(-l, -h, -w);
 							//if (!b) {
-							IBlockState state = blockAccess.getBlockState(pos);
-							Tessellator tessellator = Tessellator.getInstance();
-							BufferBuilder buffer = tessellator.getBuffer();
+							final IBlockState state = blockAccess.getBlockState(pos);
+							final Tessellator tessellator = Tessellator.getInstance();
+							final BufferBuilder buffer = tessellator.getBuffer();
 							buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 							openBuffer = true;
 							blockRender.renderBlock(state, pos, blockAccess, buffer);
@@ -276,14 +269,14 @@ public class BlueprintUtil {
 			RenderHelper.disableStandardItemLighting();
 
 		}
-		catch (Exception e) {
+		catch (final Exception e) {
 			e.printStackTrace();
 		}
 		if (openBuffer) {
 			try {
 				Tessellator.getInstance().draw();
 			}
-			catch (Exception e) {
+			catch (final Exception e) {
 			}
 		}
 		int newStackDepth = GL11.glGetInteger(GL11.GL_MODELVIEW_STACK_DEPTH);
@@ -298,11 +291,11 @@ public class BlueprintUtil {
 		public final MultiblockRenderInfo data;
 		private final IBlockState[][][] structure;
 
-		public MultiblockBlockAccess(MultiblockRenderInfo data) {
+		public MultiblockBlockAccess(final MultiblockRenderInfo data) {
 			this.data = data;
-			final int[] index = {
-					0
-			};//Nasty workaround, but IDEA suggested it =P
+			//final int[] index = {
+			//		0
+			//};//Nasty workaround, but IDEA suggested it =P
 
 			structure = Arrays.stream(data.multiblock.getStructure()).map(layer -> {
 				return Arrays.stream(layer).map(row -> {
@@ -316,26 +309,26 @@ public class BlueprintUtil {
 
 		@Nullable
 		@Override
-		public TileEntity getTileEntity(BlockPos pos) {
+		public TileEntity getTileEntity(final BlockPos pos) {
 			return null;
 		}
 
 		@Override
-		public int getCombinedLight(BlockPos pos, int lightValue) {
+		public int getCombinedLight(final BlockPos pos, final int lightValue) {
 			// full brightness always
 			return 15 << 20 | 15 << 4;
 		}
 
 		@Override
-		public IBlockState getBlockState(BlockPos pos) {
-			int x = pos.getX();
-			int y = pos.getY();
-			int z = pos.getZ();
+		public IBlockState getBlockState(final BlockPos pos) {
+			final int x = pos.getX();
+			final int y = pos.getY();
+			final int z = pos.getZ();
 
 			if (y >= 0 && y < structure.length) {
 				if (x >= 0 && x < structure[y].length) {
 					if (z >= 0 && z < structure[y][x].length) {
-						int index = y * (data.structureLength * data.structureWidth) + x * data.structureWidth + z;
+						final int index = y * data.structureLength * data.structureWidth + x * data.structureWidth + z;
 						if (index <= data.getLimiter()) {
 							return structure[y][x][z];
 						}
@@ -346,13 +339,13 @@ public class BlueprintUtil {
 		}
 
 		@Override
-		public boolean isAirBlock(BlockPos pos) {
+		public boolean isAirBlock(final BlockPos pos) {
 			return getBlockState(pos).getBlock() == Blocks.AIR;
 		}
 
 		@Override
-		public Biome getBiome(BlockPos pos) {
-			World world = Minecraft.getMinecraft().world;
+		public Biome getBiome(final BlockPos pos) {
+			final World world = Minecraft.getMinecraft().world;
 			if (world != null) {
 				return world.getBiome(pos);
 			}
@@ -362,14 +355,14 @@ public class BlueprintUtil {
 		}
 
 		@Override
-		public int getStrongPower(BlockPos pos, EnumFacing direction) {
+		public int getStrongPower(final BlockPos pos, final EnumFacing direction) {
 			return 0;
 		}
 
 		@Override
 		public WorldType getWorldType() {
 
-			World world = Minecraft.getMinecraft().world;
+			final World world = Minecraft.getMinecraft().world;
 			if (world != null) {
 				return world.getWorldType();
 			}
@@ -379,7 +372,7 @@ public class BlueprintUtil {
 		}
 
 		@Override
-		public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean _default) {
+		public boolean isSideSolid(final BlockPos pos, final EnumFacing side, final boolean _default) {
 			return false;
 		}
 	}
@@ -397,15 +390,15 @@ public class BlueprintUtil {
 		public int showLayer = -1;
 
 		private int blockIndex = -1;
-		private int maxBlockIndex;
+		private final int maxBlockIndex;
 
-		public MultiblockRenderInfo(IMinechemBlueprint multiblock) {
+		public MultiblockRenderInfo(final IMinechemBlueprint multiblock) {
 			this.multiblock = multiblock;
 			init(multiblock.getStructure());
 			maxBlockIndex = blockIndex = structureHeight * structureLength * structureWidth;
 		}
 
-		public void init(IBlockState[][][] structure) {
+		public void init(final IBlockState[][][] structure) {
 			data = structure;
 			structureHeight = structure.length;
 			structureWidth = 0;
@@ -422,7 +415,7 @@ public class BlueprintUtil {
 					if (structure[h][l].length > structureWidth) {
 						structureWidth = structure[h][l].length;
 					}
-					for (IBlockState ss : structure[h][l]) {
+					for (final IBlockState ss : structure[h][l]) {
 						if (ss != null) {
 							perLvl++;
 						}
@@ -433,13 +426,13 @@ public class BlueprintUtil {
 			}
 		}
 
-		public void setShowLayer(int layer) {
+		public void setShowLayer(final int layer) {
 			showLayer = layer;
 			if (layer < 0) {
 				reset();
 			}
 			else {
-				blockIndex = (layer + 1) * (structureLength * structureWidth) - 1;
+				blockIndex = (layer + 1) * structureLength * structureWidth - 1;
 			}
 		}
 
@@ -448,7 +441,7 @@ public class BlueprintUtil {
 		}
 
 		public void step() {
-			int start = blockIndex;
+			final int start = blockIndex;
 			do {
 				if (++blockIndex >= maxBlockIndex) {
 					blockIndex = 0;
@@ -457,13 +450,13 @@ public class BlueprintUtil {
 			while (isEmpty(blockIndex) && blockIndex != start);
 		}
 
-		private boolean isEmpty(int index) {
-			int y = index / (structureLength * structureWidth);
-			int r = index % (structureLength * structureWidth);
-			int x = r / structureWidth;
-			int z = r % structureWidth;
+		private boolean isEmpty(final int index) {
+			final int y = index / (structureLength * structureWidth);
+			final int r = index % (structureLength * structureWidth);
+			final int x = r / structureWidth;
+			final int z = r % structureWidth;
 
-			IBlockState stack = data[y][x][z];
+			final IBlockState stack = data[y][x][z];
 			return stack == null;
 		}
 
@@ -472,15 +465,15 @@ public class BlueprintUtil {
 		}
 	}
 
-	public final ItemStack[][][] convertToStacks(IMinechemBlueprint blueprint) {
-		IBlockState[][][] schematicArray = blueprint.getStructure();
-		ItemStack[][][] stackArray = new ItemStack[][][] {};
+	public final ItemStack[][][] convertToStacks(final IMinechemBlueprint blueprint) {
+		final IBlockState[][][] schematicArray = blueprint.getStructure();
+		final ItemStack[][][] stackArray = new ItemStack[][][] {};
 		for (int xIndex = 0; xIndex < schematicArray.length; xIndex++) {
 			for (int yIndex = 0; yIndex < schematicArray[xIndex].length; yIndex++) {
 				for (int zIndex = 0; zIndex < schematicArray[xIndex][yIndex].length; zIndex++) {
 					if (stackArray[xIndex][yIndex][zIndex] == null) {
-						IBlockState currentState = schematicArray[xIndex][yIndex][zIndex];
-						int meta = currentState.getBlock().getMetaFromState(currentState);
+						final IBlockState currentState = schematicArray[xIndex][yIndex][zIndex];
+						final int meta = currentState.getBlock().getMetaFromState(currentState);
 						stackArray[xIndex][yIndex][zIndex] = new ItemStack(currentState.getBlock(), 1, meta);
 					}
 				}
@@ -490,39 +483,39 @@ public class BlueprintUtil {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static void renderBlueprintInWorld(TileBlueprintProjector te) {
+	public static void renderBlueprintInWorld(final TileBlueprintProjector te) {
 		if (te.getWorld() != null && te.hasBlueprint()) {
 			// create the fake world
-			WorldProxy proxy = new WorldProxy(te.getWorld(), 15);
-			BlockPos tilePos = te.getPos();
-			int xCoord = tilePos.getX();
-			int yCoord = tilePos.getY();
-			int zCoord = tilePos.getZ();
+			final WorldProxy proxy = new WorldProxy(te.getWorld(), 15);
+			final BlockPos tilePos = te.getPos();
+			final int xCoord = tilePos.getX();
+			final int yCoord = tilePos.getY();
+			final int zCoord = tilePos.getZ();
 
 			// Get the direction the projector is pointing
-			EnumFacing dir = EnumFacing.HORIZONTALS[te.getBlockMetadata() - 2];
-			IBlockState[][][] schematicArray = te.getBlueprint().getStructure();
+			final EnumFacing dir = EnumFacing.HORIZONTALS[te.getBlockMetadata() - 2];
+			final IBlockState[][][] schematicArray = te.getBlueprint().getStructure();
 			for (int xIndex = 0; xIndex < schematicArray.length; xIndex++) {
 				for (int yIndex = 0; yIndex < schematicArray[xIndex].length; yIndex++) {
 					for (int zIndex = 0; zIndex < schematicArray[xIndex][yIndex].length; zIndex++) {
 
 						int xRender;
-						int yRender = yCoord + yIndex;
+						final int yRender = yCoord + yIndex;
 						int zRender;
 
 						if (dir.getFrontOffsetX() > 0) {
-							xRender = xCoord + (xIndex * -1) + dir.getFrontOffsetX() + schematicArray.length;
+							xRender = xCoord + xIndex * -1 + dir.getFrontOffsetX() + schematicArray.length;
 							zRender = zCoord + zIndex - schematicArray[xIndex][yIndex].length / 2;
 
 						}
 						else if (dir.getFrontOffsetX() < 0) {
 							xRender = xCoord + xIndex + dir.getFrontOffsetX() - schematicArray.length;
-							zRender = zCoord + (zIndex * -1) + schematicArray[xIndex][yIndex].length / 2;
+							zRender = zCoord + zIndex * -1 + schematicArray[xIndex][yIndex].length / 2;
 
 						}
 						else if (dir.getFrontOffsetZ() > 0) {
-							xRender = xCoord + (zIndex * -1) + schematicArray[xIndex][yIndex].length / 2;
-							zRender = zCoord + (xIndex * -1) + dir.getFrontOffsetZ() + schematicArray.length;
+							xRender = xCoord + zIndex * -1 + schematicArray[xIndex][yIndex].length / 2;
+							zRender = zCoord + xIndex * -1 + dir.getFrontOffsetZ() + schematicArray.length;
 
 						}
 						else // if (dir.offsetZ < 0)
@@ -532,14 +525,14 @@ public class BlueprintUtil {
 						}
 
 						proxy.setCoordinates(xRender, yRender, zRender);
-						IBlockState currentState = schematicArray[xIndex][yIndex][zIndex];
+						final IBlockState currentState = schematicArray[xIndex][yIndex][zIndex];
 						proxy.setBlockMetadata(currentState.getBlock().getMetaFromState(currentState));
 
 						final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
-						BlockPos blockPos = te.getPos();
-						IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(currentState);
-						Tessellator tessellator = Tessellator.getInstance();
-						BufferBuilder worldRenderer = tessellator.getBuffer();
+						final BlockPos blockPos = te.getPos();
+						final IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(currentState);
+						final Tessellator tessellator = Tessellator.getInstance();
+						final BufferBuilder worldRenderer = tessellator.getBuffer();
 						Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 						GlStateManager.pushMatrix();
 						GlStateManager.translate(xCoord + .5, yCoord + .5, zCoord + .5);
@@ -579,49 +572,49 @@ public class BlueprintUtil {
 		int brightness;
 		int x, y, z;
 
-		public WorldProxy(IBlockAccess world, int brightness) {
+		public WorldProxy(final IBlockAccess world, final int brightness) {
 			this.world = world;
 			setBlockMetadata(0);
 			this.brightness = brightness;
 		}
 
-		public void setCoordinates(int x, int y, int z) {
+		public void setCoordinates(final int x, final int y, final int z) {
 			this.x = x;
 			this.y = y;
 			this.z = z;
 		}
 
-		public final void setBlockMetadata(int meta) {
+		public final void setBlockMetadata(final int meta) {
 			this.meta = meta;
 		}
 
 		@Override
-		public TileEntity getTileEntity(BlockPos pos) {
+		public TileEntity getTileEntity(final BlockPos pos) {
 			return null;
 		}
 
 		@Override
-		public int getCombinedLight(BlockPos pos, int lightValue) {
+		public int getCombinedLight(final BlockPos pos, final int lightValue) {
 			return 0;
 		}
 
 		@Override
-		public IBlockState getBlockState(BlockPos pos) {
+		public IBlockState getBlockState(final BlockPos pos) {
 			return null;
 		}
 
 		@Override
-		public boolean isAirBlock(BlockPos pos) {
+		public boolean isAirBlock(final BlockPos pos) {
 			return false;
 		}
 
 		@Override
-		public Biome getBiome(BlockPos pos) {
+		public Biome getBiome(final BlockPos pos) {
 			return null;
 		}
 
 		@Override
-		public int getStrongPower(BlockPos pos, EnumFacing direction) {
+		public int getStrongPower(final BlockPos pos, final EnumFacing direction) {
 			return 0;
 		}
 
@@ -631,7 +624,7 @@ public class BlueprintUtil {
 		}
 
 		@Override
-		public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean _default) {
+		public boolean isSideSolid(final BlockPos pos, final EnumFacing side, final boolean _default) {
 			return true;
 		}
 

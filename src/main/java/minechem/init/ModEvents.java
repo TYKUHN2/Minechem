@@ -9,15 +9,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.collect.ImmutableList;
 
 import minechem.api.IMinechemBlueprint;
-import minechem.api.IOreDictionaryHandler;
 import minechem.api.recipe.ISynthesisRecipe;
 import minechem.block.fluid.BlockFluidMinechem;
 import minechem.block.tile.TileBlueprintProjector;
 import minechem.client.gui.GuiBlueprintProjector;
-import minechem.client.model.generated.CharacterSprite;
-import minechem.client.model.generated.ItemLayerWrapper;
+import minechem.client.model.generated.*;
 import minechem.client.model.generated.ModelProperties.PerspectiveProperties;
-import minechem.client.model.generated.PerspectiveAwareBakedModel;
 import minechem.client.render.ElementItemRenderer;
 import minechem.event.RadiationDecayEvent;
 import minechem.fluid.FluidElement;
@@ -29,11 +26,9 @@ import minechem.item.element.ElementEnum;
 import minechem.item.molecule.MoleculeEnum;
 import minechem.potion.PharmacologyEffectRegistry;
 import minechem.potion.PotionEnchantmentCoated;
-import minechem.utils.BlueprintUtil;
+import minechem.utils.*;
 import minechem.utils.BlueprintUtil.MultiblockBlockAccess;
 import minechem.utils.BlueprintUtil.MultiblockRenderInfo;
-import minechem.utils.MinechemUtil;
-import minechem.utils.TickTimeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -57,29 +52,17 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootEntryItem;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraft.world.storage.loot.functions.SetNBT;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.event.GuiContainerEvent;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -88,38 +71,35 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @author p455w0rd
  *
  */
+@EventBusSubscriber(modid = ModGlobals.MODID)
 public class ModEvents {
-
-	public static void init() {
-		MinecraftForge.EVENT_BUS.register(new ModEvents());
-	}
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void onTextureStitch(TextureStitchEvent.Pre event) {
-		TextureMap map = event.getMap();
+	public static void onTextureStitch(final TextureStitchEvent.Pre event) {
+		final TextureMap map = event.getMap();
 		map.registerSprite(Textures.Sprite.MICROSCOPE);
 		map.registerSprite(Textures.Sprite.SYNTHESIZER);
 		map.registerSprite(Textures.Sprite.DECOMPOSER);
 		map.registerSprite(Textures.Sprite.BLUEPRINT_PROJECTOR);
 		map.registerSprite(Textures.Sprite.LEADED_CHEST);
 		map.registerSprite(Textures.Sprite.FILLED_TUBE);
-		for (ResourceLocation element : Textures.Sprite.LIQUID_STATES) {
+		for (final ResourceLocation element : Textures.Sprite.LIQUID_STATES) {
 			map.registerSprite(element);
 		}
-		for (ResourceLocation element : Textures.Sprite.GAS_STATES) {
+		for (final ResourceLocation element : Textures.Sprite.GAS_STATES) {
 			map.registerSprite(element);
 		}
 		map.registerSprite(Textures.Sprite.SOLID_STATE);
@@ -129,20 +109,20 @@ public class ModEvents {
 		map.registerSprite(Textures.Sprite.FLUID_STILL);
 		map.registerSprite(Textures.Sprite.FLUID_FLOW);
 		// @formatter:off
-		char[] charList = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+		final char[] charList = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
 		// @formatter:on
-		for (char chr : charList) {
+		for (final char chr : charList) {
 			map.setTextureEntry(CharacterSprite.getSpriteForChar(chr));
 		}
-		for (char chr : charList) {
+		for (final char chr : charList) {
 			map.setTextureEntry(CharacterSprite.getSpriteForChar(Character.toUpperCase(chr)));
 		}
 	}
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void onModelBake(ModelBakeEvent event) {
-		for (Pair<ModelResourceLocation, IBakedModel> pair : ModRendering.getParticleModels()) {
+	public static void onModelBake(final ModelBakeEvent event) {
+		for (final Pair<ModelResourceLocation, IBakedModel> pair : ModRendering.getParticleModels()) {
 			event.getModelRegistry().putObject(pair.getKey(), pair.getValue());
 		}
 		ElementItemRenderer.model = new ItemLayerWrapper(new PerspectiveAwareBakedModel(ImmutableList.of(), PerspectiveProperties.DEFAULT_ITEM));
@@ -151,35 +131,35 @@ public class ModEvents {
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void onModelRegister(ModelRegistryEvent event) {
-		for (ElementEnum element : ElementEnum.elements.values()) {
+	public static void onModelRegister(final ModelRegistryEvent event) {
+		for (final ElementEnum element : ElementEnum.elements.values()) {
 			ModRendering.setItemTEISR(ModItems.element, new ElementItemRenderer(), element.atomicNumber(), ModRendering.ITEM_ELEMENT_LOC);
 		}
 	}
 
 	@SubscribeEvent
-	public void tick(TickEvent.PlayerTickEvent event) {
+	public static void tick(final TickEvent.PlayerTickEvent event) {
 		if (event.side == Side.SERVER && event.phase == TickEvent.Phase.START) {
-			EntityPlayer player = event.player;
+			final EntityPlayer player = event.player;
 			HandlerElementDecay.getInstance().update(player);
 		}
 	}
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void onGuiForegroundDraw(GuiContainerEvent.DrawForeground event) {
+	public static void onGuiForegroundDraw(final GuiContainerEvent.DrawForeground event) {
 
 	}
 
 	@SubscribeEvent
-	public void checkForPoison(LivingEntityUseItemEvent.Finish event) {
+	public static void checkForPoison(final LivingEntityUseItemEvent.Finish event) {
 		if (event.getItem() != null && event.getItem().getTagCompound() != null && ModConfig.FoodSpiking) {
-			NBTTagCompound stackTag = event.getItem().getTagCompound();
-			boolean isPoisoned = stackTag.getBoolean("minechem.isPoisoned");
-			int[] effectTypes = stackTag.getIntArray("minechem.effectTypes");
+			final NBTTagCompound stackTag = event.getItem().getTagCompound();
+			final boolean isPoisoned = stackTag.getBoolean("minechem.isPoisoned");
+			final int[] effectTypes = stackTag.getIntArray("minechem.effectTypes");
 			if (isPoisoned) {
-				for (int effectType : effectTypes) {
-					MoleculeEnum molecule = MoleculeEnum.getById(effectType);
+				for (final int effectType : effectTypes) {
+					final MoleculeEnum molecule = MoleculeEnum.getById(effectType);
 					PharmacologyEffectRegistry.applyEffect(molecule, event.getEntityLiving());
 				}
 			}
@@ -187,7 +167,7 @@ public class ModEvents {
 	}
 
 	@SubscribeEvent
-	public void onLootTableLoadEvent(LootTableLoadEvent event) {
+	public static void onLootTableLoadEvent(final LootTableLoadEvent event) {
 		//@formatter:off
 		if (event.getName() != null && event.getTable() != null && (
 				event.getName().equals(LootTableList.CHESTS_SIMPLE_DUNGEON) ||
@@ -199,12 +179,12 @@ public class ModEvents {
 				event.getName().equals(LootTableList.CHESTS_DESERT_PYRAMID)
 				)) {
 			ModLogger.debug("Adding blueprints to dungeon loot...");
-			LootTable table = event.getTable();
-			LootCondition[] emptyCondition = new LootCondition[0];
-			LootPool pool = table.getPool("main");
+			final LootTable table = event.getTable();
+			final LootCondition[] emptyCondition = new LootCondition[0];
+			final LootPool pool = table.getPool("main");
 			if (pool != null) {
-				LootFunction fissionNBTFunc = new SetNBT(emptyCondition,BlueprintUtil.createStack(ModBlueprints.fission).getTagCompound());
-				LootFunction fusionNBTFunc = new SetNBT(emptyCondition,BlueprintUtil.createStack(ModBlueprints.fusion).getTagCompound());
+				final LootFunction fissionNBTFunc = new SetNBT(emptyCondition,BlueprintUtil.createStack(ModBlueprints.fission).getTagCompound());
+				final LootFunction fusionNBTFunc = new SetNBT(emptyCondition,BlueprintUtil.createStack(ModBlueprints.fusion).getTagCompound());
 				pool.addEntry(new LootEntryItem(ModItems.blueprint, 5, 0, new LootFunction[]{fissionNBTFunc}, emptyCondition, ModItems.blueprint.getRegistryName().toString()+"_fission"));
 				pool.addEntry(new LootEntryItem(ModItems.blueprint, 5, 0, new LootFunction[]{fusionNBTFunc}, emptyCondition, ModItems.blueprint.getRegistryName().toString()+"_fusion"));
 			}
@@ -213,11 +193,11 @@ public class ModEvents {
 	}
 
 	@SubscribeEvent
-	public void tick(TickEvent.WorldTickEvent event) {
+	public static void tick(final TickEvent.WorldTickEvent event) {
 		if (ModConfig.reactionItemMeetFluid) {
-			World world = event.world;
-			List<Object> entities = new ArrayList<Object>(world.loadedEntityList);
-			for (Object entity : entities) {
+			final World world = event.world;
+			final List<Object> entities = new ArrayList<>(world.loadedEntityList);
+			for (final Object entity : entities) {
 				if (entity instanceof EntityItem) {
 					ChemicalFluidReactionHandler.getInstance().checkEntityItem(world, (EntityItem) entity);
 				}
@@ -226,58 +206,58 @@ public class ModEvents {
 	}
 
 	@SubscribeEvent
-	public void onSoundRegister(RegistryEvent.Register<SoundEvent> event) {
+	public static void onSoundRegister(final RegistryEvent.Register<SoundEvent> event) {
 		ModSounds.registerSounds(event.getRegistry());
 	}
 
 	@SubscribeEvent
-	public void onIRecipeRegister(RegistryEvent.Register<IRecipe> event) {
+	public static void onIRecipeRegister(final RegistryEvent.Register<IRecipe> event) {
 		ModRecipes.registerCustomRecipes(event.getRegistry());
 		ModRecipes.registerRecipes();
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
-	public void onISynthesisRecipeRegister(RegistryEvent.Register<ISynthesisRecipe> event) {
+	public static void onISynthesisRecipeRegister(final RegistryEvent.Register<ISynthesisRecipe> event) {
 		ModRecipes.registerSynthesisRecipes();
 	}
 
 	@SubscribeEvent
-	public void onEnchantmentRegister(RegistryEvent.Register<Enchantment> event) {
+	public static void onEnchantmentRegister(final RegistryEvent.Register<Enchantment> event) {
 		ModEnchantments.register(event.getRegistry());
 	}
 
 	@SubscribeEvent
-	public void onPotionRegister(RegistryEvent.Register<Potion> event) {
+	public static void onPotionRegister(final RegistryEvent.Register<Potion> event) {
 		ModPotions.registerPotions(event.getRegistry());
 	}
 
 	@SubscribeEvent
-	public void onBlueprintRegister(RegistryEvent.Register<IMinechemBlueprint> event) {
+	public static void onBlueprintRegister(final RegistryEvent.Register<IMinechemBlueprint> event) {
 		ModBlueprints.registerBlueprints();
 	}
 
 	@SubscribeEvent
-	public void onRegistryRegister(RegistryEvent.NewRegistry event) {
+	public static void onRegistryRegister(final RegistryEvent.NewRegistry event) {
 		new ModRegistries();
 	}
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void afterWorldRender(RenderWorldLastEvent event) {
+	public static void afterWorldRender(final RenderWorldLastEvent event) {
 
 	}
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void onClientTick(TickEvent.ClientTickEvent event) {
+	public static void onClientTick(final TickEvent.ClientTickEvent event) {
 		if (Minecraft.getMinecraft().currentScreen instanceof GuiBlueprintProjector) {
 			if (((GuiBlueprintProjector) Minecraft.getMinecraft().currentScreen).getProjector() != null) {
-				TileBlueprintProjector projector = ((GuiBlueprintProjector) Minecraft.getMinecraft().currentScreen).getProjector();
+				final TileBlueprintProjector projector = ((GuiBlueprintProjector) Minecraft.getMinecraft().currentScreen).getProjector();
 				if (projector.hasBlueprint()) {
-					if (BlueprintUtil.blockAccess == null || (!BlueprintUtil.blockAccess.data.multiblock.getDescriptiveName().equals(projector.getBlueprint().getDescriptiveName()))) {
+					if (BlueprintUtil.blockAccess == null || !BlueprintUtil.blockAccess.data.multiblock.getDescriptiveName().equals(projector.getBlueprint().getDescriptiveName())) {
 						BlueprintUtil.blockAccess = new MultiblockBlockAccess(new MultiblockRenderInfo(projector.getBlueprint()));
 					}
-					int totalLayers = BlueprintUtil.blockAccess.data.structureHeight;
+					final int totalLayers = BlueprintUtil.blockAccess.data.structureHeight;
 					if (BlueprintUtil.structureRenderTicks >= 20) {
 						BlueprintUtil.structureRenderTicks = 0;
 						++BlueprintUtil.currentLayer;
@@ -296,13 +276,13 @@ public class ModEvents {
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void onFogOverlay(EntityViewRenderEvent.RenderFogEvent event) {
+	public static void onFogOverlay(final EntityViewRenderEvent.RenderFogEvent event) {
 		//if (event.getState().getMaterial() == ModMaterial.FLUID) {
-		EntityPlayer player = Minecraft.getMinecraft().player;
-		World world = Minecraft.getMinecraft().world;
+		final EntityPlayer player = Minecraft.getMinecraft().player;
+		final World world = Minecraft.getMinecraft().world;
 		if (player.isInsideOfMaterial(Material.WATER) && !player.isCreative() && !player.isSpectator()) {
-			double d0 = player.posY + player.getEyeHeight();
-			BlockPos blockpos = new BlockPos(player.posX, d0, player.posZ);
+			final double d0 = player.posY + player.getEyeHeight();
+			final BlockPos blockpos = new BlockPos(player.posX, d0, player.posZ);
 			if (!(world.getBlockState(blockpos).getBlock() instanceof BlockFluidMinechem)) {
 				return;
 			}
@@ -315,26 +295,26 @@ public class ModEvents {
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void onFogColor(EntityViewRenderEvent.FogColors event) {
-		EntityPlayer player = Minecraft.getMinecraft().player;
-		World world = Minecraft.getMinecraft().world;
+	public static void onFogColor(final EntityViewRenderEvent.FogColors event) {
+		final EntityPlayer player = Minecraft.getMinecraft().player;
+		final World world = Minecraft.getMinecraft().world;
 		if (player.isInsideOfMaterial(Material.WATER) && !player.isCreative() && !player.isSpectator()) {
-			double d0 = player.posY + player.getEyeHeight();
-			BlockPos blockpos = new BlockPos(player.posX, d0, player.posZ);
+			final double d0 = player.posY + player.getEyeHeight();
+			final BlockPos blockpos = new BlockPos(player.posX, d0, player.posZ);
 			if (!(world.getBlockState(blockpos).getBlock() instanceof BlockFluidMinechem)) {
 				return;
 			}
 			Color color = new Color(1.0F, 1.0F, 1.0F, 1.0F);
-			BlockFluidMinechem fluidBlock = (BlockFluidMinechem) world.getBlockState(blockpos).getBlock();
+			final BlockFluidMinechem fluidBlock = (BlockFluidMinechem) world.getBlockState(blockpos).getBlock();
 			if (fluidBlock.getFluid() instanceof FluidElement) {
 				color = new Color(((FluidElement) fluidBlock.getFluid()).getColor());
 			}
 			else if (fluidBlock.getFluid() instanceof FluidMolecule) {
 				color = new Color(((FluidMolecule) fluidBlock.getFluid()).getColor());
 			}
-			float red = color.getRed() / 255f;
-			float green = color.getGreen() / 255f;
-			float blue = color.getBlue() / 255f;
+			final float red = color.getRed() / 255f;
+			final float green = color.getGreen() / 255f;
+			final float blue = color.getBlue() / 255f;
 			event.setRed(red);
 			event.setGreen(green);
 			event.setBlue(blue);
@@ -343,43 +323,43 @@ public class ModEvents {
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void renderOverlayEvent(RenderGameOverlayEvent.Pre event) {
+	public static void renderOverlayEvent(final RenderGameOverlayEvent.Pre event) {
 		if (event.getType() == ElementType.AIR) {
-			EntityPlayer player = Minecraft.getMinecraft().player;
-			World world = Minecraft.getMinecraft().world;
+			final EntityPlayer player = Minecraft.getMinecraft().player;
+			final World world = Minecraft.getMinecraft().world;
 			if (player.isInsideOfMaterial(Material.WATER) && !player.isCreative() && !player.isSpectator()) {
-				double d0 = player.posY + player.getEyeHeight();
-				BlockPos blockpos = new BlockPos(player.posX, d0, player.posZ);
+				final double d0 = player.posY + player.getEyeHeight();
+				final BlockPos blockpos = new BlockPos(player.posX, d0, player.posZ);
 				if (!(world.getBlockState(blockpos).getBlock() instanceof BlockFluidMinechem)) {
 					return;
 				}
 				Color color = new Color(1.0F, 1.0F, 1.0F, 1.0F);
-				BlockFluidMinechem fluidBlock = (BlockFluidMinechem) world.getBlockState(blockpos).getBlock();
+				final BlockFluidMinechem fluidBlock = (BlockFluidMinechem) world.getBlockState(blockpos).getBlock();
 				if (fluidBlock.getFluid() instanceof FluidElement) {
 					color = new Color(((FluidElement) fluidBlock.getFluid()).getColor());
 				}
 				else if (fluidBlock.getFluid() instanceof FluidMolecule) {
 					color = new Color(((FluidMolecule) fluidBlock.getFluid()).getColor());
 				}
-				Gui gui = Minecraft.getMinecraft().ingameGUI;
+				final Gui gui = Minecraft.getMinecraft().ingameGUI;
 				if (gui == null) {
 					return;
 				}
-				ScaledResolution scaledRes = event.getResolution();
-				int i1 = scaledRes.getScaledWidth() / 2 + 91;
-				int j1 = scaledRes.getScaledHeight() - 39;
-				int k2 = j1 - 10;
-				int i6 = Minecraft.getMinecraft().player.getAir();
-				int k6 = MathHelper.ceil((i6 - 2) * 10.0D / 300.0D);
-				int i7 = MathHelper.ceil(i6 * 10.0D / 300.0D) - k6;
+				final ScaledResolution scaledRes = event.getResolution();
+				final int i1 = scaledRes.getScaledWidth() / 2 + 91;
+				final int j1 = scaledRes.getScaledHeight() - 39;
+				final int k2 = j1 - 10;
+				final int i6 = Minecraft.getMinecraft().player.getAir();
+				final int k6 = MathHelper.ceil((i6 - 2) * 10.0D / 300.0D);
+				final int i7 = MathHelper.ceil(i6 * 10.0D / 300.0D) - k6;
 
 				for (int k7 = 0; k7 < k6 + i7; ++k7) {
 
-					float red = color.getRed() / 255f;
-					float green = color.getGreen() / 255f;
-					float blue = color.getBlue() / 255f;
+					final float red = color.getRed() / 255f;
+					final float green = color.getGreen() / 255f;
+					final float blue = color.getBlue() / 255f;
 					GlStateManager.color(red, green, blue, 1.0F);
-					Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(ModGlobals.ID, "textures/gui/icons.png"));
+					Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(ModGlobals.MODID, "textures/gui/icons.png"));
 					GlStateManager.enableAlpha();
 					GlStateManager.enableBlend();
 					GlStateManager.enableDepth();
@@ -401,19 +381,19 @@ public class ModEvents {
 	}
 
 	@SubscribeEvent
-	public void onDecayEvent(RadiationDecayEvent event) {
+	public static void onDecayEvent(final RadiationDecayEvent event) {
 		if (event.getPlayer() != null) {
-			String nameBeforeDecay = event.getLongName(event.getBefore());
-			String nameAfterDecay = event.getLongName(event.getAfter());
-			String time = TickTimeUtil.getTimeFromTicks(event.getTime());
-			String message = String.format("Radiation Warning: Element %s decayed into %s after %s.", nameBeforeDecay, nameAfterDecay, time);
+			final String nameBeforeDecay = event.getLongName(event.getBefore());
+			final String nameAfterDecay = event.getLongName(event.getAfter());
+			final String time = TickTimeUtil.getTimeFromTicks(event.getTime());
+			final String message = String.format("Radiation Warning: Element %s decayed into %s after %s.", nameBeforeDecay, nameAfterDecay, time);
 			event.getPlayer().sendMessage(new TextComponentString(message));
 		}
 	}
 
 	@SubscribeEvent
-	public void getFuelBurnTime(FurnaceFuelBurnTimeEvent event) {
-		ItemStack stack = event.getItemStack();
+	public static void getFuelBurnTime(final FurnaceFuelBurnTimeEvent event) {
+		final ItemStack stack = event.getItemStack();
 		int burnTime = -1;
 		if (!stack.isEmpty()) {
 			if (stack.getItem() == ModItems.element && MinechemUtil.getElement(stack) != null) {
@@ -429,19 +409,19 @@ public class ModEvents {
 	}
 
 	@SubscribeEvent
-	public void onConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
-		if (event.getModID().equalsIgnoreCase(ModGlobals.ID)) {
+	public static void onConfigChangedEvent(final ConfigChangedEvent.OnConfigChangedEvent event) {
+		if (event.getModID().equalsIgnoreCase(ModGlobals.MODID)) {
 			ModConfig.loadConfig();
 		}
 	}
 
 	@SubscribeEvent
-	public void onAttack(LivingAttackEvent event) {
+	public static void onAttack(final LivingAttackEvent event) {
 		if (event.getSource().getTrueSource() instanceof EntityLivingBase) {
-			EntityLivingBase entity = (EntityLivingBase) event.getSource().getTrueSource();
+			final EntityLivingBase entity = (EntityLivingBase) event.getSource().getTrueSource();
 			ItemStack weapon = ItemStack.EMPTY;
-			Iterable<ItemStack> weapons = entity.getHeldEquipment();
-			for (ItemStack stack : weapons) {
+			final Iterable<ItemStack> weapons = entity.getHeldEquipment();
+			for (final ItemStack stack : weapons) {
 				if (stack.getItem() instanceof ItemSword) {
 					weapon = stack.copy();
 				}
@@ -449,13 +429,13 @@ public class ModEvents {
 			if (weapon.isEmpty()) {
 				return;
 			}
-			NBTTagList list = weapon.getEnchantmentTagList();
+			final NBTTagList list = weapon.getEnchantmentTagList();
 			if (list == null) {
 				return;
 			}
 			for (int i = 0; i < list.tagCount(); i++) {
-				NBTTagCompound enchantmentTag = list.getCompoundTagAt(i);
-				Enchantment enchant = Enchantment.getEnchantmentByID(enchantmentTag.getShort("id"));
+				final NBTTagCompound enchantmentTag = list.getCompoundTagAt(i);
+				final Enchantment enchant = Enchantment.getEnchantmentByID(enchantmentTag.getShort("id"));
 				if (enchant instanceof PotionEnchantmentCoated) {
 					((PotionEnchantmentCoated) enchant).applyEffect(event.getEntityLiving());
 				}
@@ -465,19 +445,19 @@ public class ModEvents {
 
 	@SideOnly(Side.SERVER)
 	@SubscribeEvent
-	public void onBlockBreak(BlockEvent.BreakEvent event) {
+	public static void onBlockBreak(final BlockEvent.BreakEvent event) {
 		if (event.getState().getBlock() == ModBlocks.blueprintProjector) {
 			event.setCanceled(true);
-			EntityPlayer player = event.getPlayer();
-			World world = event.getWorld();
-			BlockPos pos = event.getPos();
-			IBlockState iblockstate = world.getBlockState(pos);
+			final EntityPlayer player = event.getPlayer();
+			final World world = event.getWorld();
+			final BlockPos pos = event.getPos();
+			final IBlockState iblockstate = world.getBlockState(pos);
 			//Block block = iblockstate.getBlock();
-			TileEntity tileentity = world.getTileEntity(pos);
+			final TileEntity tileentity = world.getTileEntity(pos);
 			ItemStack droppedStack = ItemStack.EMPTY;
 			if (tileentity != null && tileentity instanceof TileBlueprintProjector) {
-				TileBlueprintProjector projector = (TileBlueprintProjector) tileentity;
-				IMinechemBlueprint blueprint = projector.getBlueprint();
+				final TileBlueprintProjector projector = (TileBlueprintProjector) tileentity;
+				final IMinechemBlueprint blueprint = projector.getBlueprint();
 				if (blueprint != null) {
 					droppedStack = BlueprintUtil.createStack(blueprint);
 					projector.setBlueprint(null);
@@ -487,7 +467,7 @@ public class ModEvents {
 				//world.notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
 			}
 
-			ItemStack stack = player.getHeldItemMainhand();
+			final ItemStack stack = player.getHeldItemMainhand();
 			if (!stack.isEmpty() && stack.getItem().onBlockStartBreak(stack, pos, player)) {
 				return;
 			}
@@ -514,9 +494,9 @@ public class ModEvents {
 				((EntityPlayerMP) player).connection.sendPacket(new SPacketBlockChange(world, pos));
 			}
 			else {
-				ItemStack itemstack1 = player.getHeldItemMainhand();
-				ItemStack itemstack2 = itemstack1.isEmpty() ? ItemStack.EMPTY : itemstack1.copy();
-				boolean flag = iblockstate.getBlock().canHarvestBlock(world, pos, player);
+				final ItemStack itemstack1 = player.getHeldItemMainhand();
+				final ItemStack itemstack2 = itemstack1.isEmpty() ? ItemStack.EMPTY : itemstack1.copy();
+				final boolean flag = iblockstate.getBlock().canHarvestBlock(world, pos, player);
 
 				if (!itemstack1.isEmpty()) {
 					itemstack1.onBlockDestroyed(world, iblockstate, pos, player);
@@ -538,7 +518,7 @@ public class ModEvents {
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void onTooltip(ItemTooltipEvent event) {
+	public static void onTooltip(final ItemTooltipEvent event) {
 
 	}
 

@@ -26,7 +26,7 @@ public class ItemBlueprint extends ItemBase {
 	public ItemBlueprint() {
 		super();
 		setUnlocalizedName("blueprint");
-		setRegistryName(ModGlobals.ID + ":blueprint");
+		setRegistryName(ModGlobals.MODID + ":blueprint");
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		setHasSubtypes(true);
 		ForgeRegistries.ITEMS.register(this);

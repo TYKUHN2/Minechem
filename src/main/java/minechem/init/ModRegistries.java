@@ -23,8 +23,8 @@ public class ModRegistries {
 	public static final IForgeRegistry<IMinechemBlueprint> MINECHEM_BLUEPRINTS = GameRegistry.findRegistry(IMinechemBlueprint.class);
 
 	public static void init() {
-		new RegistryBuilder<ISynthesisRecipe>().setName(new ResourceLocation(ModGlobals.ID, "synthesis_recipes")).setType(ISynthesisRecipe.class).setMaxID(Integer.MAX_VALUE >> 5).disableSaving().allowModification().addCallback(SynthesisRecipeCallbacks.INSTANCE).create();
-		new RegistryBuilder<IMinechemBlueprint>().setName(new ResourceLocation(ModGlobals.ID, "minechem_blueprints")).setType(IMinechemBlueprint.class).setMaxID(Integer.MAX_VALUE >> 5).disableSaving().allowModification().addCallback(MinechemBlueprintCallbacks.INSTANCE).create();
+		new RegistryBuilder<ISynthesisRecipe>().setName(new ResourceLocation(ModGlobals.MODID, "synthesis_recipes")).setType(ISynthesisRecipe.class).setMaxID(Integer.MAX_VALUE >> 5).disableSaving().allowModification().addCallback(SynthesisRecipeCallbacks.INSTANCE).create();
+		new RegistryBuilder<IMinechemBlueprint>().setName(new ResourceLocation(ModGlobals.MODID, "minechem_blueprints")).setType(IMinechemBlueprint.class).setMaxID(Integer.MAX_VALUE >> 5).disableSaving().allowModification().addCallback(MinechemBlueprintCallbacks.INSTANCE).create();
 	}
 
 }

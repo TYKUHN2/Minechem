@@ -7,9 +7,7 @@ import minechem.init.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -24,6 +22,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
  * @author p455w0rd
  *
  */
+@SuppressWarnings("deprecation")
 public class Blueprint {
 
 	public static IBlockState A = ModBlocks.reactor_core.getStateFromMeta(1);
@@ -73,12 +72,12 @@ public class Blueprint {
 
 	private final IBlockState[][][] states;
 
-	public Blueprint(IBlockState[][][] statesToPlace) {
+	public Blueprint(final IBlockState[][][] statesToPlace) {
 		states = statesToPlace;
 	}
 
-	public Blueprint(Block[][][] blocks) {
-		IBlockState[][][] states = new IBlockState[blocks.length][][];
+	public Blueprint(final Block[][][] blocks) {
+		final IBlockState[][][] states = new IBlockState[blocks.length][][];
 		for (int i = 0; i < blocks.length; i++) {
 			states[i] = new IBlockState[blocks[i].length][];
 
@@ -94,16 +93,16 @@ public class Blueprint {
 	}
 
 	public IBlockState[][][] getReverseVerticalArray() {
-		IBlockState[][][] newStates = states;
+		final IBlockState[][][] newStates = states;
 		ArrayUtils.reverse(newStates);
 		return newStates;
 	}
 
-	public void placeStateArray(BlockPos pos, World world) {
+	public void placeStateArray(final BlockPos pos, final World world) {
 		placeStateArray(pos, world, EnumFacing.NORTH);
 	}
 
-	public void placeStateArray(BlockPos pos, World world, EnumFacing facing) {
+	public void placeStateArray(final BlockPos pos, final World world, final EnumFacing facing) {
 		int xOffset = 0;
 		int zOffset = 0;
 
@@ -135,11 +134,11 @@ public class Blueprint {
 		}
 	}
 
-	public void visualiseStateArray(BlockPos pos, World world) {
+	public void visualiseStateArray(final BlockPos pos, final World world) {
 		visualiseStateArray(pos, world, EnumFacing.NORTH, -1);
 	}
 
-	public void visualiseStateArray(BlockPos pos, World world, EnumFacing facing) {
+	public void visualiseStateArray(final BlockPos pos, final World world, final EnumFacing facing) {
 		visualiseStateArray(pos, world, facing, -1);
 	}
 
@@ -147,8 +146,8 @@ public class Blueprint {
 		return states[0][0].length;
 	}
 
-	public IBlockState[] getVerticalSliceFromBlueprint(int layer) {
-		IBlockState[] vertStates = new IBlockState[states[0].length * states.length];
+	public IBlockState[] getVerticalSliceFromBlueprint(final int layer) {
+		final IBlockState[] vertStates = new IBlockState[states[0].length * states.length];
 		if (layer < 0) {
 			return vertStates;
 		}
@@ -167,8 +166,8 @@ public class Blueprint {
 		return vertStates;
 	}
 
-	public boolean isStructureBuilt(BlockPos pos, World world, EnumFacing facing) {
-		int total = getTotalVerticalSlices();
+	public boolean isStructureBuilt(final BlockPos pos, final World world, final EnumFacing facing) {
+		final int total = getTotalVerticalSlices();
 		for (int i = 0; i < total; i++) {
 			if (!isVerticalSliceBuilt(pos, world, facing, i)) {
 				return false;
@@ -185,21 +184,21 @@ public class Blueprint {
 		return states[0][0].length;
 	}
 
-	public boolean isVerticalSliceBuilt(BlockPos pos, World world, EnumFacing facing, int layer) {
+	public boolean isVerticalSliceBuilt(final BlockPos pos, final World world, final EnumFacing facing, final int layer) {
 		if (layer < 0) {
 			return true;
 		}
-		IBlockState[] requiredSlice = getVerticalSliceFromBlueprint(layer);
+		final IBlockState[] requiredSlice = getVerticalSliceFromBlueprint(layer);
 		int xOffset = 0;
 		int zOffset = 0;
 
-		IBlockState[][][] statesToUse = (facing.getOpposite() == EnumFacing.NORTH || facing.getOpposite() == EnumFacing.EAST) ? states : getReverseVerticalArray();
+		final IBlockState[][][] statesToUse = facing.getOpposite() == EnumFacing.NORTH || facing.getOpposite() == EnumFacing.EAST ? states : getReverseVerticalArray();
 
 		for (int y = 0; y < statesToUse.length; y++) {
 			for (int x = 0; x < statesToUse[y].length; x++) {
 				for (int z = 0; z < statesToUse[y][x].length; z++) {
 					if (statesToUse[y][x][z] != null) {
-						int comparingLayer = (facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH) ? z : x;
+						final int comparingLayer = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? z : x;
 						if (comparingLayer != layer) {
 							continue;
 						}
@@ -208,28 +207,28 @@ public class Blueprint {
 						case NORTH:
 							xOffset = 0;
 							zOffset = -(statesToUse[y][x].length - 1);
-							newPos = pos.add(x + xOffset - (statesToUse[y][x].length / 2), y, z + zOffset - 2);
+							newPos = pos.add(x + xOffset - statesToUse[y][x].length / 2, y, z + zOffset - 2);
 							break;
 						case SOUTH:
 							xOffset = -(statesToUse[y][x].length - 1);
 							zOffset = 0;
-							newPos = pos.add(-(x + xOffset + (statesToUse[y][x].length / 2)), y, -(z + 2) + statesToUse[y][x].length * 2 - 2);
+							newPos = pos.add(-(x + xOffset + statesToUse[y][x].length / 2), y, -(z + 2) + statesToUse[y][x].length * 2 - 2);
 							break;
 						case WEST:
 							xOffset = -(statesToUse[y][x].length - 1);
 							zOffset = -(statesToUse[y][x].length - 1);
-							newPos = pos.add(-((x + 2) + statesToUse[y][x].length / 2) - 2, y, -(z + zOffset + (statesToUse[y][x].length / 2)));
+							newPos = pos.add(-(x + 2 + statesToUse[y][x].length / 2) - 2, y, -(z + zOffset + statesToUse[y][x].length / 2));
 							break;
 						case EAST:
-							newPos = pos.add(x + xOffset + (statesToUse[y][x].length / 2), y, z + zOffset - 2);
+							newPos = pos.add(x + xOffset + statesToUse[y][x].length / 2, y, z + zOffset - 2);
 						default:
 							break;
 						}
 						if (requiredSlice[z] == null) {
 							continue;
 						}
-						IBlockState current = world.getBlockState(newPos);
-						IBlockState required = requiredSlice[(statesToUse[y][x].length - 1) - x + y * statesToUse.length];
+						final IBlockState current = world.getBlockState(newPos);
+						final IBlockState required = requiredSlice[statesToUse[y][x].length - 1 - x + y * statesToUse.length];
 						if (current != required) {
 							return false;
 						}
@@ -240,23 +239,23 @@ public class Blueprint {
 		return true;
 	}
 
-	public void visualiseStateArray(BlockPos pos, World world, EnumFacing facing, int layer) {
+	public void visualiseStateArray(final BlockPos pos, final World world, final EnumFacing facing, final int layer) {
 		if (FMLCommonHandler.instance().getSide().isClient()) {
 			Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-			Tessellator tessellator = Tessellator.getInstance();
-			BufferBuilder vertexbuffer = tessellator.getBuffer();
+			final Tessellator tessellator = Tessellator.getInstance();
+			final BufferBuilder vertexbuffer = tessellator.getBuffer();
 			GlStateManager.enableBlend();
 			GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 			int xOffset = 0;
 			int zOffset = 0;
-			IBlockState[][][] statesToUse = (facing.getOpposite() == EnumFacing.NORTH || facing.getOpposite() == EnumFacing.EAST) ? states : getReverseVerticalArray();
+			final IBlockState[][][] statesToUse = facing.getOpposite() == EnumFacing.NORTH || facing.getOpposite() == EnumFacing.EAST ? states : getReverseVerticalArray();
 			for (int y = 0; y < statesToUse.length; y++) {
 				for (int x = 0; x < statesToUse[y].length; x++) {
 					for (int z = 0; z < statesToUse[y][x].length; z++) {
 						if (statesToUse[y][x][z] != null) {
-							int comparingLayer = (facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH) ? z : x;
+							final int comparingLayer = facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH ? z : x;
 							if (layer != -1 && comparingLayer != layer) {
 								continue;
 							}
@@ -265,19 +264,19 @@ public class Blueprint {
 							switch (facing.getOpposite()) {
 							case NORTH:
 								zOffset = -(statesToUse[y][x].length - 1);
-								newPos = pos.add(x - (statesToUse[y][x].length / 2), y, z + zOffset - 2);
+								newPos = pos.add(x - statesToUse[y][x].length / 2, y, z + zOffset - 2);
 								break;
 							case SOUTH:
 								xOffset = -(statesToUse[y][x].length - 1);
-								newPos = pos.add(-(x + xOffset + (statesToUse[y][x].length / 2)), y, -(z + 2) + statesToUse[y][x].length * 2 - 2);
+								newPos = pos.add(-(x + xOffset + statesToUse[y][x].length / 2), y, -(z + 2) + statesToUse[y][x].length * 2 - 2);
 								break;
 							case WEST:
 								xOffset = -(statesToUse[y][x].length - 1);
 								zOffset = -(states[y][x].length - 1);
-								newPos = pos.add(-((x + 2) + statesToUse[y][x].length / 2) - 2, y, -(z + zOffset + (statesToUse[y][x].length / 2)));
+								newPos = pos.add(-(x + 2 + statesToUse[y][x].length / 2) - 2, y, -(z + zOffset + statesToUse[y][x].length / 2));
 								break;
 							case EAST:
-								newPos = pos.add(x + xOffset + (statesToUse[y][x].length / 2), y, z - 2);
+								newPos = pos.add(x + xOffset + statesToUse[y][x].length / 2, y, z - 2);
 							default:
 								break;
 							}
@@ -299,15 +298,15 @@ public class Blueprint {
 	}
 
 	public static void removeStandartTranslationFromTESRMatrix() {
-		float partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
+		final float partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
 		Entity rView = Minecraft.getMinecraft().getRenderViewEntity();
 		if (rView == null) {
 			rView = Minecraft.getMinecraft().player;
 		}
-		Entity entity = rView;
-		double tx = entity.lastTickPosX + ((entity.posX - entity.lastTickPosX) * partialTicks);
-		double ty = entity.lastTickPosY + ((entity.posY - entity.lastTickPosY) * partialTicks);
-		double tz = entity.lastTickPosZ + ((entity.posZ - entity.lastTickPosZ) * partialTicks);
+		final Entity entity = rView;
+		final double tx = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
+		final double ty = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
+		final double tz = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
 		GlStateManager.translate(-tx, -ty, -tz);
 	}
 

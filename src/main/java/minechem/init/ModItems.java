@@ -5,19 +5,12 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import minechem.api.ICustomRenderer;
-import minechem.item.ItemAtomicManipulator;
-import minechem.item.ItemChemistJournal;
-import minechem.item.ItemElement;
-import minechem.item.ItemMicroscopeLens;
-import minechem.item.ItemMolecule;
-import minechem.item.ItemPolytool;
+import minechem.item.*;
 import minechem.item.blueprint.ItemBlueprint;
 import minechem.item.element.ElementEnum;
 import minechem.item.molecule.MoleculeEnum;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -59,25 +52,25 @@ public class ModItems {
 
 	@SideOnly(Side.CLIENT)
 	public static void registerRenderers() {
-		for (Item item : ITEM_LIST) {
+		for (final Item item : ITEM_LIST) {
 			if (item instanceof ICustomRenderer) {
 				((ICustomRenderer) item).registerRenderer();
 			}
 		}
 	}
 
-	public static void registerFluidContainers() {
+	/*public static void registerFluidContainers() {
 		for (ElementEnum element : ElementEnum.elements.values()) {
 			if (element != null) {
-				ItemStack tube = new ItemStack(ModItems.element, 1, element.atomicNumber());
-
+				//ItemStack tube = new ItemStack(ModItems.element, 1, element.atomicNumber());
+	
 				//FluidContainerRegistry.registerFluidContainer(new FluidStack(FluidHelper.elements.get(element), 125), tube, emptyTube);
 			}
 		}
-
+	
 		for (MoleculeEnum molecule : MoleculeEnum.molecules.values()) {
 			if (molecule != null) {
-				ItemStack tube = new ItemStack(ModItems.molecule, 1, molecule.id());
+				//ItemStack tube = new ItemStack(ModItems.molecule, 1, molecule.id());
 				FluidStack fluidStack = new FluidStack(FluidRegistry.WATER, 125);
 				if (!molecule.name().equals("water")) {
 					fluidStack = new FluidStack(ModFluids.FLUID_MOLECULES.get(molecule), 125);
@@ -85,13 +78,13 @@ public class ModItems {
 				//FluidContainerRegistry.registerFluidContainer(fluidStack, tube, emptyTube);
 			}
 		}
-	}
+	}*/
 
 	public static void registerToOreDictionary() {
-		for (ElementEnum element : ElementEnum.elements.values()) {
+		for (final ElementEnum element : ElementEnum.elements.values()) {
 			OreDictionary.registerOre("element_" + element.name(), new ItemStack(ModItems.element, 1, element.atomicNumber()));
 		}
-		for (MoleculeEnum molecule : MoleculeEnum.molecules.values()) {
+		for (final MoleculeEnum molecule : MoleculeEnum.molecules.values()) {
 			OreDictionary.registerOre("molecule_" + molecule.name(), new ItemStack(ModItems.molecule, 1, molecule.id()));
 		}
 		OreDictionary.registerOre("dustSaltpeter", new ItemStack(ModItems.molecule, 1, MoleculeEnum.potassiumNitrate.id()));

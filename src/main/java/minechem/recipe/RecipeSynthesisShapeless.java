@@ -16,7 +16,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
  */
 public class RecipeSynthesisShapeless extends IForgeRegistryEntry.Impl<ISynthesisRecipe> implements ISynthesisRecipe {
 
-	public static final String GROUP = ModGlobals.ID + ":synthesis_shapeless";
+	public static final String GROUP = ModGlobals.MODID + ":synthesis_shapeless";
 	private int energyCost = 0;
 	private final boolean isSimple;
 	private final ItemStack recipeOutput;

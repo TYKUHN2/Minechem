@@ -35,7 +35,7 @@ public class BlockDecomposer extends BlockSimpleContainer {
 
 	public BlockDecomposer() {
 		super(Material.IRON);
-		setRegistryName(ModGlobals.ID + ":chemical_decomposer");
+		setRegistryName(ModGlobals.MODID + ":chemical_decomposer");
 		setUnlocalizedName("chemical_decomposer");
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		ForgeRegistries.BLOCKS.register(this);

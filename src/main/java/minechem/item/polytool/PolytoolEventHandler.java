@@ -1,8 +1,6 @@
 package minechem.item.polytool;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 
 import minechem.item.ItemPolytool;
 import minechem.item.element.ElementEnum;
@@ -12,10 +10,7 @@ import minechem.utils.MinechemUtil;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityWitherSkeleton;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -28,38 +23,38 @@ public class PolytoolEventHandler {
 
 	private static final Random random = new Random();
 
-	public void addDrops(LivingDropsEvent event, ItemStack dropStack) {
-		EntityItem entityitem = new EntityItem(event.getEntityLiving().world, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, dropStack);
+	public void addDrops(final LivingDropsEvent event, final ItemStack dropStack) {
+		final EntityItem entityitem = new EntityItem(event.getEntityLiving().world, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, dropStack);
 		entityitem.setPickupDelay(10);
 		event.getDrops().add(entityitem);
 	}
 
 	@SubscribeEvent
-	public void onDrop(LivingDropsEvent event) {
+	public void onDrop(final LivingDropsEvent event) {
 
 		// Large page of the beheading code based off TiC code
 		// Thanks to mDiyo
 		if ("player".equals(event.getSource().damageType)) {
 
-			EntityPlayer player = (EntityPlayer) event.getSource().getTrueSource();
-			ItemStack stack = player.getActiveItemStack();
+			final EntityPlayer player = (EntityPlayer) event.getSource().getTrueSource();
+			final ItemStack stack = player.getActiveItemStack();
 			if (!stack.isEmpty() && stack.getItem() instanceof ItemPolytool) {
-				float powerSilicon = ItemPolytool.getPowerOfType(stack, ElementEnum.Si);
+				final float powerSilicon = ItemPolytool.getPowerOfType(stack, ElementEnum.Si);
 				if (powerSilicon > 0) {
-					int amount = (int) Math.ceil(random.nextDouble() * powerSilicon);
-					Iterator<EntityItem> iter = event.getDrops().iterator();
+					//int amount = (int) Math.ceil(random.nextDouble() * powerSilicon);
+					final Iterator<EntityItem> iter = event.getDrops().iterator();
 					if (random.nextInt(16) < 1 + powerSilicon) {
-						ArrayList<EntityItem> trueResult = new ArrayList<EntityItem>();
+						final ArrayList<EntityItem> trueResult = new ArrayList<>();
 						while (iter.hasNext()) {
-							EntityItem entityItem = iter.next();
-							ItemStack item = entityItem.getItem();
+							final EntityItem entityItem = iter.next();
+							final ItemStack item = entityItem.getItem();
 							while (item.getCount() > 0) {
 								// Always avoid chances
-								RecipeDecomposer recipe = RecipeHandlerDecomposer.instance.getRecipe(item);
+								final RecipeDecomposer recipe = RecipeHandlerDecomposer.instance.getRecipe(item);
 
 								if (recipe != null) {
-									NonNullList<ItemStack> items = MinechemUtil.convertChemicalsIntoItemStacks(recipe.getOutput());
-									for (ItemStack itemStack : items) {
+									final NonNullList<ItemStack> items = MinechemUtil.convertChemicalsIntoItemStacks(recipe.getOutput());
+									for (final ItemStack itemStack : items) {
 										trueResult.add(new EntityItem(entityItem.world, entityItem.posX, entityItem.posY, entityItem.posZ, itemStack));
 									}
 								}
@@ -76,20 +71,20 @@ public class PolytoolEventHandler {
 					}
 				}
 			}
-			EntityLivingBase enemy = event.getEntityLiving();
+			final EntityLivingBase enemy = event.getEntityLiving();
 			if (enemy instanceof EntitySkeleton || enemy instanceof EntityZombie || enemy instanceof EntityPlayer || enemy instanceof EntityWitherSkeleton || enemy instanceof EntityCreeper || enemy instanceof EntityDragon) {
 
 				if (!stack.isEmpty() && stack.getItem() instanceof ItemPolytool) {
 					// Nitrogen preservation
 					if (enemy instanceof EntityZombie) {
 
-						float power = ItemPolytool.getPowerOfType(stack, ElementEnum.N);
+						final float power = ItemPolytool.getPowerOfType(stack, ElementEnum.N);
 						if (power > 0) {
-							int amount = (int) Math.ceil(random.nextDouble() * power);
+							final int amount = (int) Math.ceil(random.nextDouble() * power);
 							addDrops(event, new ItemStack(Items.COOKED_BEEF, amount, 0));
-							Iterator<EntityItem> iter = event.getDrops().iterator();
+							final Iterator<EntityItem> iter = event.getDrops().iterator();
 							while (iter.hasNext()) {
-								EntityItem entityItem = iter.next();
+								final EntityItem entityItem = iter.next();
 								if (entityItem.getItem().getItem() == Items.ROTTEN_FLESH) {
 									iter.remove();
 								}
@@ -98,12 +93,12 @@ public class PolytoolEventHandler {
 					}
 					// Calcium bonus
 					if (enemy instanceof EntitySkeleton) {
-						float power = ItemPolytool.getPowerOfType(stack, ElementEnum.Ca);
+						final float power = ItemPolytool.getPowerOfType(stack, ElementEnum.Ca);
 						if (power > 0) {
-							int amount = (int) Math.ceil(random.nextDouble() * power);
-							Iterator<EntityItem> iter = event.getDrops().iterator();
+							final int amount = (int) Math.ceil(random.nextDouble() * power);
+							final Iterator<EntityItem> iter = event.getDrops().iterator();
 							while (iter.hasNext()) {
-								EntityItem entityItem = iter.next();
+								final EntityItem entityItem = iter.next();
 								if (entityItem.getItem().getItem() == Items.BONE) {
 									entityItem.getItem().grow(amount);
 								}
@@ -124,8 +119,8 @@ public class PolytoolEventHandler {
 								addDrops(event, new ItemStack(Items.SKULL, 1, 2));
 							}
 							else if (event.getEntityLiving() instanceof EntityPlayer) {
-								ItemStack dropStack = new ItemStack(Items.SKULL, 1, 3);
-								NBTTagCompound nametag = new NBTTagCompound();
+								final ItemStack dropStack = new ItemStack(Items.SKULL, 1, 3);
+								final NBTTagCompound nametag = new NBTTagCompound();
 								nametag.setString("SkullOwner", player.getDisplayName().getFormattedText());
 								addDrops(event, dropStack);
 							}

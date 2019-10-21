@@ -10,8 +10,8 @@ import p455w0rdslib.LibGlobals;
 public class ModGlobals {
 
 	public static final String NAME = "Minechem";
-	public static final String ID = "minechem";
-	public static final String VERSION = "2.0.133a";
+	public static final String MODID = "minechem";
+	public static final String VERSION = "2.0.135a";
 	public static final String DEPENDENCIES = "required-after:forge@[14.23.2.2638,);" + LibGlobals.REQUIRE_DEP;
 
 	public static final int TICKS_PER_SECOND = 20;
@@ -32,11 +32,11 @@ public class ModGlobals {
 		 */
 		public static void preInit() {
 			final ModMetadata metadata = new ModMetadata();
-			metadata.modId = ModGlobals.ID;
+			metadata.modId = ModGlobals.MODID;
 			metadata.name = ModGlobals.NAME;
 			metadata.description = ModGlobals.NAME + " is a mod about chemistry, allowing you to research blocks and items, and then break them down into their base compounds and elements.";
 			metadata.url = "https://minecraft.curseforge.com/projects/minechem";
-			metadata.logoFile = "assets/" + ModGlobals.ID + "/logo.png";
+			metadata.logoFile = "assets/" + ModGlobals.MODID + "/logo.png";
 			metadata.version = ModGlobals.VERSION;
 			metadata.authorList = Arrays.asList("jakimfett", "TheRealp455w0rd");
 			metadata.credits = "You can view a full list of contributors on github!";
@@ -46,13 +46,13 @@ public class ModGlobals {
 	}
 
 	public static class Sounds {
-		private static final String SOUNDS_DIR = "sounds/" + ModGlobals.ID + "/";
+		private static final String SOUNDS_DIR = "sounds/" + ModGlobals.MODID + "/";
 		public static final String PROJECTOR = SOUNDS_DIR + "projector.ogg";
 	}
 
 	public static class Textures {
 		public static final class IIcon {
-			private static final String PREFIX = ModGlobals.ID + ":";
+			private static final String PREFIX = ModGlobals.MODID + ":";
 
 			public static final String POLYTOOL = PREFIX + "polytool";
 			public static final String ATOMIC_MANIPULATOR = PREFIX + "AtomicManipulator";
@@ -125,28 +125,28 @@ public class ModGlobals {
 		//For block-break particles
 		public static final class Sprite {
 
-			public static final ResourceLocation MICROSCOPE = new ResourceLocation(ModGlobals.ID, "sprite/microscope");
-			public static final ResourceLocation SYNTHESIZER = new ResourceLocation(ModGlobals.ID, "sprite/synthesizer");
-			public static final ResourceLocation DECOMPOSER = new ResourceLocation(ModGlobals.ID, "sprite/decomposer");
-			public static final ResourceLocation BLUEPRINT_PROJECTOR = new ResourceLocation(ModGlobals.ID, "sprite/blueprint_projector");
-			public static final ResourceLocation LEADED_CHEST = new ResourceLocation(ModGlobals.ID, "model/leadedchestmodel");
-			public static final ResourceLocation FILLED_TUBE = new ResourceLocation(ModGlobals.ID, "items/filled_test_tube");
+			public static final ResourceLocation MICROSCOPE = new ResourceLocation(ModGlobals.MODID, "sprite/microscope");
+			public static final ResourceLocation SYNTHESIZER = new ResourceLocation(ModGlobals.MODID, "sprite/synthesizer");
+			public static final ResourceLocation DECOMPOSER = new ResourceLocation(ModGlobals.MODID, "sprite/decomposer");
+			public static final ResourceLocation BLUEPRINT_PROJECTOR = new ResourceLocation(ModGlobals.MODID, "sprite/blueprint_projector");
+			public static final ResourceLocation LEADED_CHEST = new ResourceLocation(ModGlobals.MODID, "model/leadedchestmodel");
+			public static final ResourceLocation FILLED_TUBE = new ResourceLocation(ModGlobals.MODID, "items/filled_test_tube");
 
 			public static final ResourceLocation[] LIQUID_STATES = new ResourceLocation[] {
-					new ResourceLocation(ModGlobals.ID, "items/liquid1"), new ResourceLocation(ModGlobals.ID, "items/liquid2"), new ResourceLocation(ModGlobals.ID, "items/liquid3"), new ResourceLocation(ModGlobals.ID, "items/liquid4"), new ResourceLocation(ModGlobals.ID, "items/liquid5"), new ResourceLocation(ModGlobals.ID, "items/liquid6"), new ResourceLocation(ModGlobals.ID, "items/liquid7")
+					new ResourceLocation(ModGlobals.MODID, "items/liquid1"), new ResourceLocation(ModGlobals.MODID, "items/liquid2"), new ResourceLocation(ModGlobals.MODID, "items/liquid3"), new ResourceLocation(ModGlobals.MODID, "items/liquid4"), new ResourceLocation(ModGlobals.MODID, "items/liquid5"), new ResourceLocation(ModGlobals.MODID, "items/liquid6"), new ResourceLocation(ModGlobals.MODID, "items/liquid7")
 			};
 
 			public static final ResourceLocation[] GAS_STATES = new ResourceLocation[] {
-					new ResourceLocation(ModGlobals.ID, "items/gas1"), new ResourceLocation(ModGlobals.ID, "items/gas2"), new ResourceLocation(ModGlobals.ID, "items/gas3"), new ResourceLocation(ModGlobals.ID, "items/gas4"), new ResourceLocation(ModGlobals.ID, "items/gas5"), new ResourceLocation(ModGlobals.ID, "items/gas6"), new ResourceLocation(ModGlobals.ID, "items/gas7")
+					new ResourceLocation(ModGlobals.MODID, "items/gas1"), new ResourceLocation(ModGlobals.MODID, "items/gas2"), new ResourceLocation(ModGlobals.MODID, "items/gas3"), new ResourceLocation(ModGlobals.MODID, "items/gas4"), new ResourceLocation(ModGlobals.MODID, "items/gas5"), new ResourceLocation(ModGlobals.MODID, "items/gas6"), new ResourceLocation(ModGlobals.MODID, "items/gas7")
 			};
 
-			public static final ResourceLocation SOLID_STATE = new ResourceLocation(ModGlobals.ID, "items/solid");
-			public static final ResourceLocation MOLECULE_TUBE = new ResourceLocation(ModGlobals.ID, "items/molecule");
-			public static final ResourceLocation MOLECULE_PASS_1 = new ResourceLocation(ModGlobals.ID, "items/molecule_pass1");
-			public static final ResourceLocation MOLECULE_PASS_2 = new ResourceLocation(ModGlobals.ID, "items/molecule_pass2");
+			public static final ResourceLocation SOLID_STATE = new ResourceLocation(ModGlobals.MODID, "items/solid");
+			public static final ResourceLocation MOLECULE_TUBE = new ResourceLocation(ModGlobals.MODID, "items/molecule");
+			public static final ResourceLocation MOLECULE_PASS_1 = new ResourceLocation(ModGlobals.MODID, "items/molecule_pass1");
+			public static final ResourceLocation MOLECULE_PASS_2 = new ResourceLocation(ModGlobals.MODID, "items/molecule_pass2");
 
-			public static final ResourceLocation FLUID_STILL = new ResourceLocation(ModGlobals.ID, "blocks/fluid_still");
-			public static final ResourceLocation FLUID_FLOW = new ResourceLocation(ModGlobals.ID, "blocks/fluid_flow");
+			public static final ResourceLocation FLUID_STILL = new ResourceLocation(ModGlobals.MODID, "blocks/fluid_still");
+			public static final ResourceLocation FLUID_FLOW = new ResourceLocation(ModGlobals.MODID, "blocks/fluid_flow");
 
 		}
 
@@ -181,47 +181,47 @@ public class ModGlobals {
 	}
 
 	public static class ModResources {
-		public static final ResourceLocation SPRITES = new ResourceLocation(ModGlobals.ID, Textures.Gui.SPRITES);
+		public static final ResourceLocation SPRITES = new ResourceLocation(ModGlobals.MODID, Textures.Gui.SPRITES);
 
 		public static final class Icon {
-			public static final ResourceLocation ENERGY = new ResourceLocation(ModGlobals.ID, Textures.Icon.POWER);
-			public static final ResourceLocation FULL_ENERGY = new ResourceLocation(ModGlobals.ID, Textures.Icon.FULL_POWER);
-			public static final ResourceLocation HELP = new ResourceLocation(ModGlobals.ID, Textures.Icon.HELP);
-			public static final ResourceLocation PATREON = new ResourceLocation(ModGlobals.ID, Textures.Icon.PATREON);
-			public static final ResourceLocation JAMMED = new ResourceLocation(ModGlobals.ID, Textures.Icon.JAMMED);
-			public static final ResourceLocation NO_BOTTLES = new ResourceLocation(ModGlobals.ID, Textures.Icon.NO_BOTTLES);
-			public static final ResourceLocation NO_RECIPE = new ResourceLocation(ModGlobals.ID, Textures.Icon.NO_RECIPE);
-			public static final ResourceLocation NO_ENERGY = new ResourceLocation(ModGlobals.ID, Textures.Icon.UNPOWERED);
+			public static final ResourceLocation ENERGY = new ResourceLocation(ModGlobals.MODID, Textures.Icon.POWER);
+			public static final ResourceLocation FULL_ENERGY = new ResourceLocation(ModGlobals.MODID, Textures.Icon.FULL_POWER);
+			public static final ResourceLocation HELP = new ResourceLocation(ModGlobals.MODID, Textures.Icon.HELP);
+			public static final ResourceLocation PATREON = new ResourceLocation(ModGlobals.MODID, Textures.Icon.PATREON);
+			public static final ResourceLocation JAMMED = new ResourceLocation(ModGlobals.MODID, Textures.Icon.JAMMED);
+			public static final ResourceLocation NO_BOTTLES = new ResourceLocation(ModGlobals.MODID, Textures.Icon.NO_BOTTLES);
+			public static final ResourceLocation NO_RECIPE = new ResourceLocation(ModGlobals.MODID, Textures.Icon.NO_RECIPE);
+			public static final ResourceLocation NO_ENERGY = new ResourceLocation(ModGlobals.MODID, Textures.Icon.UNPOWERED);
 		}
 
 		public static final class Tab {
-			public static final ResourceLocation RIGHT = new ResourceLocation(ModGlobals.ID, Textures.Gui.TAB_RIGHT);
-			public static final ResourceLocation LEFT = new ResourceLocation(ModGlobals.ID, Textures.Gui.TAB_LEFT);
-			public static final ResourceLocation TABLE_HEX = new ResourceLocation(ModGlobals.ID, Textures.Gui.TABLE_HEX);
+			public static final ResourceLocation RIGHT = new ResourceLocation(ModGlobals.MODID, Textures.Gui.TAB_RIGHT);
+			public static final ResourceLocation LEFT = new ResourceLocation(ModGlobals.MODID, Textures.Gui.TAB_LEFT);
+			public static final ResourceLocation TABLE_HEX = new ResourceLocation(ModGlobals.MODID, Textures.Gui.TABLE_HEX);
 		}
 
 		public static final class Gui {
-			public static final ResourceLocation JOURNAL = new ResourceLocation(ModGlobals.ID, Textures.Gui.JOURNAL);
-			public static final ResourceLocation POLYTOOL = new ResourceLocation(ModGlobals.ID, Textures.Gui.POLYTOOL);
-			public static final ResourceLocation DECOMPOSER = new ResourceLocation(ModGlobals.ID, Textures.Gui.DECOMPOSER);
-			public static final ResourceLocation NEI_DECOMPOSER = new ResourceLocation(ModGlobals.ID, Textures.Gui.DECOMPOSER_NEI);
-			public static final ResourceLocation SYNTHESIS = new ResourceLocation(ModGlobals.ID, Textures.Gui.SYNTHESIS);
-			public static final ResourceLocation PROJECTOR = new ResourceLocation(ModGlobals.ID, Textures.Gui.PROJECTOR);
-			public static final ResourceLocation LEADED_CHEST = new ResourceLocation(ModGlobals.ID, Textures.Gui.LEADED_CHEST);
-			public static final ResourceLocation MICROSCOPE = new ResourceLocation(ModGlobals.ID, Textures.Gui.MICROSCOPE);
-			public static final ResourceLocation FISSION = new ResourceLocation(ModGlobals.ID, Textures.Gui.FISSION);
-			public static final ResourceLocation FUSION = new ResourceLocation(ModGlobals.ID, Textures.Gui.FUSION);
-			public static final ResourceLocation TANK = new ResourceLocation(ModGlobals.ID, Textures.Gui.TANK);
+			public static final ResourceLocation JOURNAL = new ResourceLocation(ModGlobals.MODID, Textures.Gui.JOURNAL);
+			public static final ResourceLocation POLYTOOL = new ResourceLocation(ModGlobals.MODID, Textures.Gui.POLYTOOL);
+			public static final ResourceLocation DECOMPOSER = new ResourceLocation(ModGlobals.MODID, Textures.Gui.DECOMPOSER);
+			public static final ResourceLocation NEI_DECOMPOSER = new ResourceLocation(ModGlobals.MODID, Textures.Gui.DECOMPOSER_NEI);
+			public static final ResourceLocation SYNTHESIS = new ResourceLocation(ModGlobals.MODID, Textures.Gui.SYNTHESIS);
+			public static final ResourceLocation PROJECTOR = new ResourceLocation(ModGlobals.MODID, Textures.Gui.PROJECTOR);
+			public static final ResourceLocation LEADED_CHEST = new ResourceLocation(ModGlobals.MODID, Textures.Gui.LEADED_CHEST);
+			public static final ResourceLocation MICROSCOPE = new ResourceLocation(ModGlobals.MODID, Textures.Gui.MICROSCOPE);
+			public static final ResourceLocation FISSION = new ResourceLocation(ModGlobals.MODID, Textures.Gui.FISSION);
+			public static final ResourceLocation FUSION = new ResourceLocation(ModGlobals.MODID, Textures.Gui.FUSION);
+			public static final ResourceLocation TANK = new ResourceLocation(ModGlobals.MODID, Textures.Gui.TANK);
 		}
 
 		public static final class Model {
-			public static final ResourceLocation PROJECTOR_OFF = new ResourceLocation(ModGlobals.ID, Textures.Model.PROJECTOR_OFF);
-			public static final ResourceLocation PROJECTOR_ON = new ResourceLocation(ModGlobals.ID, Textures.Model.PROJECTOR_ON);
-			public static final ResourceLocation DECOMPOSER_OFF = new ResourceLocation(ModGlobals.ID, Textures.Model.DECOMPOSER_OFF);
-			public static final ResourceLocation DECOMPOSER_ON = new ResourceLocation(ModGlobals.ID, Textures.Model.DECOMPOSER_ON);
-			public static final ResourceLocation LEADED_CHEST = new ResourceLocation(ModGlobals.ID, Textures.Model.LEADED_CHEST);
-			public static final ResourceLocation MICROSCOPE = new ResourceLocation(ModGlobals.ID, Textures.Model.MICROSCOPE);
-			public static final ResourceLocation SYNTHESIS = new ResourceLocation(ModGlobals.ID, Textures.Model.SYNTHESIS);
+			public static final ResourceLocation PROJECTOR_OFF = new ResourceLocation(ModGlobals.MODID, Textures.Model.PROJECTOR_OFF);
+			public static final ResourceLocation PROJECTOR_ON = new ResourceLocation(ModGlobals.MODID, Textures.Model.PROJECTOR_ON);
+			public static final ResourceLocation DECOMPOSER_OFF = new ResourceLocation(ModGlobals.MODID, Textures.Model.DECOMPOSER_OFF);
+			public static final ResourceLocation DECOMPOSER_ON = new ResourceLocation(ModGlobals.MODID, Textures.Model.DECOMPOSER_ON);
+			public static final ResourceLocation LEADED_CHEST = new ResourceLocation(ModGlobals.MODID, Textures.Model.LEADED_CHEST);
+			public static final ResourceLocation MICROSCOPE = new ResourceLocation(ModGlobals.MODID, Textures.Model.MICROSCOPE);
+			public static final ResourceLocation SYNTHESIS = new ResourceLocation(ModGlobals.MODID, Textures.Model.SYNTHESIS);
 		}
 
 	}

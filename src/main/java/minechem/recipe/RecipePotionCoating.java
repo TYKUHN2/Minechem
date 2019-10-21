@@ -150,7 +150,7 @@ public class RecipePotionCoating implements IRecipe {
 
 	@Override
 	public ResourceLocation getRegistryName() {
-		return new ResourceLocation(ModGlobals.ID, "potion_coating");
+		return new ResourceLocation(ModGlobals.MODID, "potion_coating");
 	}
 
 	@Override

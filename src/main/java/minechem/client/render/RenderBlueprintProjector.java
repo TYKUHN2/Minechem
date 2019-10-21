@@ -7,7 +7,6 @@ import minechem.init.ModGlobals.ModResources;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
@@ -24,10 +23,10 @@ public class RenderBlueprintProjector extends TileEntitySpecialRenderer<TileBlue
 	}
 
 	@Override
-	public void render(TileBlueprintProjector tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-		World world = Minecraft.getMinecraft().world;
-		IBlockState state = world.getBlockState(tileEntity.getPos());
-		int facing = state.getBlock().getMetaFromState(state);
+	public void render(final TileBlueprintProjector tileEntity, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float alpha) {
+		final World world = Minecraft.getMinecraft().world;
+		final IBlockState state = world.getBlockState(tileEntity.getPos());
+		final int facing = state.getBlock().getMetaFromState(state);
 		int j = 0;
 
 		if (facing == 2) {
@@ -49,7 +48,7 @@ public class RenderBlueprintProjector extends TileEntitySpecialRenderer<TileBlue
 		GlStateManager.translate(x + 0.5D, y + 1.5D, z + 0.5D);
 		GlStateManager.rotate(180f, 0f, 0f, 1f);
 		GlStateManager.rotate(j * 45.0F, 0.0F, 1.0F, 0.0F);
-		if (tileEntity != null && (tileEntity.hasBlueprint() && (!ModConfig.powerUseEnabled || (ModConfig.powerUseEnabled && tileEntity.getCapability(CapabilityEnergy.ENERGY, EnumFacing.UP).getEnergyStored() > 0)))) {
+		if (tileEntity != null && tileEntity.hasBlueprint() && (!ModConfig.powerUseEnabled || ModConfig.powerUseEnabled && tileEntity.getCapability(CapabilityEnergy.ENERGY, EnumFacing.UP).getEnergyStored() > 0)) {
 			bindTexture(ModResources.Model.PROJECTOR_ON);
 		}
 		else {
@@ -60,10 +59,10 @@ public class RenderBlueprintProjector extends TileEntitySpecialRenderer<TileBlue
 		GlStateManager.popMatrix();
 		/*
 				if (tileEntity.hasBlueprint() && !tileEntity.isStructureComplete()) {
-
+		
 					Blueprint.FISSION_REACTOR.visualiseStateArray(tileEntity.getPos(), world, EnumFacing.values()[facing], tileEntity.getProjectionLayer());
 					GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-
+		
 				}
 				*/
 	}
@@ -72,37 +71,37 @@ public class RenderBlueprintProjector extends TileEntitySpecialRenderer<TileBlue
 		public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
 			return new ArrayList<BakedQuad>();
 		}
-
+	
 		@Override
 		public boolean isAmbientOcclusion() {
 			return false;
 		}
-
+	
 		@Override
 		public boolean isGui3d() {
 			return false;
 		}
-
+	
 		@Override
 		public boolean isBuiltInRenderer() {
 			return true;
 		}
-
+	
 		@Override
 		public TextureAtlasSprite getParticleTexture() {
 			return null;
 		}
-
+	
 		@Override
 		public ItemCameraTransforms getItemCameraTransforms() {
 			return ItemCameraTransforms.DEFAULT;
 		}
-
+	
 		@Override
 		public ItemOverrideList getOverrides() {
 			return ItemOverrideList.NONE;
 		}
-
+	
 		@Override
 		public void renderItem(ItemStack stack, TransformType transformType) {
 			RenderHelper.enableStandardItemLighting();
@@ -118,7 +117,7 @@ public class RenderBlueprintProjector extends TileEntitySpecialRenderer<TileBlue
 			GlStateManager.translate(-0.5D, -1.5D, -0.5D);
 			GlStateManager.popMatrix();
 		}
-
+	
 		@Override
 		public IModelState getTransforms() {
 			return TransformUtils.DEFAULT_BLOCK;
@@ -134,8 +133,8 @@ public class RenderBlueprintProjector extends TileEntitySpecialRenderer<TileBlue
 		}
 
 		@Override
-		public void renderByItem(ItemStack stack, float partialTicks) {
-			RenderHelper.enableStandardItemLighting();
+		public void renderByItem(final ItemStack stack, final float partialTicks) {
+			//RenderHelper.enableStandardItemLighting();
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0.5D, 1.5D, 0.5D);
 			GlStateManager.rotate(180f, 0f, 0f, 1f);

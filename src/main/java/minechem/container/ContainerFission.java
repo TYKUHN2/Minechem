@@ -16,10 +16,10 @@ public class ContainerFission extends Container implements IRadiationShield {
 	protected final int kPlayerInventorySlotEnd;
 	protected final int kDecomposerInventoryEnd;
 
-	public ContainerFission(InventoryPlayer inventoryPlayer, TileFissionCore fission) {
+	public ContainerFission(final InventoryPlayer inventoryPlayer, final TileFissionCore fission) {
 		this.fission = fission;
 		kPlayerInventorySlotStart = fission.getSizeInventory();
-		kPlayerInventorySlotEnd = kPlayerInventorySlotStart + (9 * 4);
+		kPlayerInventorySlotEnd = kPlayerInventorySlotStart + 9 * 4;
 		kDecomposerInventoryEnd = fission.getSizeInventory();
 
 		addSlotToContainer(new Slot(fission, TileFissionCore.kInput[0], 80, 16));
@@ -28,13 +28,12 @@ public class ContainerFission extends Container implements IRadiationShield {
 	}
 
 	private void bindOutputSlot() {
-		int x = 8;
-		int y = 62;
-		int j = 0;
-		addSlotToContainer(new Slot(fission, 2, x + (4 * 18), y));
+		final int x = 8;
+		final int y = 62;
+		addSlotToContainer(new Slot(fission, 2, x + 4 * 18, y));
 	}
 
-	private void bindPlayerInventory(InventoryPlayer inventoryPlayer) {
+	private void bindPlayerInventory(final InventoryPlayer inventoryPlayer) {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 9; j++) {
 				addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
@@ -47,17 +46,17 @@ public class ContainerFission extends Container implements IRadiationShield {
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer entityPlayer) {
+	public boolean canInteractWith(final EntityPlayer entityPlayer) {
 		return fission.isUsableByPlayer(entityPlayer);
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer entityPlayer, int slot) {
-		Slot slotObject = inventorySlots.get(slot);
+	public ItemStack transferStackInSlot(final EntityPlayer entityPlayer, final int slot) {
+		final Slot slotObject = inventorySlots.get(slot);
 		ItemStack stack = ItemStack.EMPTY;
 
 		if (slotObject != null && slotObject.getHasStack()) {
-			ItemStack stackInSlot = slotObject.getStack();
+			final ItemStack stackInSlot = slotObject.getStack();
 			stack = stackInSlot.copy();
 			if (slot < 2) {
 				if (!mergeItemStack(stackInSlot, kPlayerInventorySlotStart, inventorySlots.size(), true)) {
@@ -97,7 +96,7 @@ public class ContainerFission extends Container implements IRadiationShield {
 	}
 
 	@Override
-	public float getRadiationReductionFactor(int baseDamage, ItemStack itemstack, EntityPlayer player) {
+	public float getRadiationReductionFactor(final int baseDamage, final ItemStack itemstack, final EntityPlayer player) {
 		return 0.4F;
 	}
 

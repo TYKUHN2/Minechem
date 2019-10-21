@@ -13,13 +13,13 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class PolytoolTypeAlloy extends PolytoolUpgradeType {
 
-	private ElementAlloyEnum alloy;
+	private final ElementAlloyEnum alloy;
 
-	public PolytoolTypeAlloy(ElementAlloyEnum alloy) {
+	public PolytoolTypeAlloy(final ElementAlloyEnum alloy) {
 		this.alloy = alloy;
 	}
 
-	public PolytoolTypeAlloy(ElementAlloyEnum alloy, float power) {
+	public PolytoolTypeAlloy(final ElementAlloyEnum alloy, final float power) {
 		this.power = power;
 		this.alloy = alloy;
 	}
@@ -45,10 +45,10 @@ public class PolytoolTypeAlloy extends PolytoolUpgradeType {
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack itemStack, Block block, int meta) {
+	public float getStrVsBlock(final ItemStack itemStack, final Block block, final int meta) {
 		// There must be a better way to do this
 		if (isToolEffective(new ItemStack(Items.DIAMOND_PICKAXE), block, meta)) {
-			for (int id : OreDictionary.getOreIDs(new ItemStack(block, 1, meta))) {
+			for (final int id : OreDictionary.getOreIDs(new ItemStack(block, 1, meta))) {
 				if (OreDictionary.getOreName(id).contains("stone")) {
 					return getStrStone();
 				}
@@ -70,9 +70,10 @@ public class PolytoolTypeAlloy extends PolytoolUpgradeType {
 		return 0;
 	}
 
-	public boolean isToolEffective(ItemStack itemStack, Block block, int meta) {
-		IBlockState state = block.getStateFromMeta(meta);
-		Iterator<String> var4 = itemStack.getItem().getToolClasses(itemStack).iterator();
+	@SuppressWarnings("deprecation")
+	public boolean isToolEffective(final ItemStack itemStack, final Block block, final int meta) {
+		final IBlockState state = block.getStateFromMeta(meta);
+		final Iterator<String> var4 = itemStack.getItem().getToolClasses(itemStack).iterator();
 
 		String type;
 		do {

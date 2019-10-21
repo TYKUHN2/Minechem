@@ -4,27 +4,25 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 public class GuiFakeSlot extends Gui {
 
-	private Minecraft mc;
-	private GuiContainerTabbed parentContainer;
-	private EntityPlayer player;
+	private final Minecraft mc;
+	private final GuiContainerTabbed parentContainer;
+	private final EntityPlayer player;
 	private int xPos, yPos;
 	private int xOffset = 0;
 	private int yOffset = 0;
-	private int width = 16;
-	private int height = 16;
+	private final int width = 16;
+	private final int height = 16;
 	private ItemStack itemstack;
-	private RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+	private final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 
-	public GuiFakeSlot(GuiContainerTabbed parentContainer, EntityPlayer player) {
+	public GuiFakeSlot(final GuiContainerTabbed parentContainer, final EntityPlayer player) {
 		this.parentContainer = parentContainer;
 		this.player = player;
 		mc = Minecraft.getMinecraft();
@@ -38,7 +36,7 @@ public class GuiFakeSlot extends Gui {
 		return parentContainer.mouseY;
 	}
 
-	public void setItemStack(ItemStack itemstack) {
+	public void setItemStack(final ItemStack itemstack) {
 		this.itemstack = itemstack;
 	}
 
@@ -46,19 +44,19 @@ public class GuiFakeSlot extends Gui {
 		return itemstack;
 	}
 
-	public void setXPos(int x) {
+	public void setXPos(final int x) {
 		xPos = x;
 	}
 
-	public void setYPos(int y) {
+	public void setYPos(final int y) {
 		yPos = y;
 	}
 
-	public void setXOffset(int x) {
+	public void setXOffset(final int x) {
 		xOffset = x;
 	}
 
-	public void setYOffset(int y) {
+	public void setYOffset(final int y) {
 		yOffset = y;
 	}
 
@@ -71,10 +69,10 @@ public class GuiFakeSlot extends Gui {
 	}
 
 	public boolean getMouseIsOver() {
-		int mx = mouseX();
-		int my = mouseY();
-		int x = getXPos();
-		int y = getYPos();
+		final int mx = mouseX();
+		final int my = mouseY();
+		final int x = getXPos();
+		final int y = getYPos();
 		return mx >= x && mx <= x + width && my >= y && my <= y + height;
 	}
 
@@ -93,7 +91,7 @@ public class GuiFakeSlot extends Gui {
 		GlStateManager.popMatrix();
 	}
 
-	public void drawTooltip(int x, int y) {
+	public void drawTooltip(final int x, final int y) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, 0);
 		if (itemstack != null && getMouseIsOver()) {
@@ -103,7 +101,7 @@ public class GuiFakeSlot extends Gui {
 		GlStateManager.popMatrix();
 	}
 
-	private void drawItemStack(ItemStack itemstack) {
+	private void drawItemStack(final ItemStack itemstack) {
 		GlStateManager.disableLighting();
 		RenderHelper.enableGUIStandardItemLighting();
 		zLevel = 100.0F;
@@ -114,26 +112,26 @@ public class GuiFakeSlot extends Gui {
 		renderItem.zLevel = 0.0F;
 	}
 
-	private void drawItemStackTooltip(ItemStack itemstack) {
+	private void drawItemStackTooltip(final ItemStack stack) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.disableLighting();
 		GlStateManager.disableDepth();
-		List<String> lines = itemstack.getTooltip(player, mc.gameSettings.advancedItemTooltips ? TooltipFlags.ADVANCED : TooltipFlags.NORMAL);
-		int x = 0;
-		int y = 0;
-		int lineSpacing = 10;
+		final List<String> lines = stack.getTooltip(player, mc.gameSettings.advancedItemTooltips ? TooltipFlags.ADVANCED : TooltipFlags.NORMAL);
+		final int x = 0;
+		final int y = 0;
+		final int lineSpacing = 10;
 		int maxLineWidth = 0;
-		for (String line : lines) {
-			int lineWidth = mc.fontRenderer.getStringWidth(line);
+		for (final String line : lines) {
+			final int lineWidth = mc.fontRenderer.getStringWidth(line);
 			if (lineWidth > maxLineWidth) {
 				maxLineWidth = lineWidth;
 			}
 		}
 
-		int bkX = x - 3;
-		int bkY = y - 3;
-		int tooltipWidth = maxLineWidth + 4;
-		int tooltipHeight = (lines.size() * lineSpacing) + 4;
+		final int bkX = x - 3;
+		final int bkY = y - 3;
+		final int tooltipWidth = maxLineWidth + 4;
+		final int tooltipHeight = lines.size() * lineSpacing + 4;
 		int backgroundColor;
 		backgroundColor = 0xAA000088;
 		drawGradientRect(bkX - 1, bkY - 1, bkX + tooltipWidth + 1, bkY + tooltipHeight + 1, backgroundColor, backgroundColor);
@@ -141,11 +139,11 @@ public class GuiFakeSlot extends Gui {
 		drawGradientRect(bkX, bkY, bkX + tooltipWidth, bkY + tooltipHeight, backgroundColor, backgroundColor);
 
 		for (int i = 0; i < lines.size(); i++) {
-			int tx = x;
-			int ty = y + (i * 10);
+			final int tx = x;
+			final int ty = y + i * 10;
 			String tooltip = lines.get(i);
 			if (i == 0) {
-				tooltip = itemstack.getRarity().rarityColor + tooltip;
+				tooltip = stack.getItem().getForgeRarity(stack).getColor() + tooltip;
 			}
 			mc.fontRenderer.drawStringWithShadow(tooltip, tx, ty, 0xFFFFFFFF);
 		}
@@ -156,7 +154,7 @@ public class GuiFakeSlot extends Gui {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.disableLighting();
 		GlStateManager.disableDepth();
-		int color4 = 0x44000000;
+		final int color4 = 0x44000000;
 		drawGradientRect(0, 0, width, height, color4, color4);
 		GlStateManager.enableLighting();
 		GlStateManager.enableDepth();

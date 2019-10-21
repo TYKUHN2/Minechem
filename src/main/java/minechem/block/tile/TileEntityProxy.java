@@ -2,9 +2,7 @@ package minechem.block.tile;
 
 import javax.annotation.Nullable;
 
-import minechem.block.multiblock.tile.TileFissionCore;
-import minechem.block.multiblock.tile.TileFusionCore;
-import minechem.block.multiblock.tile.TileReactorCore;
+import minechem.block.multiblock.tile.*;
 import minechem.init.ModConfig;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,7 +13,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInventory {
@@ -31,24 +28,24 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-		return capability == CapabilityEnergy.ENERGY;
+	public boolean hasCapability(final Capability<?> capability, @Nullable final EnumFacing facing) {
+		return getManager() != null && getManager().hasCapability(capability, facing);
 	}
 
 	@Override
 	@Nullable
-	public <T> T getCapability(Capability<T> capability, @Nullable net.minecraft.util.EnumFacing facing) {
-		return hasCapability(capability, facing) ? CapabilityEnergy.ENERGY.cast(energyStorage) : null;
+	public <T> T getCapability(final Capability<T> capability, @Nullable final EnumFacing facing) {
+		return hasCapability(capability, facing) ? getManager().getCapability(capability, facing) : null;
 	}
 
 	public TileReactorCore getManager() {
-		int xx = getPos().getX();
-		int yy = getPos().getY();
-		int zz = getPos().getZ();
-		boolean posMatch = managerXOffset == xx && managerYOffset == yy && managerZOffset == zz;
+		final int xx = getPos().getX();
+		final int yy = getPos().getY();
+		final int zz = getPos().getZ();
+		final boolean posMatch = managerXOffset == xx && managerYOffset == yy && managerZOffset == zz;
 
 		if (!posMatch && manager == null) {
-			TileEntity te = world.getTileEntity(new BlockPos(getPos().getX() + managerXOffset, getPos().getY() + managerYOffset, getPos().getZ() + managerZOffset));
+			final TileEntity te = world.getTileEntity(new BlockPos(getPos().getX() + managerXOffset, getPos().getY() + managerYOffset, getPos().getZ() + managerZOffset));
 			if (te instanceof TileFusionCore) {
 				manager = (TileFusionCore) te;
 			}
@@ -72,7 +69,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
+	public NBTTagCompound writeToNBT(final NBTTagCompound nbtTagCompound) {
 		super.writeToNBT(nbtTagCompound);
 		if (manager != null) {
 			nbtTagCompound.setInteger("managerXOffset", manager.getPos().getX());
@@ -84,18 +81,18 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbtTagCompound) {
+	public void readFromNBT(final NBTTagCompound nbtTagCompound) {
 		super.readFromNBT(nbtTagCompound);
 		managerXOffset = nbtTagCompound.getInteger("managerXOffset");
 		managerYOffset = nbtTagCompound.getInteger("managerYOffset");
 		managerZOffset = nbtTagCompound.getInteger("managerZOffset");
-		int xx = getPos().getX();
-		int yy = getPos().getY();
-		int zz = getPos().getZ();
-		boolean posMatch = managerXOffset == xx && managerYOffset == yy && managerZOffset == zz;
+		final int xx = getPos().getX();
+		final int yy = getPos().getY();
+		final int zz = getPos().getZ();
+		final boolean posMatch = managerXOffset == xx && managerYOffset == yy && managerZOffset == zz;
 		if (world != null && !posMatch) {
-			BlockPos tilePos = new BlockPos(getPos().getX() + managerXOffset, getPos().getY() + managerYOffset, getPos().getZ() + managerZOffset);
-			TileEntity te = world.getTileEntity(tilePos);
+			final BlockPos tilePos = new BlockPos(getPos().getX() + managerXOffset, getPos().getY() + managerYOffset, getPos().getZ() + managerZOffset);
+			final TileEntity te = world.getTileEntity(tilePos);
 			if (te instanceof TileFusionCore) {
 				manager = (TileFusionCore) te;
 			}
@@ -113,7 +110,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 
 	}
 
-	public void setManager(TileReactorCore managerTileEntity) {
+	public void setManager(final TileReactorCore managerTileEntity) {
 		manager = managerTileEntity;
 		if (managerTileEntity != null) {
 			managerXOffset = managerTileEntity.getPos().getX() - pos.getX();
@@ -121,7 +118,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 			managerZOffset = managerTileEntity.getPos().getZ() - pos.getZ();
 			energyStorage.setManager(manager);
 			markDirty();
-			IBlockState iblockstate = getWorld().getBlockState(getPos());
+			final IBlockState iblockstate = getWorld().getBlockState(getPos());
 			if (iblockstate != null) {
 				getWorld().notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
 			}
@@ -137,7 +134,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int i) {
+	public ItemStack getStackInSlot(final int i) {
 		if (manager != null && manager instanceof ISidedInventory) {
 			return ((ISidedInventory) manager).getStackInSlot(i);
 		}
@@ -145,7 +142,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int j) {
+	public ItemStack decrStackSize(final int i, final int j) {
 		if (manager != null && manager instanceof ISidedInventory) {
 			return ((ISidedInventory) manager).decrStackSize(i, j);
 		}
@@ -153,7 +150,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(int i) {
+	public ItemStack removeStackFromSlot(final int i) {
 		if (manager != null && manager instanceof ISidedInventory) {
 			return ((ISidedInventory) manager).removeStackFromSlot(i);
 		}
@@ -161,7 +158,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack) {
+	public void setInventorySlotContents(final int i, final ItemStack itemstack) {
 		if (manager != null && manager instanceof ISidedInventory) {
 			((ISidedInventory) manager).setInventorySlotContents(i, itemstack);
 		}
@@ -186,22 +183,22 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 	}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer entityPlayer) {
+	public boolean isUsableByPlayer(final EntityPlayer entityPlayer) {
 		return true;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {
+	public void openInventory(final EntityPlayer player) {
 
 	}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {
+	public void closeInventory(final EntityPlayer player) {
 
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
+	public boolean isItemValidForSlot(final int i, final ItemStack itemstack) {
 		if (manager != null) {
 			return ((ISidedInventory) manager).isItemValidForSlot(i, itemstack);
 		}
@@ -209,12 +206,12 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 	}
 
 	@Override
-	public int getField(int i) {
+	public int getField(final int i) {
 		return 0;
 	}
 
 	@Override
-	public void setField(int i, int i1) {
+	public void setField(final int i, final int i1) {
 
 	}
 
@@ -229,7 +226,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 	}
 
 	@Override
-	public int[] getSlotsForFace(EnumFacing enumFacing) {
+	public int[] getSlotsForFace(final EnumFacing enumFacing) {
 		if (manager != null) {
 			return ((ISidedInventory) manager).getSlotsForFace(enumFacing);
 		}
@@ -237,13 +234,13 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 	}
 
 	@Override
-	public boolean canInsertItem(int slot, ItemStack itemstack, EnumFacing facing) {
+	public boolean canInsertItem(final int slot, final ItemStack itemstack, final EnumFacing facing) {
 		// Cannot insert items into reactor with automation disabled.
 		return ModConfig.AllowAutomation && isItemValidForSlot(slot, itemstack);
 	}
 
 	@Override
-	public boolean canExtractItem(int slot, ItemStack itemstack, EnumFacing facing) {
+	public boolean canExtractItem(final int slot, final ItemStack itemstack, final EnumFacing facing) {
 		// Cannot extract items from reactor with automation disabled.
 		// Can only extract from the bottom.
 		return ModConfig.AllowAutomation && facing.getIndex() == 0 && slot == 2;
@@ -265,7 +262,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 	}
 
 	@Override
-	public void setEnergy(int amount) {
+	public void setEnergy(final int amount) {
 		if (getForgeEnergyCap() instanceof EnergySettableMultiBlock) {
 			((EnergySettableMultiBlock) getForgeEnergyCap()).setEnergy(amount);
 		}
@@ -275,11 +272,11 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 
 		private TileReactorCore manager;
 
-		public EnergySettableMultiBlock(TileReactorCore manager) {
+		public EnergySettableMultiBlock(final TileReactorCore manager) {
 			this.manager = manager;
 		}
 
-		public void setManager(TileReactorCore manager) {
+		public void setManager(final TileReactorCore manager) {
 			this.manager = manager;
 		}
 
@@ -288,7 +285,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 		}
 
 		@Override
-		public int receiveEnergy(int maxReceive, boolean simulate) {
+		public int receiveEnergy(final int maxReceive, final boolean simulate) {
 			if (!canReceive() || getManager() == null) {
 				return 0;
 			}
@@ -296,7 +293,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 		}
 
 		@Override
-		public int extractEnergy(int maxExtract, boolean simulate) {
+		public int extractEnergy(final int maxExtract, final boolean simulate) {
 			return 0;
 		}
 
@@ -326,7 +323,7 @@ public class TileEntityProxy extends TileMinechemEnergyBase implements ISidedInv
 			return true;
 		}
 
-		public void setEnergy(int amount) {
+		public void setEnergy(final int amount) {
 			if (getManager() != null) {
 				getManager().setEnergy(Math.abs(amount));
 			}

@@ -4,13 +4,10 @@ import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 import minechem.client.gui.GuiSynthesis.ScrollDirection;
-import minechem.init.ModNetworking;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.network.simpleimpl.*;
 
 /**
  * @author p455w0rd
@@ -24,26 +21,26 @@ public class MessageFakeSlotScroll implements IMessage, IMessageHandler<MessageF
 	public MessageFakeSlotScroll() {
 	}
 
-	public MessageFakeSlotScroll(ScrollDirection direction, int slotId) {
+	public MessageFakeSlotScroll(final ScrollDirection direction, final int slotId) {
 		this.direction = direction;
 		this.slotId = slotId;
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf) {
+	public void fromBytes(final ByteBuf buf) {
 		direction = ScrollDirection.values()[buf.readInt()];
 		slotId = buf.readInt();
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf) {
+	public void toBytes(final ByteBuf buf) {
 		buf.writeInt(direction.ordinal());
 		buf.writeInt(slotId);
 	}
 
 	@Override
-	public IMessage onMessage(MessageFakeSlotScroll message, MessageContext ctx) {
-		EntityPlayerMP player = ctx.getServerHandler().player;
+	public IMessage onMessage(final MessageFakeSlotScroll message, final MessageContext ctx) {
+		final EntityPlayerMP player = ctx.getServerHandler().player;
 		boolean shrink = false;
 		switch (message.direction) {
 		case UP:
@@ -56,9 +53,9 @@ public class MessageFakeSlotScroll implements IMessage, IMessageHandler<MessageF
 		}
 
 		final ItemStack mouseStack = player.inventory.getItemStack();
-		List<Slot> slots = player.openContainer.inventorySlots;
-		Slot slot = (slots == null || slots.isEmpty()) ? null : slots.get(message.slotId);
-		ItemStack slotStack = slot == null ? ItemStack.EMPTY : slot.getStack();
+		final List<Slot> slots = player.openContainer.inventorySlots;
+		final Slot slot = slots == null || slots.isEmpty() ? null : slots.get(message.slotId);
+		final ItemStack slotStack = slot == null ? ItemStack.EMPTY : slot.getStack();
 		if (!slotStack.isEmpty() && !mouseStack.isEmpty() && slotStack.isItemEqual(mouseStack)) {
 			if (slotStack.getCount() < slotStack.getMaxStackSize()) {
 				if (shrink) {
@@ -72,7 +69,7 @@ public class MessageFakeSlotScroll implements IMessage, IMessageHandler<MessageF
 			}
 		}
 		else if (slotStack.isEmpty() && !mouseStack.isEmpty()) {
-			ItemStack newStack = mouseStack.copy();
+			final ItemStack newStack = mouseStack.copy();
 			newStack.setCount(1);
 			slot.putStack(newStack);
 		}
@@ -89,8 +86,8 @@ public class MessageFakeSlotScroll implements IMessage, IMessageHandler<MessageF
 		return null;
 	}
 
-	private void updateHeld(final EntityPlayerMP p) {
-		ModNetworking.INSTANCE.sendTo(new MessageSetMouseStack(p.inventory.getItemStack()), p);
-	}
+	//private void updateHeld(final EntityPlayerMP p) {
+	//	ModNetworking.INSTANCE.sendTo(new MessageSetMouseStack(p.inventory.getItemStack()), p);
+	//}
 
 }

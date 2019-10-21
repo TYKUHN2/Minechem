@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 
 import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.IStackHelper;
 import mezz.jei.api.recipe.wrapper.ICraftingRecipeWrapper;
 import mezz.jei.recipes.BrokenCraftingRecipeException;
 import mezz.jei.util.ErrorUtil;
@@ -22,25 +21,26 @@ import net.minecraft.util.ResourceLocation;
  */
 public class ShapelessSynthesisWrapper<T extends ISynthesisRecipe> implements ICraftingRecipeWrapper {
 
-	private final IJeiHelpers jeiHelpers;
+	//private final IJeiHelpers jeiHelpers;
 	protected final T recipe;
 
-	public ShapelessSynthesisWrapper(IJeiHelpers jeiHelpers, T recipe) {
-		this.jeiHelpers = jeiHelpers;
+	public ShapelessSynthesisWrapper(final IJeiHelpers jeiHelpers, final T recipe) {
+		//this.jeiHelpers = jeiHelpers;
 		this.recipe = recipe;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	public void getIngredients(IIngredients ingredients) {
-		ItemStack recipeOutput = recipe.getRecipeOutput();
-		IStackHelper stackHelper = jeiHelpers.getStackHelper();
+	public void getIngredients(final IIngredients ingredients) {
+		final ItemStack recipeOutput = recipe.getRecipeOutput();
+		//IStackHelper stackHelper = jeiHelpers.getStackHelper();
 
 		try {
-			List<List<ItemStack>> inputLists = new ArrayList<>();
+			final List<List<ItemStack>> inputLists = new ArrayList<>();
 			if (recipe instanceof RecipeSynthesisShapeless) {
-				RecipeSynthesisShapeless synthRecipe = (RecipeSynthesisShapeless) recipe;
+				final RecipeSynthesisShapeless synthRecipe = (RecipeSynthesisShapeless) recipe;
 				for (int i = 0; i < synthRecipe.getSingleIngredients().size(); i++) {
-					List<ItemStack> tmpList = new ArrayList<ItemStack>();
+					final List<ItemStack> tmpList = new ArrayList<>();
 					for (int j = 0; j < synthRecipe.getSingleIngredients().get(i).getMatchingStacks().length; j++) {
 						tmpList.add(synthRecipe.getSingleIngredients().get(i).getMatchingStacks()[j]);
 					}
@@ -49,7 +49,7 @@ public class ShapelessSynthesisWrapper<T extends ISynthesisRecipe> implements IC
 			}
 			else {
 				for (int i = 0; i < recipe.getIngredients().size(); i++) {
-					List<ItemStack> tmpList = new ArrayList<ItemStack>();
+					final List<ItemStack> tmpList = new ArrayList<>();
 					for (int j = 0; j < recipe.getIngredients().get(i).getMatchingStacks().length; j++) {
 						tmpList.add(recipe.getIngredients().get(i).getMatchingStacks()[j]);
 					}
@@ -60,8 +60,8 @@ public class ShapelessSynthesisWrapper<T extends ISynthesisRecipe> implements IC
 			ingredients.setInputLists(ItemStack.class, inputLists);
 			ingredients.setOutput(ItemStack.class, recipeOutput);
 		}
-		catch (RuntimeException e) {
-			String info = ErrorUtil.getInfoFromBrokenCraftingRecipe(recipe, recipe.getIngredients(), recipeOutput);
+		catch (final RuntimeException e) {
+			final String info = ErrorUtil.getInfoFromBrokenCraftingRecipe(recipe, recipe.getIngredients(), recipeOutput);
 			throw new BrokenCraftingRecipeException(info, e);
 		}
 	}

@@ -25,7 +25,7 @@ public class ItemMicroscopeLens extends ItemBase {
 	public ItemMicroscopeLens() {
 		super();
 		setUnlocalizedName("optical_microscope_lens");
-		setRegistryName(ModGlobals.ID + ":optical_microscope_lens");
+		setRegistryName(ModGlobals.MODID + ":optical_microscope_lens");
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		setHasSubtypes(true);
 		ForgeRegistries.ITEMS.register(this);
@@ -51,10 +51,10 @@ public class ItemMicroscopeLens extends ItemBase {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerRenderer() {
-		ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(new ResourceLocation(ModGlobals.ID, "lens_concave"), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(this, 1, new ModelResourceLocation(new ResourceLocation(ModGlobals.ID, "lens_convex"), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(this, 2, new ModelResourceLocation(new ResourceLocation(ModGlobals.ID, "lens_microscope"), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(this, 3, new ModelResourceLocation(new ResourceLocation(ModGlobals.ID, "lens_projector"), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(new ResourceLocation(ModGlobals.MODID, "lens_concave"), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(this, 1, new ModelResourceLocation(new ResourceLocation(ModGlobals.MODID, "lens_convex"), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(this, 2, new ModelResourceLocation(new ResourceLocation(ModGlobals.MODID, "lens_microscope"), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(this, 3, new ModelResourceLocation(new ResourceLocation(ModGlobals.MODID, "lens_projector"), "inventory"));
 	}
 
 }

@@ -1,7 +1,6 @@
 package minechem.client.gui;
 
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import minechem.api.IVerticalScrollContainer;
 import minechem.init.ModGlobals.ModResources;
@@ -33,7 +32,7 @@ public class GuiVerticalScrollBar extends Gui {
 	int unactiveU = 244;
 	int unactiveV = 0;
 
-	public GuiVerticalScrollBar(IVerticalScrollContainer container, int x, int y, int maxDisplacement, int parentWidth, int parentHeight) {
+	public GuiVerticalScrollBar(final IVerticalScrollContainer container, final int x, final int y, final int maxDisplacement, final int parentWidth, final int parentHeight) {
 		this.container = container;
 		xpos = x;
 		ypos = y;
@@ -44,15 +43,15 @@ public class GuiVerticalScrollBar extends Gui {
 	}
 
 	public void handleMouseInput() {
-		int screenWidth = container.getScreenWidth();
-		int screenHeight = container.getScreenHeight();
-		int parentWidth = container.getGuiWidth();
-		int parentHeight = container.getGuiHeight();
-		int i = Mouse.getEventX() * screenWidth / mc.displayWidth;
-		int j = screenHeight - Mouse.getEventY() * screenHeight / mc.displayHeight - 1;
+		final int screenWidth = container.getScreenWidth();
+		final int screenHeight = container.getScreenHeight();
+		final int parentWidth = container.getGuiWidth();
+		final int parentHeight = container.getGuiHeight();
+		final int i = Mouse.getEventX() * screenWidth / mc.displayWidth;
+		final int j = screenHeight - Mouse.getEventY() * screenHeight / mc.displayHeight - 1;
 		mouseX = i - (screenWidth - parentWidth) / 2;
 		mouseY = j - (screenHeight - parentHeight) / 2;
-		int eventButton = Mouse.getEventButton();
+		final int eventButton = Mouse.getEventButton();
 		if (Mouse.getEventButtonState()) {
 			onMouseClick();
 		}
@@ -62,7 +61,7 @@ public class GuiVerticalScrollBar extends Gui {
 		else if (eventButton == 1 || eventButton == 0) {
 			onMouseRelease();
 		}
-		int wheelValue = Mouse.getEventDWheel();
+		final int wheelValue = Mouse.getEventDWheel();
 		if (wheelValue != 0) {
 			if (wheelValue > 0) {
 				onMouseScroll(wheelValue, true);
@@ -74,7 +73,7 @@ public class GuiVerticalScrollBar extends Gui {
 
 	}
 
-	public boolean pointIntersects(int x, int y) {
+	public boolean pointIntersects(final int x, final int y) {
 		return x >= xpos && x <= xpos + width && y >= ypos && y <= ypos + height;
 	}
 
@@ -85,11 +84,11 @@ public class GuiVerticalScrollBar extends Gui {
 	 * @param y Y coordinate relative to the parent container.
 	 * @return True iff the coordinates are within this scrollbar.
 	 */
-	public boolean pointInScrollBar(int x, int y) {
+	public boolean pointInScrollBar(final int x, final int y) {
 		return x >= xpos && x <= xpos + width && y >= startingYPos && y <= startingYPos + maxDisplacement + height;
 	}
 
-	public void setYPos(int y) {
+	public void setYPos(final int y) {
 		ypos = y;
 		if (ypos < startingYPos) {
 			ypos = startingYPos;
@@ -108,7 +107,7 @@ public class GuiVerticalScrollBar extends Gui {
 			}
 			else if (pointInScrollBar(mouseX, mouseY)) {
 				// Move the slider one slider-height up or down.
-				int scrollAmount = height;
+				final int scrollAmount = height;
 				if (mouseY < ypos) {
 					// Up.
 					setYPos(ypos - scrollAmount);
@@ -125,13 +124,13 @@ public class GuiVerticalScrollBar extends Gui {
 		isDragging = false;
 	}
 
-	private void onMouseMoved(int dx, int dy) {
+	private void onMouseMoved(final int dx, final int dy) {
 		if (container.isScrollBarActive() && isDragging) {
 			setYPos(mouseY);
 		}
 	}
 
-	private void onMouseScroll(int value, boolean up) {
+	private void onMouseScroll(final int value, final boolean up) {
 		if (!container.isScrollBarActive()) {
 			return;
 		}

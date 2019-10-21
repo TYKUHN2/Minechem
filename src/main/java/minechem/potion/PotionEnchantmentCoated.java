@@ -71,7 +71,7 @@ public class PotionEnchantmentCoated extends Enchantment {
 				for (Enchantment ench : Enchantment.REGISTRY) {
 					if (ench != null) {
 						PotionEnchantmentCoated newEnch = new PotionEnchantmentCoated(molecule, Enchantment.getEnchantmentID(ench));
-						newEnch.setRegistryName(new ResourceLocation(ModGlobals.ID, molecule.getUnlocalizedName() + ".coated"));
+						newEnch.setRegistryName(new ResourceLocation(ModGlobals.MODID, molecule.getUnlocalizedName() + ".coated"));
 						newEnch.setName(molecule.getUnlocalizedName() + ".coated");
 						registry.register(newEnch);
 						PotionEnchantmentCoated.POTION_COATED_REGISTRY.put(molecule, newEnch);

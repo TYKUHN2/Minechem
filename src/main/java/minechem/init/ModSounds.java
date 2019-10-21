@@ -13,7 +13,7 @@ public class ModSounds {
 	public static final SoundEvent BLUEPRINT_PROJECTOR = setupSound("projector");
 
 	private static SoundEvent setupSound(String soundName) {
-		ResourceLocation registryName = new ResourceLocation(ModGlobals.ID, soundName);
+		ResourceLocation registryName = new ResourceLocation(ModGlobals.MODID, soundName);
 		return new SoundEvent(registryName).setRegistryName(registryName);
 	}
 

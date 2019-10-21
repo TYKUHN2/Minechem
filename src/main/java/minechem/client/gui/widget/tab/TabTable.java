@@ -4,38 +4,36 @@ import minechem.client.gui.GuiContainerTabbed;
 import minechem.init.ModGlobals.ModResources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
 public class TabTable extends GuiTab {
 
-	public TabTable(Gui gui) {
+	public TabTable(final Gui gui) {
 		super(gui);
-		maxWidth = (545 / 2) + 10;
-		maxHeight = (272 / 2) + 10;
+		maxWidth = 545 / 2 + 10;
+		maxHeight = 272 / 2 + 10;
 		overlayColor = 0x2F7DAA;
 	}
 
 	@Override
-	public void draw(int x, int y) {
+	public void draw(final int x, final int y) {
 		drawBackground(x, y);
 		if (!isFullyOpened()) {
 			drawIcon(x + 2, y + 3);
 		}
 		else {
 			if (myGui instanceof GuiContainerTabbed) {
-				GuiContainerTabbed tabGui = ((GuiContainerTabbed) myGui);
+				//GuiContainerTabbed tabGui = ((GuiContainerTabbed) myGui);
 				//tabGui.drawTexture(x, y, ModResources.Tab.TABLE_HEX);
-				int w = 545 / 2;
-				int h = 272 / 2;
+				final int w = 545 / 2;
+				final int h = 272 / 2;
 				Minecraft.getMinecraft().getTextureManager().bindTexture(ModResources.Tab.TABLE_HEX);
 				GlStateManager.color(1F, 1F, 1F, 1F);
 
-				Tessellator tessellator = Tessellator.getInstance();
-				BufferBuilder buffer = tessellator.getBuffer();
+				final Tessellator tessellator = Tessellator.getInstance();
+				final BufferBuilder buffer = tessellator.getBuffer();
 
 				buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
 				buffer.pos(x + 4, y + h + 4, 2).tex(0D, 1D).endVertex();

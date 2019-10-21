@@ -5,18 +5,18 @@ import net.minecraft.item.ItemBlock;
 
 public class GhostBlockItem extends ItemBlock {
 
-	private final static String[] subNames = {
-			"white", "orange", "magenta", "lightBlue", "yellow", "lightGreen", "pink", "darkGrey", "lightGrey", "cyan", "purple", "blue", "brown", "green", "red", "black"
-	};
+	//private final static String[] subNames = {
+	//		"white", "orange", "magenta", "lightBlue", "yellow", "lightGreen", "pink", "darkGrey", "lightGrey", "cyan", "purple", "blue", "brown", "green", "red", "black"
+	//};
 
-	public GhostBlockItem(Block block) {
+	public GhostBlockItem(final Block block) {
 		super(block);
 		setUnlocalizedName(block.getRegistryName().getResourcePath());
 		setHasSubtypes(true);
 	}
 
 	@Override
-	public int getMetadata(int damageValue) {
+	public int getMetadata(final int damageValue) {
 		return damageValue;
 	}
 

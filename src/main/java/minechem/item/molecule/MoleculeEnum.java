@@ -1,47 +1,9 @@
 package minechem.item.molecule;
 
-import static minechem.item.MatterState.GAS;
-import static minechem.item.MatterState.LIQUID;
-import static minechem.item.MatterState.SOLID;
-import static minechem.item.element.ElementEnum.Al;
-import static minechem.item.element.ElementEnum.As;
-import static minechem.item.element.ElementEnum.Be;
-import static minechem.item.element.ElementEnum.C;
-import static minechem.item.element.ElementEnum.Ca;
-import static minechem.item.element.ElementEnum.Cl;
-import static minechem.item.element.ElementEnum.Co;
-import static minechem.item.element.ElementEnum.Cr;
-import static minechem.item.element.ElementEnum.Cs;
-import static minechem.item.element.ElementEnum.Cu;
-import static minechem.item.element.ElementEnum.F;
-import static minechem.item.element.ElementEnum.Fe;
-import static minechem.item.element.ElementEnum.Fr;
-import static minechem.item.element.ElementEnum.Ga;
-import static minechem.item.element.ElementEnum.H;
-import static minechem.item.element.ElementEnum.K;
-import static minechem.item.element.ElementEnum.Li;
-import static minechem.item.element.ElementEnum.Mg;
-import static minechem.item.element.ElementEnum.Mn;
-import static minechem.item.element.ElementEnum.N;
-import static minechem.item.element.ElementEnum.Na;
-import static minechem.item.element.ElementEnum.Ni;
-import static minechem.item.element.ElementEnum.O;
-import static minechem.item.element.ElementEnum.P;
-import static minechem.item.element.ElementEnum.Pt;
-import static minechem.item.element.ElementEnum.Ra;
-import static minechem.item.element.ElementEnum.Rb;
-import static minechem.item.element.ElementEnum.S;
-import static minechem.item.element.ElementEnum.Si;
-import static minechem.item.element.ElementEnum.Sr;
-import static minechem.item.element.ElementEnum.Ti;
-import static minechem.item.element.ElementEnum.Zn;
+import static minechem.item.MatterState.*;
+import static minechem.item.element.ElementEnum.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import minechem.init.ModItems;
 import minechem.item.MatterState;
@@ -54,9 +16,9 @@ import net.minecraft.item.ItemStack;
 
 public class MoleculeEnum extends MinechemChemicalType {
 
-	public static Map<Integer, MoleculeEnum> molecules = new LinkedHashMap<Integer, MoleculeEnum>();
-	public static Map<String, MoleculeEnum> nameToMolecules = new HashMap<String, MoleculeEnum>();
-	private static Map<MoleculeEnum, Integer> fuelBurnTimes = new HashMap<MoleculeEnum, Integer>();
+	public static Map<Integer, MoleculeEnum> molecules = new LinkedHashMap<>();
+	public static Map<String, MoleculeEnum> nameToMolecules = new HashMap<>();
+	private static Map<MoleculeEnum, Integer> fuelBurnTimes = new HashMap<>();
 	public static int baseMolecules = 172;
 
 	public static final MoleculeEnum cellulose = addMolecule("cellulose", 0, 0, 1, 0, 0, 0.25F, 0, SOLID, 65, new Element(C, 6), new Element(H, 10), new Element(O, 5));
@@ -267,17 +229,17 @@ public class MoleculeEnum extends MinechemChemicalType {
 	public float green2;
 	public float blue2;
 
-	public MoleculeEnum(String name, int id, float colorRed, float colorGreen, float colorBlue, float colorRed2, float colorGreen2, float colorBlue2, MatterState roomState, PotionChemical... chemicals) {
+	public MoleculeEnum(final String name, final int id, final float colorRed, final float colorGreen, final float colorBlue, final float colorRed2, final float colorGreen2, final float colorBlue2, final MatterState roomState, final PotionChemical... chemicals) {
 		this(name, id, colorRed, colorGreen, colorBlue, colorRed2, colorGreen2, colorBlue2, roomState, -1, chemicals);
 	}
 
-	public MoleculeEnum(String name, int id, float colorRed, float colorGreen, float colorBlue, float colorRed2, float colorGreen2, float colorBlue2, MatterState roomState, int fuelBurnTime, PotionChemical... chemicals) {
+	public MoleculeEnum(final String name, final int id, final float colorRed, final float colorGreen, final float colorBlue, final float colorRed2, final float colorGreen2, final float colorBlue2, final MatterState roomState, final int fuelBurnTime, final PotionChemical... chemicals) {
 		super(roomState, computeRadioactivity(chemicals));
 		this.id = id;
 		this.name = name;
-		components = new ArrayList<PotionChemical>();
+		components = new ArrayList<>();
 		localizationKey = "molecule." + name;
-		for (PotionChemical potionChemical : chemicals) {
+		for (final PotionChemical potionChemical : chemicals) {
 			components.add(potionChemical);
 		}
 		red = colorRed;
@@ -293,12 +255,12 @@ public class MoleculeEnum extends MinechemChemicalType {
 		}
 	}
 
-	public MoleculeEnum(String name, int id, MatterState roomState, PotionChemical... chemicals) {
+	public MoleculeEnum(final String name, final int id, final MatterState roomState, final PotionChemical... chemicals) {
 		this(name, id, getRandomColor(name.hashCode()), getRandomColor(name.hashCode() * 2), getRandomColor(name.hashCode() * 3), getRandomColor(name.hashCode() * 4), getRandomColor(name.hashCode() * 5), getRandomColor(name.hashCode() * 6), roomState, -1, chemicals);
 	}
 
 	public int getColor1() {
-		int r = (int) (255.0F / red);
+		//int r = (int) (255.0F / red);
 		int color = (int) (255.0F * red);
 		color = (color << 8) + (int) (255.0F * green);
 		color = (color << 8) + (int) (255.0F * blue);
@@ -312,25 +274,25 @@ public class MoleculeEnum extends MinechemChemicalType {
 		return color;
 	}
 
-	public static MoleculeEnum addMolecule(String name, int id, float colorRed, float colorGreen, float colorBlue, float colorRed2, float colorGreen2, float colorBlue2, MatterState roomState, PotionChemical... chemicals) {
+	public static MoleculeEnum addMolecule(final String name, final int id, final float colorRed, final float colorGreen, final float colorBlue, final float colorRed2, final float colorGreen2, final float colorBlue2, final MatterState roomState, final PotionChemical... chemicals) {
 		return addMolecule(name, id, colorRed, colorGreen, colorBlue, colorRed2, colorGreen2, colorBlue2, roomState, -1, chemicals);
 	}
 
-	public static MoleculeEnum addMolecule(String name, int id, float colorRed, float colorGreen, float colorBlue, float colorRed2, float colorGreen2, float colorBlue2, MatterState roomState, int fuelBurnTime, PotionChemical... chemicals) {
-		MoleculeEnum molecule = new MoleculeEnum(name, id, colorRed, colorGreen, colorBlue, colorRed2, colorGreen2, colorBlue2, roomState, fuelBurnTime, chemicals);
+	public static MoleculeEnum addMolecule(final String name, final int id, final float colorRed, final float colorGreen, final float colorBlue, final float colorRed2, final float colorGreen2, final float colorBlue2, final MatterState roomState, final int fuelBurnTime, final PotionChemical... chemicals) {
+		final MoleculeEnum molecule = new MoleculeEnum(name, id, colorRed, colorGreen, colorBlue, colorRed2, colorGreen2, colorBlue2, roomState, fuelBurnTime, chemicals);
 		registerMolecule(molecule);
 		return molecule;
 	}
 
-	public static MoleculeEnum addMolecule(String name, int id, MatterState roomState, PotionChemical... chemicals) {
+	public static MoleculeEnum addMolecule(final String name, final int id, final MatterState roomState, final PotionChemical... chemicals) {
 		return addMolecule(name, id, roomState, -1, chemicals);
 	}
 
-	public static MoleculeEnum addMolecule(String name, int id, MatterState roomState, int fuelBurnTime, PotionChemical... chemicals) {
+	public static MoleculeEnum addMolecule(final String name, final int id, final MatterState roomState, final int fuelBurnTime, final PotionChemical... chemicals) {
 		return addMolecule(name, id, getRandomColor(name.hashCode()), getRandomColor(name.hashCode() * 2), getRandomColor(name.hashCode() * 3), getRandomColor(name.hashCode() * 4), getRandomColor(name.hashCode() * 5), getRandomColor(name.hashCode() * 6), roomState, fuelBurnTime, chemicals);
 	}
 
-	public static void registerFuel(MoleculeEnum molecule, int burnTime) {
+	public static void registerFuel(final MoleculeEnum molecule, final int burnTime) {
 		if (!fuelBurnTimes.containsKey(molecule) && burnTime > 0) {
 			fuelBurnTimes.put(molecule, burnTime);
 		}
@@ -343,18 +305,18 @@ public class MoleculeEnum extends MinechemChemicalType {
 		return -1;
 	}
 
-	public static void registerMolecule(MoleculeEnum molecule) {
+	public static void registerMolecule(final MoleculeEnum molecule) {
 		addMapping(molecule);
 		if (!molecule.name.equals("water")) {
 			//FluidHelper.registerMolecule(molecule);
 		}
 	}
 
-	public static void registerMTMolecule(MoleculeEnum molecule) {
+	public static void registerMTMolecule(final MoleculeEnum molecule) {
 		addMapping(molecule);
-		ArrayList<PotionChemical> var5 = molecule.components();
-		PotionChemical[] var6 = var5.toArray(new PotionChemical[var5.size()]);
-		ItemStack var7 = new ItemStack(ModItems.molecule, 1, molecule.id());
+		//ArrayList<PotionChemical> var5 = molecule.components();
+		//PotionChemical[] var6 = var5.toArray(new PotionChemical[var5.size()]);
+		//ItemStack var7 = new ItemStack(ModItems.molecule, 1, molecule.id());
 		//TODO - why here? move to integration pkg
 		/*
 		RecipeDecomposer.add(new RecipeDecomposer(var7, var6));
@@ -362,21 +324,21 @@ public class MoleculeEnum extends MinechemChemicalType {
 		*/
 	}
 
-	public static void unregisterMolecule(MoleculeEnum molecule) {
+	public static void unregisterMolecule(final MoleculeEnum molecule) {
 		removeMapping(molecule);
 		RecipeDecomposer.remove(new ItemStack(ModItems.molecule, 1, molecule.id()));
 		//RecipeSynthesisOld.remove(new ItemStack(ModItems.molecule, 1, molecule.id()));
 	}
 
-	private static float getRandomColor(long seed) {
-		Random random = new Random(seed);
+	private static float getRandomColor(final long seed) {
+		final Random random = new Random(seed);
 		return random.nextFloat();
 	}
 
 	private int computSize() {
 		int result = 0;
 
-		Iterator<PotionChemical> iter = components().iterator();
+		final Iterator<PotionChemical> iter = components().iterator();
 
 		while (iter.hasNext()) {
 			result += iter.next().amount;
@@ -388,11 +350,11 @@ public class MoleculeEnum extends MinechemChemicalType {
 		return size;
 	}
 
-	public static MoleculeEnum getById(int id) {
+	public static MoleculeEnum getById(final int id) {
 		return molecules.get(id);
 	}
 
-	public static MoleculeEnum getByName(String name) {
+	public static MoleculeEnum getByName(final String name) {
 		return nameToMolecules.get(name);
 	}
 
@@ -408,9 +370,9 @@ public class MoleculeEnum extends MinechemChemicalType {
 		return name;
 	}
 
-	private static RadiationEnum computeRadioactivity(PotionChemical[] components) {
+	private static RadiationEnum computeRadioactivity(final PotionChemical[] components) {
 		RadiationEnum radiation = null;
-		for (PotionChemical chemical : components) {
+		for (final PotionChemical chemical : components) {
 			RadiationEnum anotherRadiation = null;
 			if (chemical instanceof Element) {
 				anotherRadiation = ((Element) chemical).element.radioactivity();
@@ -437,7 +399,7 @@ public class MoleculeEnum extends MinechemChemicalType {
 		return localizationKey;
 	}
 
-	private static void addMapping(MoleculeEnum molecule) {
+	private static void addMapping(final MoleculeEnum molecule) {
 		if (molecules.containsKey(molecule.id())) {
 			throw new IllegalArgumentException("id " + molecule.id() + " is used");
 		}
@@ -448,7 +410,7 @@ public class MoleculeEnum extends MinechemChemicalType {
 		nameToMolecules.put(molecule.name(), molecule);
 	}
 
-	private static void removeMapping(MoleculeEnum molecule) {
+	private static void removeMapping(final MoleculeEnum molecule) {
 		molecules.remove(molecule.id());
 		nameToMolecules.remove(molecule.name());
 	}
@@ -459,7 +421,7 @@ public class MoleculeEnum extends MinechemChemicalType {
 
 	private String computFormula() {
 		String formula = "";
-		for (PotionChemical component : components) {
+		for (final PotionChemical component : components) {
 			if (component instanceof Element) {
 				formula += ((Element) component).element.name();
 				if (component.amount > 1) {

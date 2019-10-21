@@ -37,7 +37,7 @@ public class BlockMicroscope extends BlockSimpleContainer {
 		super(Material.IRON);
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		setUnlocalizedName("microscope");
-		setRegistryName(ModGlobals.ID + ":microscope");
+		setRegistryName(ModGlobals.MODID + ":microscope");
 		setLightLevel(0.5F);
 		ForgeRegistries.BLOCKS.register(this);
 		ForgeRegistries.ITEMS.register(new ItemBlock(this).setRegistryName(getRegistryName()));

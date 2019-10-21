@@ -31,7 +31,7 @@ import net.minecraftforge.fml.relauncher.Side;
 @JEIPlugin
 public class JEI implements IModPlugin {
 
-	public static final String CAT_SYNTH = ModGlobals.ID + ".synthesis";
+	public static final String CAT_SYNTH = ModGlobals.MODID + ".synthesis";
 
 	public static void registerPackets() {
 		ModNetworking.INSTANCE.registerMessage(PacketSynthesisRecipeTransfer.class, PacketSynthesisRecipeTransfer.class, ModNetworking.nextID(), Side.SERVER);

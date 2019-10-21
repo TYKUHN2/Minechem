@@ -99,7 +99,7 @@ public class RecipePotionSpiking implements IRecipe {
 
 	@Override
 	public ResourceLocation getRegistryName() {
-		return new ResourceLocation(ModGlobals.ID, "potion_spiking");
+		return new ResourceLocation(ModGlobals.MODID, "potion_spiking");
 	}
 
 	@Override

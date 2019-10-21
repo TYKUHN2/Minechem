@@ -19,33 +19,33 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemRadiationShieldArmor extends ItemArmor implements IRadiationShield {
 
-	private float radiationShieldFactor;
-	private String textureFile;
+	private final float radiationShieldFactor;
+	//private String textureFile;
 
-	public ItemRadiationShieldArmor(int id, int part, float radiationShieldFactor, String texture) {
+	public ItemRadiationShieldArmor(final int id, final int part, final float radiationShieldFactor, final String texture) {
 		super(ArmorMaterial.CHAIN, 2, EntityEquipmentSlot.values()[part]);
 		this.radiationShieldFactor = radiationShieldFactor;
 		setUnlocalizedName("itemArmorRadiationShield");
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
-		textureFile = texture;
+		//textureFile = texture;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, @Nullable World world, List<String> list, ITooltipFlag flagIn) {
-		int percentile = (int) (radiationShieldFactor * 100);
-		String info = String.format("%d%% Radiation Shielding", percentile);
+	public void addInformation(final ItemStack itemstack, @Nullable final World world, final List<String> list, final ITooltipFlag flagIn) {
+		final int percentile = (int) (radiationShieldFactor * 100);
+		final String info = String.format("%d%% Radiation Shielding", percentile);
 		list.add(info);
 	}
 
 	@Override
-	public float getRadiationReductionFactor(int baseDamage, ItemStack itemstack, EntityPlayer player) {
+	public float getRadiationReductionFactor(final int baseDamage, final ItemStack itemstack, final EntityPlayer player) {
 		itemstack.damageItem(baseDamage / 4, player);
 		return radiationShieldFactor;
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
+	public String getArmorTexture(final ItemStack stack, final Entity entity, final EntityEquipmentSlot slot, final String type) {
 		return Textures.Model.HAZMAT;
 	}
 

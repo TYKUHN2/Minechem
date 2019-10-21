@@ -4,14 +4,10 @@ import java.util.Random;
 
 import minechem.api.ICustomRenderer;
 import minechem.block.tile.TileRadioactiveFluid;
-import minechem.fluid.FluidElement;
-import minechem.fluid.FluidMinechem;
-import minechem.fluid.FluidMolecule;
+import minechem.fluid.*;
 import minechem.fluid.reaction.ChemicalFluidReactionHandler;
 import minechem.handler.HandlerExplosiveFluid;
-import minechem.init.ModConfig;
-import minechem.init.ModGlobals;
-import minechem.init.ModMaterial;
+import minechem.init.*;
 import minechem.item.MatterState;
 import minechem.item.MinechemChemicalType;
 import minechem.radiation.RadiationEnum;
@@ -27,27 +23,24 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fluids.BlockFluidClassic;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SuppressWarnings("deprecation")
 public class BlockFluidMinechem extends BlockFluidClassic implements ITileEntityProvider, ICustomRenderer {
 
 	private final boolean isRadioactivity;
 	public static final Material materialFluidBlock = Material.WATER;
 	private final boolean solid;
 
-	public BlockFluidMinechem(FluidMinechem fluid, Material material) {
+	public BlockFluidMinechem(final FluidMinechem fluid, final Material material) {
 		super(fluid, material);
 		setQuantaPerBlock(fluid.getQuanta());
 
@@ -77,24 +70,24 @@ public class BlockFluidMinechem extends BlockFluidClassic implements ITileEntity
 
 	@Override
 	public String getUnlocalizedName() {
-		String fluidUnlocalizedName = getFluid().getUnlocalizedName();
+		final String fluidUnlocalizedName = getFluid().getUnlocalizedName();
 		return fluidUnlocalizedName.substring(0, fluidUnlocalizedName.length() - 5);// Splits off ".name"
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+	public void neighborChanged(final IBlockState state, final World worldIn, final BlockPos pos, final Block blockIn, final BlockPos fromPos) {
 		super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
 
 		checkStatus(worldIn, pos.getX(), pos.getY(), pos.getZ());
 	}
 
-	public void checkStatus(World world, int x, int y, int z) {
+	public void checkStatus(final World world, final int x, final int y, final int z) {
 		if (world.isRemote) {
 			return;
 		}
 
 		if (ModConfig.reactionFluidMeetFluid) {
-			for (EnumFacing face : EnumFacing.values()) {
+			for (final EnumFacing face : EnumFacing.values()) {
 				if (checkToReact(world, x + face.getFrontOffsetX(), y + face.getFrontOffsetY(), z + face.getFrontOffsetZ(), x, y, z)) {
 					return;
 				}
@@ -104,19 +97,19 @@ public class BlockFluidMinechem extends BlockFluidClassic implements ITileEntity
 		checkToExplode(world, x, y, z);
 	}
 
-	private boolean checkToReact(World world, int dx, int dy, int dz, int sx, int sy, int sz) {
+	private boolean checkToReact(final World world, final int dx, final int dy, final int dz, final int sx, final int sy, final int sz) {
 		return ChemicalFluidReactionHandler.checkToReact(this, world.getBlockState(new BlockPos(dx, dy, dz)).getBlock(), world, dx, dy, dz, sx, sy, sz);
 	}
 
-	private void checkToExplode(World world, int x, int y, int z) {
-		MinechemChemicalType type = MinechemUtil.getChemical(this);
-		float level = HandlerExplosiveFluid.getInstance().getExplosiveFluid(type);
+	private void checkToExplode(final World world, final int x, final int y, final int z) {
+		final MinechemChemicalType type = MinechemUtil.getChemical(this);
+		final float level = HandlerExplosiveFluid.getInstance().getExplosiveFluid(type);
 		if (Float.isNaN(level)) {
 			return;
 		}
 
 		boolean flag = false;
-		for (EnumFacing face : EnumFacing.values()) {
+		for (final EnumFacing face : EnumFacing.values()) {
 			if (HandlerExplosiveFluid.getInstance().existingFireSource(world.getBlockState(new BlockPos(x + face.getFrontOffsetX(), y + face.getFrontOffsetY(), z + face.getFrontOffsetZ())).getBlock())) {
 				flag = true;
 				break;
@@ -132,37 +125,37 @@ public class BlockFluidMinechem extends BlockFluidClassic implements ITileEntity
 	}
 
 	@Override
-	public boolean hasTileEntity(IBlockState state) {
+	public boolean hasTileEntity(final IBlockState state) {
 		return isRadioactivity && state.getBlock().getMetaFromState(state) == 0;
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int i) {
+	public TileEntity createNewTileEntity(final World world, final int i) {
 		return hasTileEntity(getStateFromMeta(i)) ? new TileRadioactiveFluid() : null;
 	}
 
 	@Override
-	public boolean eventReceived(IBlockState state, World world, BlockPos pos, int eventID, int eventParameter) {
+	public boolean eventReceived(final IBlockState state, final World world, final BlockPos pos, final int eventID, final int eventParameter) {
 		super.eventReceived(state, world, pos, eventID, eventParameter);
 
-		TileEntity tileentity = world.getTileEntity(pos);
+		final TileEntity tileentity = world.getTileEntity(pos);
 		return tileentity != null ? tileentity.receiveClientEvent(eventID, eventParameter) : false;
 	}
 
 	@Override
-	public void onBlockDestroyedByExplosion(World world, BlockPos pos, Explosion explosion) {
+	public void onBlockDestroyedByExplosion(final World world, final BlockPos pos, final Explosion explosion) {
 		if (world.isRemote) {
 			return;
 		}
 
-		MinechemChemicalType type = MinechemUtil.getChemical(this);
+		final MinechemChemicalType type = MinechemUtil.getChemical(this);
 		world.destroyBlock(pos, true);
 		world.setBlockToAir(pos);
 		world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), HandlerExplosiveFluid.getInstance().getExplosiveFluid(type), true);
 	}
 
 	@Override
-	public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
+	public void updateTick(final World world, final BlockPos pos, final IBlockState state, final Random rand) {
 		if (!solid) {
 			super.updateTick(world, pos, state, rand);
 		}
@@ -170,20 +163,20 @@ public class BlockFluidMinechem extends BlockFluidClassic implements ITileEntity
 	}
 
 	@Override
-	public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
+	public void onBlockAdded(final World world, final BlockPos pos, final IBlockState state) {
 		super.onBlockAdded(world, pos, state);
 		checkStatus(world, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(IBlockState stateIn, World worldIn, BlockPos pos, Random rand) {
-		double d0 = pos.getX();
-		double d1 = pos.getY();
-		double d2 = pos.getZ();
+	public void randomDisplayTick(final IBlockState stateIn, final World worldIn, final BlockPos pos, final Random rand) {
+		final double d0 = pos.getX();
+		final double d1 = pos.getY();
+		final double d2 = pos.getZ();
 
 		if (blockMaterial == ModMaterial.FLUID) {
-			int i = stateIn.getValue(LEVEL).intValue();
+			final int i = stateIn.getValue(LEVEL).intValue();
 
 			if (i > 0 && i < 8) {
 				if (rand.nextInt(64) == 0) {
@@ -197,9 +190,9 @@ public class BlockFluidMinechem extends BlockFluidClassic implements ITileEntity
 
 		if (blockMaterial == Material.LAVA && worldIn.getBlockState(pos.up()).getMaterial() == Material.AIR && !worldIn.getBlockState(pos.up()).isOpaqueCube()) {
 			if (rand.nextInt(100) == 0) {
-				double d8 = d0 + rand.nextFloat();
-				double d4 = d1 + stateIn.getBoundingBox(worldIn, pos).maxY;
-				double d6 = d2 + rand.nextFloat();
+				final double d8 = d0 + rand.nextFloat();
+				final double d4 = d1 + stateIn.getBoundingBox(worldIn, pos).maxY;
+				final double d6 = d2 + rand.nextFloat();
 				worldIn.spawnParticle(EnumParticleTypes.LAVA, d8, d4, d6, 0.0D, 0.0D, 0.0D);
 				worldIn.playSound(d8, d4, d6, SoundEvents.BLOCK_LAVA_POP, SoundCategory.BLOCKS, 0.2F + rand.nextFloat() * 0.2F, 0.9F + rand.nextFloat() * 0.15F, false);
 			}
@@ -210,12 +203,12 @@ public class BlockFluidMinechem extends BlockFluidClassic implements ITileEntity
 		}
 
 		if (rand.nextInt(10) == 0 && worldIn.getBlockState(pos.down()).isTopSolid()) {
-			Material material = worldIn.getBlockState(pos.down(2)).getMaterial();
+			final Material material = worldIn.getBlockState(pos.down(2)).getMaterial();
 
 			if (!material.blocksMovement() && !material.isLiquid()) {
-				double d3 = d0 + rand.nextFloat();
-				double d5 = d1 - 1.05D;
-				double d7 = d2 + rand.nextFloat();
+				final double d3 = d0 + rand.nextFloat();
+				final double d5 = d1 - 1.05D;
+				final double d7 = d2 + rand.nextFloat();
 
 				if (blockMaterial == ModMaterial.FLUID) {
 					worldIn.spawnParticle(EnumParticleTypes.DRIP_LAVA, d3, d5, d7, 0.0D, 1.0D, 0.0D);
@@ -230,13 +223,13 @@ public class BlockFluidMinechem extends BlockFluidClassic implements ITileEntity
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerRenderer() {
-		Item item = Item.getItemFromBlock(this);
+		final Item item = Item.getItemFromBlock(this);
 		ModelBakery.registerItemVariants(item);
-		ModelResourceLocation modelResourceLocation = new ModelResourceLocation(ModGlobals.ID + ":fluid", getFluid().getName());
+		final ModelResourceLocation modelResourceLocation = new ModelResourceLocation(ModGlobals.MODID + ":fluid", getFluid().getName());
 		ModelLoader.setCustomMeshDefinition(item, stack -> modelResourceLocation);
 		ModelLoader.setCustomStateMapper(this, new StateMapperBase() {
 			@Override
-			protected ModelResourceLocation getModelResourceLocation(IBlockState p_178132_1_) {
+			protected ModelResourceLocation getModelResourceLocation(final IBlockState p_178132_1_) {
 				return modelResourceLocation;
 			}
 		});

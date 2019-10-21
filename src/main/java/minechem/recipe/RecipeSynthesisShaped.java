@@ -1,8 +1,6 @@
 package minechem.recipe;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -26,24 +24,24 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
  */
 public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRecipe> implements ISynthesisRecipe {
 
-	public static final String GROUP = ModGlobals.ID + ":synthesis_shaped";
+	public static final String GROUP = ModGlobals.MODID + ":synthesis_shaped";
 	private int energyCost = 0;
 	public final NonNullList<SingleItemStackBasedIngredient> recipeItems;
 	/** Kept for compat purposes */
 	public final NonNullList<Ingredient> vanillaIngredients = NonNullList.<Ingredient>create();
 	private final ItemStack recipeOutput;
-	private final int recipeWidth;
-	private final int recipeHeight;
+	//private final int recipeWidth;
+	//private final int recipeHeight;
 
-	public RecipeSynthesisShaped(int width, int height, int energyCost, NonNullList<SingleItemStackBasedIngredient> ingredients, ItemStack result) {
+	public RecipeSynthesisShaped(final int width, final int height, final int energyCost, final NonNullList<SingleItemStackBasedIngredient> ingredients, final ItemStack result) {
 		recipeItems = ingredients;
-		for (SingleItemStackBasedIngredient ingredient : ingredients) {
+		for (final SingleItemStackBasedIngredient ingredient : ingredients) {
 			vanillaIngredients.add(ingredient);
 		}
 		recipeOutput = result;
 		this.energyCost = energyCost;
-		recipeWidth = width;
-		recipeHeight = height;
+		//recipeWidth = width;
+		//recipeHeight = height;
 	}
 
 	@Override
@@ -57,7 +55,7 @@ public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRe
 	}
 
 	public static MinechemShapedPrimer parseShaped(Object... recipe) {
-		MinechemShapedPrimer ret = new MinechemShapedPrimer();
+		final MinechemShapedPrimer ret = new MinechemShapedPrimer();
 		String shape = "";
 		int idx = 0;
 
@@ -72,9 +70,9 @@ public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRe
 		}
 
 		if (recipe[idx] instanceof String[]) {
-			String[] parts = ((String[]) recipe[idx++]);
+			final String[] parts = (String[]) recipe[idx++];
 
-			for (String s : parts) {
+			for (final String s : parts) {
 				ret.width = s.length();
 				shape += s;
 			}
@@ -83,7 +81,7 @@ public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRe
 		}
 		else {
 			while (recipe[idx] instanceof String) {
-				String s = (String) recipe[idx++];
+				final String s = (String) recipe[idx++];
 				shape += s;
 				ret.width = s.length();
 				ret.height++;
@@ -92,19 +90,19 @@ public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRe
 
 		if (ret.width * ret.height != shape.length() || shape.length() == 0) {
 			String err = "Invalid shaped recipe: ";
-			for (Object tmp : recipe) {
+			for (final Object tmp : recipe) {
 				err += tmp + ", ";
 			}
 			throw new RuntimeException(err);
 		}
 
-		HashMap<Character, SingleItemStackBasedIngredient> itemMap = Maps.newHashMap();
+		final HashMap<Character, SingleItemStackBasedIngredient> itemMap = Maps.newHashMap();
 		itemMap.put(' ', SingleItemStackBasedIngredient.EMPTY);
 
 		for (; idx < recipe.length; idx += 2) {
-			Character chr = (Character) recipe[idx];
-			Object in = recipe[idx + 1];
-			SingleItemStackBasedIngredient ing = getIngredient(in);
+			final Character chr = (Character) recipe[idx];
+			final Object in = recipe[idx + 1];
+			final SingleItemStackBasedIngredient ing = getIngredient(in);
 
 			if (' ' == chr.charValue()) {
 				throw new JsonSyntaxException("Invalid key entry: ' ' is a reserved symbol.");
@@ -115,7 +113,7 @@ public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRe
 			}
 			else {
 				String err = "Invalid shaped ore recipe: ";
-				for (Object tmp : recipe) {
+				for (final Object tmp : recipe) {
 					err += tmp + ", ";
 				}
 				throw new RuntimeException(err);
@@ -124,12 +122,12 @@ public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRe
 
 		ret.input = NonNullList.withSize(ret.width * ret.height, SingleItemStackBasedIngredient.EMPTY);
 
-		Set<Character> keys = Sets.newHashSet(itemMap.keySet());
+		final Set<Character> keys = Sets.newHashSet(itemMap.keySet());
 		keys.remove(' ');
 
 		int x = 0;
-		for (char chr : shape.toCharArray()) {
-			SingleItemStackBasedIngredient ing = itemMap.get(chr);
+		for (final char chr : shape.toCharArray()) {
+			final SingleItemStackBasedIngredient ing = itemMap.get(chr);
 			if (ing == null) {
 				throw new IllegalArgumentException("Pattern references symbol '" + chr + "' but it's not defined in the key");
 			}
@@ -144,9 +142,9 @@ public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRe
 		return ret;
 	}
 
-	public static SingleItemStackBasedIngredient getIngredient(Object obj) {
+	public static SingleItemStackBasedIngredient getIngredient(final Object obj) {
 		if (obj instanceof PotionChemical) {
-			PotionChemical chemical = (PotionChemical) obj;
+			final PotionChemical chemical = (PotionChemical) obj;
 			return SingleItemStackBasedIngredient.fromStack(MinechemUtil.chemicalToItemStack(chemical, chemical.amount));
 		}
 		return SingleItemStackBasedIngredient.EMPTY;
@@ -158,25 +156,25 @@ public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRe
 	}
 
 	@Override
-	public boolean matches(InventoryCrafting inv, World worldIn) {
-		Map<Integer, ItemStack> inputs = new HashMap<Integer, ItemStack>();
-		Map<Integer, ItemStack> inputsR = new HashMap<Integer, ItemStack>();
+	public boolean matches(final InventoryCrafting inv, final World worldIn) {
+		final Map<Integer, ItemStack> inputs = new HashMap<>();
+		final Map<Integer, ItemStack> inputsR = new HashMap<>();
 		for (int i = 0; i < inv.getHeight(); ++i) {
 			for (int j = 0; j < inv.getWidth(); ++j) {
-				ItemStack itemstack = inv.getStackInRowAndColumn(j, i).copy();
+				final ItemStack itemstack = inv.getStackInRowAndColumn(j, i).copy();
 				inputs.put(j + i * 3, itemstack);
 			}
 		}
 
 		for (int i = 0; i < recipeItems.size(); i++) {
-			ItemStack itemstack = recipeItems.get(i).getIngredientStack().copy();
+			final ItemStack itemstack = recipeItems.get(i).getIngredientStack().copy();
 			inputsR.put(i, itemstack);
 		}
 
 		boolean hasEnough = true;
 		for (int i = 0; i < recipeItems.size(); i++) {
 			//ItemStack tmp1 = RadiationUtil.getStackWithoutRadiation(inputs.get(i).copy());
-			ItemStack tmp2 = RadiationUtil.getStackWithoutRadiation(inputs.get(i).copy());
+			final ItemStack tmp2 = RadiationUtil.getStackWithoutRadiation(inputs.get(i).copy());
 			if (!ItemStack.areItemStacksEqual(inputsR.get(i), tmp2)) {
 				hasEnough = false;
 				break;
@@ -192,12 +190,12 @@ public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRe
 	}
 
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv) {
+	public ItemStack getCraftingResult(final InventoryCrafting inv) {
 		return getRecipeOutput().copy();
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canFit(final int width, final int height) {
 		return width == 3 && height == 3;
 	}
 
@@ -211,11 +209,11 @@ public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRe
 		return energyCost;
 	}
 
-	private boolean checkMatch(InventoryCrafting p_77573_1_, int p_77573_2_, int p_77573_3_, boolean p_77573_4_) {
+	/*private boolean checkMatch(final InventoryCrafting p_77573_1_, final int p_77573_2_, final int p_77573_3_, final boolean p_77573_4_) {
 		for (int i = 0; i < p_77573_1_.getWidth(); ++i) {
 			for (int j = 0; j < p_77573_1_.getHeight(); ++j) {
-				int k = i - p_77573_2_;
-				int l = j - p_77573_3_;
+				final int k = i - p_77573_2_;
+				final int l = j - p_77573_3_;
 				SingleItemStackBasedIngredient ingredient = SingleItemStackBasedIngredient.EMPTY;
 
 				if (k >= 0 && l >= 0 && k < recipeWidth && l < recipeHeight) {
@@ -234,7 +232,7 @@ public class RecipeSynthesisShaped extends IForgeRegistryEntry.Impl<ISynthesisRe
 		}
 
 		return true;
-	}
+	}*/
 
 	public static class MinechemShapedPrimer {
 		public int height, width;

@@ -32,7 +32,7 @@ public class ItemChemistJournal extends ItemBase {
 
 	public ItemChemistJournal() {
 		setUnlocalizedName("chemist_journal");
-		setRegistryName(ModGlobals.ID + ":chemist_journal");
+		setRegistryName(ModGlobals.MODID + ":chemist_journal");
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ITEMS);
 		ForgeRegistries.ITEMS.register(this);
 	}

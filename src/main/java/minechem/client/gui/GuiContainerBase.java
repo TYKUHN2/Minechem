@@ -4,15 +4,10 @@ import minechem.inventory.slot.SlotSynthesisOutput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.*;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -21,6 +16,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.event.GuiContainerEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -30,11 +27,11 @@ public abstract class GuiContainerBase extends GuiContainer {
 	protected final FontRenderer fontRenderer;
 	protected RenderItem renderItem;
 
-	public GuiContainerBase(Container container) {
+	public GuiContainerBase(final Container container) {
 		this(container, null);
 	}
 
-	public GuiContainerBase(Container container, RenderItem itemRenderer) {
+	public GuiContainerBase(final Container container, final RenderItem itemRenderer) {
 		super(container);
 		inventorySlots = container;
 		fontRenderer = Minecraft.getMinecraft().getRenderManager().getFontRenderer();
@@ -42,11 +39,11 @@ public abstract class GuiContainerBase extends GuiContainer {
 	}
 
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+	public void drawScreen(final int mouseX, final int mouseY, final float partialTicks) {
 		drawDefaultBackground();
 		// start replacement super.drawScreen(mouseX, mouseY, partialTicks);
-		int i = guiLeft;
-		int j = guiTop;
+		final int i = guiLeft;
+		final int j = guiTop;
 		drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 		GlStateManager.disableRescaleNormal();
 		RenderHelper.disableStandardItemLighting();
@@ -67,23 +64,21 @@ public abstract class GuiContainerBase extends GuiContainer {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.enableRescaleNormal();
 		hoveredSlot = null;
-		int k = 240;
-		int l = 240;
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
 		for (int i1 = 0; i1 < inventorySlots.inventorySlots.size(); ++i1) {
-			Slot slot = inventorySlots.inventorySlots.get(i1);
+			final Slot slot = inventorySlots.inventorySlots.get(i1);
 
 			if (slot.isEnabled()) {
 				//drawSlotCustom(slot);
 
-				int ii = slot.xPos;
-				int jj = slot.yPos;
+				final int ii = slot.xPos;
+				final int jj = slot.yPos;
 				ItemStack itemstack = slot.getStack();
 				boolean flag = false;
 				boolean flag1 = slot == clickedSlot && !draggedStack.isEmpty() && !isRightMouseClick;
-				ItemStack itemstack1 = mc.player.inventory.getItemStack();
+				final ItemStack itemstack1 = mc.player.inventory.getItemStack();
 				String ss = null;
 
 				if (slot == clickedSlot && !draggedStack.isEmpty() && isRightMouseClick && !itemstack.isEmpty()) {
@@ -99,7 +94,7 @@ public abstract class GuiContainerBase extends GuiContainer {
 						itemstack = itemstack1.copy();
 						flag = true;
 						Container.computeStackSize(dragSplittingSlots, dragSplittingLimit, itemstack, slot.getStack().isEmpty() ? 0 : slot.getStack().getCount());
-						int kk = Math.min(itemstack.getMaxStackSize(), slot.getItemStackLimit(itemstack));
+						final int kk = Math.min(itemstack.getMaxStackSize(), slot.getItemStackLimit(itemstack));
 
 						if (itemstack.getCount() > kk) {
 							ss = TextFormatting.YELLOW.toString() + kk;
@@ -116,7 +111,7 @@ public abstract class GuiContainerBase extends GuiContainer {
 				itemRender.zLevel = 100.0F;
 
 				if (itemstack.isEmpty() && slot.isEnabled()) {
-					TextureAtlasSprite textureatlassprite = slot.getBackgroundSprite();
+					final TextureAtlasSprite textureatlassprite = slot.getBackgroundSprite();
 
 					if (textureatlassprite != null) {
 						GlStateManager.disableLighting();
@@ -145,8 +140,8 @@ public abstract class GuiContainerBase extends GuiContainer {
 				hoveredSlot = slot;
 				GlStateManager.disableLighting();
 				GlStateManager.disableDepth();
-				int j1 = slot.xPos;
-				int k1 = slot.yPos;
+				final int j1 = slot.xPos;
+				final int k1 = slot.yPos;
 				GlStateManager.colorMask(true, true, true, false);
 				drawGradientRect(j1, k1, j1 + 16, k1 + 16, -2130706433, -2130706433);
 				GlStateManager.colorMask(true, true, true, true);
@@ -158,13 +153,12 @@ public abstract class GuiContainerBase extends GuiContainer {
 		RenderHelper.disableStandardItemLighting();
 		drawGuiContainerForegroundLayer(mouseX, mouseY);
 		RenderHelper.enableGUIStandardItemLighting();
-		net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.GuiContainerEvent.DrawForeground(this, mouseX, mouseY));
-		InventoryPlayer inventoryplayer = mc.player.inventory;
+		MinecraftForge.EVENT_BUS.post(new GuiContainerEvent.DrawForeground(this, mouseX, mouseY));
+		final InventoryPlayer inventoryplayer = mc.player.inventory;
 		ItemStack itemstack = draggedStack.isEmpty() ? inventoryplayer.getItemStack() : draggedStack;
 
 		if (!itemstack.isEmpty()) {
-			int j2 = 8;
-			int k2 = draggedStack.isEmpty() ? 8 : 16;
+			final int k2 = draggedStack.isEmpty() ? 8 : 16;
 			String s = null;
 
 			if (!draggedStack.isEmpty() && isRightMouseClick) {
@@ -191,10 +185,10 @@ public abstract class GuiContainerBase extends GuiContainer {
 				returningStack = ItemStack.EMPTY;
 			}
 
-			int l2 = returningStackDestSlot.xPos - touchUpX;
-			int i3 = returningStackDestSlot.yPos - touchUpY;
-			int l1 = touchUpX + (int) (l2 * f);
-			int i2 = touchUpY + (int) (i3 * f);
+			final int l2 = returningStackDestSlot.xPos - touchUpX;
+			final int i3 = returningStackDestSlot.yPos - touchUpY;
+			final int l1 = touchUpX + (int) (l2 * f);
+			final int i2 = touchUpY + (int) (i3 * f);
 			drawStack(returningStack, l1, i2, (String) null);
 		}
 
@@ -208,11 +202,11 @@ public abstract class GuiContainerBase extends GuiContainer {
 		GlStateManager.disableBlend();
 	}
 
-	protected boolean isOverSlot(Slot slotIn, int mouseX, int mouseY) {
+	protected boolean isOverSlot(final Slot slotIn, final int mouseX, final int mouseY) {
 		return isPointInRegion(slotIn.xPos, slotIn.yPos, 16, 16, mouseX, mouseY);
 	}
 
-	protected void drawStack(ItemStack stack, int x, int y, String altText) {
+	protected void drawStack(final ItemStack stack, final int x, final int y, final String altText) {
 		GlStateManager.translate(0.0F, 0.0F, 32.0F);
 		zLevel = 200.0F;
 		itemRender.zLevel = 200.0F;
@@ -246,13 +240,13 @@ public abstract class GuiContainerBase extends GuiContainer {
 		return guiLeft;
 	}
 
-	protected void drawSlotCustom(Slot slotIn) {
-		int i = slotIn.xPos;
-		int j = slotIn.yPos;
+	protected void drawSlotCustom(final Slot slotIn) {
+		final int i = slotIn.xPos;
+		final int j = slotIn.yPos;
 		ItemStack itemstack = slotIn.getStack();
 		boolean flag = false;
 		boolean flag1 = slotIn == clickedSlot && !draggedStack.isEmpty() && !isRightMouseClick;
-		ItemStack itemstack1 = mc.player.inventory.getItemStack();
+		final ItemStack itemstack1 = mc.player.inventory.getItemStack();
 		String s = null;
 
 		if (slotIn == clickedSlot && !draggedStack.isEmpty() && isRightMouseClick && !itemstack.isEmpty()) {
@@ -267,7 +261,7 @@ public abstract class GuiContainerBase extends GuiContainer {
 				itemstack = itemstack1.copy();
 				flag = true;
 				Container.computeStackSize(dragSplittingSlots, dragSplittingLimit, itemstack, slotIn.getStack().isEmpty() ? 0 : slotIn.getStack().getCount());
-				int k = Math.min(itemstack.getMaxStackSize(), slotIn.getItemStackLimit(itemstack));
+				final int k = Math.min(itemstack.getMaxStackSize(), slotIn.getItemStackLimit(itemstack));
 				if (itemstack.getCount() > k) {
 					s = TextFormatting.YELLOW.toString() + k;
 					itemstack.setCount(k);
@@ -281,7 +275,7 @@ public abstract class GuiContainerBase extends GuiContainer {
 		zLevel = 100.0F;
 		itemRender.zLevel = 100.0F;
 		if (itemstack.isEmpty() && slotIn.isEnabled()) {
-			TextureAtlasSprite textureatlassprite = slotIn.getBackgroundSprite();
+			final TextureAtlasSprite textureatlassprite = slotIn.getBackgroundSprite();
 			if (textureatlassprite != null) {
 				GlStateManager.disableLighting();
 				mc.getTextureManager().bindTexture(slotIn.getBackgroundLocation());
@@ -298,7 +292,7 @@ public abstract class GuiContainerBase extends GuiContainer {
 			GlStateManager.enableDepth();
 			Slot curSlot = null;
 			for (int ii = 0; ii < inventorySlots.inventorySlots.size(); ++ii) {
-				Slot slot = inventorySlots.inventorySlots.get(ii);
+				final Slot slot = inventorySlots.inventorySlots.get(ii);
 				if (slot.xPos == i && slot.yPos == j) {
 					curSlot = slot;
 				}
@@ -306,7 +300,7 @@ public abstract class GuiContainerBase extends GuiContainer {
 
 			if (curSlot != null && curSlot instanceof SlotSynthesisOutput && !itemstack.isEmpty()) {
 				GlStateManager.pushMatrix();
-				TextureManager textureManager = mc.renderEngine;
+				final TextureManager textureManager = mc.renderEngine;
 				textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 				textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
 				GlStateManager.enableRescaleNormal();
@@ -367,7 +361,7 @@ public abstract class GuiContainerBase extends GuiContainer {
 	}
 
 	protected void updateDrag() {
-		ItemStack itemstack = mc.player.inventory.getItemStack();
+		final ItemStack itemstack = mc.player.inventory.getItemStack();
 
 		if (!itemstack.isEmpty() && dragSplitting) {
 			if (dragSplittingLimit == 2) {
@@ -376,12 +370,12 @@ public abstract class GuiContainerBase extends GuiContainer {
 			else {
 				dragSplittingRemnant = itemstack.getCount();
 
-				for (Slot slot : dragSplittingSlots) {
-					ItemStack itemstack1 = itemstack.copy();
-					ItemStack itemstack2 = slot.getStack();
-					int i = itemstack2.isEmpty() ? 0 : itemstack2.getCount();
+				for (final Slot slot : dragSplittingSlots) {
+					final ItemStack itemstack1 = itemstack.copy();
+					final ItemStack itemstack2 = slot.getStack();
+					final int i = itemstack2.isEmpty() ? 0 : itemstack2.getCount();
 					Container.computeStackSize(dragSplittingSlots, dragSplittingLimit, itemstack1, i);
-					int j = Math.min(itemstack1.getMaxStackSize(), slot.getItemStackLimit(itemstack1));
+					final int j = Math.min(itemstack1.getMaxStackSize(), slot.getItemStackLimit(itemstack1));
 
 					if (itemstack1.getCount() > j) {
 						itemstack1.setCount(j);

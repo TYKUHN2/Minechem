@@ -10,7 +10,6 @@ import minechem.client.model.ModelDecomposer;
 import minechem.init.ModGlobals.ModResources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
@@ -27,13 +26,13 @@ public class RenderDecomposer extends TileEntitySpecialRenderer<TileDecomposer> 
 	}
 
 	@Override
-	public void render(TileDecomposer tileEntity, double x, double y, double z, float var8, int var9, float alpha) {
-		TileDecomposer decomposer = tileEntity;
+	public void render(final TileDecomposer tileEntity, final double x, final double y, final double z, final float var8, final int var9, final float alpha) {
+		final TileDecomposer decomposer = tileEntity;
 		model = getModelForTile(decomposer.getPos());
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x + 0.5D, y + 1.5D, z + 0.5D);
 		GlStateManager.rotate(180f, 0f, 0f, 1f);
-		boolean isRunning = decomposer.isCooking() && decomposer.getState() != State.jammed;
+		final boolean isRunning = decomposer.isCooking() && decomposer.getState() != State.jammed;
 		bindTexture(isRunning ? ModResources.Model.DECOMPOSER_ON : ModResources.Model.DECOMPOSER_OFF);
 		if (isRunning) {
 			model.updateWindillRotation();
@@ -42,7 +41,7 @@ public class RenderDecomposer extends TileEntitySpecialRenderer<TileDecomposer> 
 		GlStateManager.popMatrix();
 	}
 
-	public ModelDecomposer getModelForTile(BlockPos pos) {
+	public ModelDecomposer getModelForTile(final BlockPos pos) {
 		if (!MODELREGISTRY.containsKey(pos)) {
 			MODELREGISTRY.put(pos, new ModelDecomposer());
 		}
@@ -58,8 +57,8 @@ public class RenderDecomposer extends TileEntitySpecialRenderer<TileDecomposer> 
 		}
 
 		@Override
-		public void renderByItem(ItemStack stack, float partialTicks) {
-			RenderHelper.enableStandardItemLighting();
+		public void renderByItem(final ItemStack stack, final float partialTicks) {
+			//RenderHelper.enableStandardItemLighting();
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0.5D, 1.5D, 0.5D);
 			GlStateManager.rotate(180f, 0f, 0f, 1f);
@@ -68,7 +67,7 @@ public class RenderDecomposer extends TileEntitySpecialRenderer<TileDecomposer> 
 			model.render(0.0625F);
 			GlStateManager.translate(-0.5D, -1.5D, -0.5D);
 			GlStateManager.popMatrix();
-			RenderHelper.disableStandardItemLighting();
+			//RenderHelper.disableStandardItemLighting();
 		}
 
 	}

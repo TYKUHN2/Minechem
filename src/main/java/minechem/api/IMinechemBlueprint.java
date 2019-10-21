@@ -40,7 +40,8 @@ public interface IMinechemBlueprint extends IForgeRegistryEntry<IMinechemBluepri
 
 	String getDescriptiveName();
 
-	default IBlockState getBlockstateFromStack(int index, ItemStack stack) {
+	@SuppressWarnings("deprecation")
+	default IBlockState getBlockstateFromStack(final int index, final ItemStack stack) {
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemBlock) {
 			return ((ItemBlock) stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
 		}
@@ -48,16 +49,16 @@ public interface IMinechemBlueprint extends IForgeRegistryEntry<IMinechemBluepri
 	}
 
 	default WeakHashMap<IBlockState, Integer> getMaterials() {
-		WeakHashMap<IBlockState, Integer> tmpMap = new WeakHashMap<>();
+		final WeakHashMap<IBlockState, Integer> tmpMap = new WeakHashMap<>();
 		for (int x = 0; x < xSize(); x++) {
 			for (int y = 0; y < ySize(); y++) {
 				for (int z = 0; z < zSize(); z++) {
-					IBlockState tmpState = getStructure()[y][x][z];
+					final IBlockState tmpState = getStructure()[y][x][z];
 					if (tmpMap.isEmpty() || !tmpMap.containsKey(tmpState)) {
 						tmpMap.put(tmpState, 1);
 					}
 					else {
-						int currCount = tmpMap.get(tmpState);
+						final int currCount = tmpMap.get(tmpState);
 						tmpMap.put(tmpState, currCount + 1);
 					}
 				}

@@ -6,7 +6,6 @@ import minechem.init.ModGlobals.ModResources;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
@@ -21,10 +20,10 @@ public class RenderMicroscope extends TileEntitySpecialRenderer<TileMicroscope> 
 	}
 
 	@Override
-	public void render(TileMicroscope tileEntity, double x, double y, double z, float var8, int var9, float alpha) {
-		World world = Minecraft.getMinecraft().world;
-		IBlockState state = world.getBlockState(tileEntity.getPos());
-		int facing = state.getBlock().getMetaFromState(state);
+	public void render(final TileMicroscope tileEntity, final double x, final double y, final double z, final float var8, final int var9, final float alpha) {
+		final World world = Minecraft.getMinecraft().world;
+		final IBlockState state = world.getBlockState(tileEntity.getPos());
+		final int facing = state.getBlock().getMetaFromState(state);
 		int j = 0;
 
 		if (facing == 2) {
@@ -60,8 +59,8 @@ public class RenderMicroscope extends TileEntitySpecialRenderer<TileMicroscope> 
 		}
 
 		@Override
-		public void renderByItem(ItemStack stack, float partialTicks) {
-			RenderHelper.enableStandardItemLighting();
+		public void renderByItem(final ItemStack stack, final float partialTicks) {
+			//RenderHelper.enableStandardItemLighting();
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0.5D, 1.5D, 0.5D);
 			GlStateManager.rotate(180f, 0f, 0f, 1f);
@@ -69,7 +68,7 @@ public class RenderMicroscope extends TileEntitySpecialRenderer<TileMicroscope> 
 			model.render(0.0625F);
 			GlStateManager.translate(-0.5D, -1.5D, -0.5D);
 			GlStateManager.popMatrix();
-			RenderHelper.disableStandardItemLighting();
+			//RenderHelper.disableStandardItemLighting();
 		}
 
 	}

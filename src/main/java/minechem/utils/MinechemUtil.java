@@ -1,29 +1,16 @@
 package minechem.utils;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
 import minechem.block.fluid.BlockFluidMinechem;
-import minechem.fluid.FluidElement;
-import minechem.fluid.FluidMinechem;
-import minechem.fluid.FluidMolecule;
-import minechem.init.ModConfig;
-import minechem.init.ModFluids;
-import minechem.init.ModItems;
-import minechem.init.ModLogger;
-import minechem.item.ItemElement;
-import minechem.item.ItemMolecule;
-import minechem.item.MinechemChemicalType;
+import minechem.fluid.*;
+import minechem.init.*;
+import minechem.item.*;
 import minechem.item.element.Element;
 import minechem.item.element.ElementEnum;
 import minechem.item.molecule.Molecule;
@@ -41,24 +28,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fluids.UniversalBucket;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
+@SuppressWarnings("deprecation")
 public final class MinechemUtil {
 
 	public static final Random random = new Random();
@@ -66,23 +47,23 @@ public final class MinechemUtil {
 	private MinechemUtil() {
 	}
 
-	public static ItemStack addItemToInventory(IInventory inventory, ItemStack itemStack) {
+	public static ItemStack addItemToInventory(final IInventory inventory, ItemStack itemStack) {
 		if (itemStack.isEmpty()) {
 			return ItemStack.EMPTY;
 		}
 
 		for (int i = 0, l = inventory.getSizeInventory(); i < l; i++) {
-			ItemStack stack = inventory.getStackInSlot(i);
+			final ItemStack stack = inventory.getStackInSlot(i);
 			if (stack.isEmpty()) {
-				int append = itemStack.getCount() > inventory.getInventoryStackLimit() ? inventory.getInventoryStackLimit() : itemStack.getCount();
-				ItemStack newStack = itemStack.copy();
+				final int append = itemStack.getCount() > inventory.getInventoryStackLimit() ? inventory.getInventoryStackLimit() : itemStack.getCount();
+				final ItemStack newStack = itemStack.copy();
 				newStack.setCount(append);
 				inventory.setInventorySlotContents(i, newStack);
 				itemStack.shrink(append);
 			}
 			else if (stack.getItem() == itemStack.getItem() && stack.getItemDamage() == itemStack.getItemDamage()) {
-				int free = inventory.getInventoryStackLimit() - stack.getCount();
-				int append = itemStack.getCount() > free ? free : itemStack.getCount();
+				final int free = inventory.getInventoryStackLimit() - stack.getCount();
+				final int append = itemStack.getCount() > free ? free : itemStack.getCount();
 				itemStack.shrink(append);
 				stack.grow(append);
 				inventory.setInventorySlotContents(i, stack);
@@ -96,18 +77,18 @@ public final class MinechemUtil {
 		return itemStack;
 	}
 
-	public static void throwItemStack(World world, ItemStack stack, BlockPos pos) {
+	public static void throwItemStack(final World world, final ItemStack stack, final BlockPos pos) {
 		throwItemStack(world, stack, pos.getX(), pos.getY(), pos.getZ());
 	}
 
-	public static void throwItemStack(World world, ItemStack itemStack, double x, double y, double z) {
+	public static void throwItemStack(final World world, final ItemStack itemStack, final double x, final double y, final double z) {
 		if (!itemStack.isEmpty()) {
-			float f = random.nextFloat() * 0.8F + 0.1F;
-			float f1 = random.nextFloat() * 0.8F + 0.1F;
-			float f2 = random.nextFloat() * 0.8F + 0.1F;
+			final float f = random.nextFloat() * 0.8F + 0.1F;
+			final float f1 = random.nextFloat() * 0.8F + 0.1F;
+			final float f2 = random.nextFloat() * 0.8F + 0.1F;
 
-			EntityItem entityitem = new EntityItem(world, (float) x + f, (float) y + f1, (float) z + f2, itemStack);
-			float f3 = 0.05F;
+			final EntityItem entityitem = new EntityItem(world, (float) x + f, (float) y + f1, (float) z + f2, itemStack);
+			final float f3 = 0.05F;
 			entityitem.motionX = (float) random.nextGaussian() * f3;
 			entityitem.motionY = (float) random.nextGaussian() * f3 + 0.2F;
 			entityitem.motionZ = (float) random.nextGaussian() * f3;
@@ -115,7 +96,7 @@ public final class MinechemUtil {
 		}
 	}
 
-	public static ItemStack createItemStack(MinechemChemicalType chemical, int amount) {
+	public static ItemStack createItemStack(final MinechemChemicalType chemical, final int amount) {
 		ItemStack itemStack = ItemStack.EMPTY;
 		if (chemical instanceof ElementEnum) {
 			itemStack = ItemElement.createStackOf(ElementEnum.getByID(((ElementEnum) chemical).atomicNumber()), amount);
@@ -126,7 +107,7 @@ public final class MinechemUtil {
 		return itemStack;
 	}
 
-	public static boolean canDrain(World world, Block block, int x, int y, int z) {
+	public static boolean canDrain(final World world, final Block block, final int x, final int y, final int z) {
 		if ((block == Blocks.WATER || block == Blocks.FLOWING_WATER) && world.getBlockState(new BlockPos(x, y, z)).getBlock().getMetaFromState(world.getBlockState(new BlockPos(x, y, z))) == 0) {
 			return true;
 		}
@@ -137,10 +118,10 @@ public final class MinechemUtil {
 		return false;
 	}
 
-	public static MinechemChemicalType getChemical(Block block) {
+	public static MinechemChemicalType getChemical(final Block block) {
 		MinechemChemicalType chemical = null;
 		if (block instanceof IFluidBlock) {
-			Fluid fluid = ((IFluidBlock) block).getFluid();
+			final Fluid fluid = ((IFluidBlock) block).getFluid();
 			chemical = getChemical(fluid);
 		}
 		else if (block == Blocks.WATER || block == Blocks.FLOWING_WATER) {
@@ -150,7 +131,7 @@ public final class MinechemUtil {
 		return chemical;
 	}
 
-	public static MinechemChemicalType getChemical(Fluid fluid) {
+	public static MinechemChemicalType getChemical(final Fluid fluid) {
 		if (fluid instanceof FluidElement) {
 			return ((FluidElement) fluid).element;
 		}
@@ -163,8 +144,8 @@ public final class MinechemUtil {
 		return null;
 	}
 
-	public static ElementEnum getElement(Fluid fluid) {
-		for (Map.Entry<ElementEnum, FluidElement> entry : ModFluids.FLUID_ELEMENTS.entrySet()) {
+	public static ElementEnum getElement(final Fluid fluid) {
+		for (final Map.Entry<ElementEnum, FluidElement> entry : ModFluids.FLUID_ELEMENTS.entrySet()) {
 			if (entry.getValue() == fluid) {
 				return entry.getKey();
 			}
@@ -172,8 +153,8 @@ public final class MinechemUtil {
 		return null;
 	}
 
-	public static MoleculeEnum getMolecule(Fluid fluid) {
-		for (Entry<MoleculeEnum, Fluid> entry : ModFluids.FLUID_MOLECULES.entrySet()) {
+	public static MoleculeEnum getMolecule(final Fluid fluid) {
+		for (final Entry<MoleculeEnum, Fluid> entry : ModFluids.FLUID_MOLECULES.entrySet()) {
 			if (entry.getValue() == fluid) {
 				return entry.getKey();
 			}
@@ -181,13 +162,13 @@ public final class MinechemUtil {
 		return null;
 	}
 
-	public static Fluid getFluid(TileEntity te) {
+	public static Fluid getFluid(final TileEntity te) {
 		if (te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
 			return te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).getTankProperties()[0].getContents().getFluid();
 		}
-		for (EnumFacing facing : EnumFacing.VALUES) {
+		for (final EnumFacing facing : EnumFacing.VALUES) {
 			if (te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing)) {
-				Fluid fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing).getTankProperties()[0].getContents().getFluid();
+				final Fluid fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing).getTankProperties()[0].getContents().getFluid();
 				if (fluid != null) {
 					return fluid;
 				}
@@ -196,7 +177,7 @@ public final class MinechemUtil {
 		return null;
 	}
 
-	public static void incPlayerInventory(ItemStack current, int inc, EntityPlayer player, ItemStack give) {
+	public static void incPlayerInventory(final ItemStack current, final int inc, final EntityPlayer player, final ItemStack give) {
 		if (inc < 0) {
 			current.splitStack(-inc);
 		}
@@ -205,9 +186,9 @@ public final class MinechemUtil {
 				current.grow(inc);
 			}
 			else {
-				int added = current.getMaxStackSize() - current.getCount();
+				final int added = current.getMaxStackSize() - current.getCount();
 				current.setCount(current.getMaxStackSize());
-				ItemStack extraStack = current.copy();
+				final ItemStack extraStack = current.copy();
 				extraStack.setCount(inc - added);
 				if (!player.inventory.addItemStackToInventory(extraStack)) {
 					player.dropItem(extraStack, false);
@@ -220,10 +201,10 @@ public final class MinechemUtil {
 		}
 	}
 
-	public static Set<ItemStack> findItemStacks(IInventory inventory, Item item, int damage) {
-		Set<ItemStack> stacks = new HashSet<ItemStack>();
+	public static Set<ItemStack> findItemStacks(final IInventory inventory, final Item item, final int damage) {
+		final Set<ItemStack> stacks = new HashSet<>();
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
-			ItemStack stack = inventory.getStackInSlot(i);
+			final ItemStack stack = inventory.getStackInSlot(i);
 			if (!stack.isEmpty() && stack.getItem() == item && stack.getItemDamage() == damage) {
 				stacks.add(stack);
 			}
@@ -232,7 +213,7 @@ public final class MinechemUtil {
 		return stacks;
 	}
 
-	public static void removeStackInInventory(IInventory inventory, ItemStack stack) {
+	public static void removeStackInInventory(final IInventory inventory, final ItemStack stack) {
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			if (stack == inventory.getStackInSlot(i)) { //don't change == to equals()
 				inventory.setInventorySlotContents(i, ItemStack.EMPTY);
@@ -255,13 +236,13 @@ public final class MinechemUtil {
 		return string;
 	}
 
-	public static void addDisabledStacks(String[] stringInputs, NonNullList<ItemStack> decomposerBlacklist, ArrayList<String> ids) {
-		for (String string : stringInputs) {
+	public static void addDisabledStacks(final String[] stringInputs, final NonNullList<ItemStack> decomposerBlacklist, final ArrayList<String> ids) {
+		for (final String string : stringInputs) {
 			if (string == null || string.equals("")) {
 				continue;
 			}
-			String[] splitString = string.split(":");
-			ArrayList<String> wildcardMatch = new ArrayList<String>();
+			final String[] splitString = string.split(":");
+			final ArrayList<String> wildcardMatch = new ArrayList<>();
 			if (splitString.length < 2 || splitString.length > 3) {
 				ModLogger.debug(string + " is an invalid blacklist input");
 				continue;
@@ -271,8 +252,8 @@ public final class MinechemUtil {
 				if (itemID.contains("*")) {
 					itemID = itemID.replaceAll("\\*", ".*");
 				}
-				Pattern itemPattern = Pattern.compile(itemID, Pattern.CASE_INSENSITIVE);
-				for (String item : OreDictionary.getOreNames()) {
+				final Pattern itemPattern = Pattern.compile(itemID, Pattern.CASE_INSENSITIVE);
+				for (final String item : OreDictionary.getOreNames()) {
 					if (itemPattern.matcher(item).matches()) {
 						wildcardMatch.add(item);
 					}
@@ -281,7 +262,7 @@ public final class MinechemUtil {
 					ModLogger.debug(splitString[1] + " has no matches in the OreDictionary");
 					continue;
 				}
-				for (String key : wildcardMatch) {
+				for (final String key : wildcardMatch) {
 					decomposerBlacklist.addAll(OreDictionary.getOres(key));
 				}
 			}
@@ -290,7 +271,7 @@ public final class MinechemUtil {
 				try {
 					meta = splitString.length == 3 ? Integer.valueOf(splitString[2]) : Short.MAX_VALUE;
 				}
-				catch (NumberFormatException e) {
+				catch (final NumberFormatException e) {
 					if (splitString[2].equals("*")) {
 						meta = Short.MAX_VALUE;
 					}
@@ -303,8 +284,8 @@ public final class MinechemUtil {
 				if (itemID.contains("*")) {
 					itemID = itemID.replaceAll("\\*", ".*");
 				}
-				Pattern itemPattern = Pattern.compile(itemID, Pattern.CASE_INSENSITIVE);
-				for (String item : ids) {
+				final Pattern itemPattern = Pattern.compile(itemID, Pattern.CASE_INSENSITIVE);
+				for (final String item : ids) {
 					if (itemPattern.matcher(item).matches()) {
 						wildcardMatch.add(item);
 					}
@@ -313,13 +294,13 @@ public final class MinechemUtil {
 					ModLogger.debug(string + " has no matches in the ItemRegistry");
 					continue;
 				}
-				for (String key : wildcardMatch) {
-					Object disable = Item.REGISTRY.getObject(new ResourceLocation(key));
+				for (final String key : wildcardMatch) {
+					final Object disable = Item.REGISTRY.getObject(new ResourceLocation(key));
 					if (disable instanceof Item) {
-						decomposerBlacklist.add(new ItemStack(((Item) disable), 1, meta));
+						decomposerBlacklist.add(new ItemStack((Item) disable, 1, meta));
 					}
 					else if (disable instanceof Block) {
-						decomposerBlacklist.add(new ItemStack(((Block) disable), 1, meta));
+						decomposerBlacklist.add(new ItemStack((Block) disable, 1, meta));
 					}
 				}
 			}
@@ -330,8 +311,8 @@ public final class MinechemUtil {
 		//ModConfig.decomposerBlacklist = new ArrayList<ItemStack>();
 		//ModConfig.synthesisBlacklist = new ArrayList<ItemStack>();
 		ModConfig.decomposerBlacklist.add(ModItems.emptyTube);
-		ArrayList<String> registeredItems = new ArrayList<String>();
-		for (ResourceLocation key : Item.REGISTRY.getKeys()) {
+		final ArrayList<String> registeredItems = new ArrayList<>();
+		for (final ResourceLocation key : Item.REGISTRY.getKeys()) {
 			registeredItems.add(key.toString());
 		}
 		addDisabledStacks(ModConfig.DecomposerBlacklist, ModConfig.decomposerBlacklist, registeredItems);
@@ -339,37 +320,37 @@ public final class MinechemUtil {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static int getSplitStringHeight(FontRenderer fontRenderer, String string, int width) {
-		List<String> stringRows = fontRenderer.listFormattedStringToWidth(string, width);
+	public static int getSplitStringHeight(final FontRenderer fontRenderer, final String string, final int width) {
+		final List<String> stringRows = fontRenderer.listFormattedStringToWidth(string, width);
 		return stringRows.size() * fontRenderer.FONT_HEIGHT;
 	}
 
-	public static float translateValue(float value, float leftMin, float leftMax, float rightMin, float rightMax) {
-		float leftRange = leftMax - leftMin;
-		float rightRange = rightMax - rightMin;
-		float valueScaled = (value - leftMin) / leftRange;
-		return rightMin + (valueScaled * rightRange);
+	public static float translateValue(final float value, final float leftMin, final float leftMax, final float rightMin, final float rightMax) {
+		final float leftRange = leftMax - leftMin;
+		final float rightRange = rightMax - rightMin;
+		final float valueScaled = (value - leftMin) / leftRange;
+		return rightMin + valueScaled * rightRange;
 	}
 
-	public static String getLocalString(String key) {
+	public static String getLocalString(final String key) {
 		return getLocalString(key, false);
 	}
 
-	public static String getLocalString(String key, boolean capitalize) {
+	public static String getLocalString(final String key, final boolean capitalize) {
 		if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
 			//LanguageMap languageMap = new LanguageMap();
 			//String localString = languageMap.translateKey(key);
-			String localString = I18n.translateToLocal(key);
+			final String localString = I18n.translateToLocal(key);
 			return capitalize ? capitalizeFully(localString.replaceAll("molecule\\.", "")) : localString;
 		}
 		return key;
 	}
 
-	public static String capitalizeFully(String input) {
-		String[] splitString = input.split(" ");
+	public static String capitalizeFully(final String input) {
+		final String[] splitString = input.split(" ");
 		String result = "";
 		for (int i = 0; i < splitString.length; i++) {
-			char[] digit = splitString[i].toCharArray();
+			final char[] digit = splitString[i].toCharArray();
 			if (digit.length < 1) {
 				continue;
 			}
@@ -382,36 +363,36 @@ public final class MinechemUtil {
 		return result;
 	}
 
-	public static NBTTagList writeItemStackListToTagList(NonNullList<ItemStack> list) {
-		NBTTagList taglist = new NBTTagList();
-		for (ItemStack itemstack : list) {
-			NBTTagCompound itemstackCompound = new NBTTagCompound();
+	public static NBTTagList writeItemStackListToTagList(final NonNullList<ItemStack> list) {
+		final NBTTagList taglist = new NBTTagList();
+		for (final ItemStack itemstack : list) {
+			final NBTTagCompound itemstackCompound = new NBTTagCompound();
 			itemstack.writeToNBT(itemstackCompound);
 			taglist.appendTag(itemstackCompound);
 		}
 		return taglist;
 	}
 
-	public static NonNullList<ItemStack> readTagListToItemStackList(NBTTagList taglist) {
-		NonNullList<ItemStack> itemlist = NonNullList.<ItemStack>withSize(taglist.tagCount(), ItemStack.EMPTY);
+	public static NonNullList<ItemStack> readTagListToItemStackList(final NBTTagList taglist) {
+		final NonNullList<ItemStack> itemlist = NonNullList.<ItemStack>withSize(taglist.tagCount(), ItemStack.EMPTY);
 		for (int i = 0; i < taglist.tagCount(); i++) {
-			NBTTagCompound itemstackCompound = taglist.getCompoundTagAt(i);
-			ItemStack itemstack = new ItemStack(itemstackCompound);
+			final NBTTagCompound itemstackCompound = taglist.getCompoundTagAt(i);
+			final ItemStack itemstack = new ItemStack(itemstackCompound);
 			itemlist.set(i, itemstack);
 		}
 		return itemlist;
 	}
 
-	public static NonNullList<ItemStack> convertChemicalsIntoItemStacks(List<PotionChemical> potionChemicals) {
+	public static NonNullList<ItemStack> convertChemicalsIntoItemStacks(final List<PotionChemical> potionChemicals) {
 		return convertChemicalsIntoItemStacks(potionChemicals.toArray(new PotionChemical[potionChemicals.size()]));
 	}
 
-	public static NonNullList<ItemStack> convertChemicalsIntoItemStacks(PotionChemical[] potionChemicals) {
+	public static NonNullList<ItemStack> convertChemicalsIntoItemStacks(final PotionChemical[] potionChemicals) {
 		if (potionChemicals != null && potionChemicals.length > 0) {
-			NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(potionChemicals.length, ItemStack.EMPTY);
+			final NonNullList<ItemStack> stacks = NonNullList.<ItemStack>withSize(potionChemicals.length, ItemStack.EMPTY);
 			if (potionChemicals != null && potionChemicals.length > 0) {
 				for (int i = 0; i < potionChemicals.length; i++) {
-					PotionChemical potionChemical = potionChemicals[i];
+					final PotionChemical potionChemical = potionChemicals[i];
 					if (potionChemical instanceof Element && ((Element) potionChemical).element != null) {
 						stacks.set(i, new ItemStack(ModItems.element, potionChemical.amount, ((Element) potionChemical).element.atomicNumber()));
 					}
@@ -425,16 +406,16 @@ public final class MinechemUtil {
 		return NonNullList.<ItemStack>create();
 	}
 
-	public static NonNullList<ItemStack> copyStackList(NonNullList<ItemStack> stackList) {
-		NonNullList<ItemStack> newStackList = NonNullList.<ItemStack>create();
-		for (ItemStack stack : stackList) {
+	public static NonNullList<ItemStack> copyStackList(final NonNullList<ItemStack> stackList) {
+		final NonNullList<ItemStack> newStackList = NonNullList.<ItemStack>create();
+		for (final ItemStack stack : stackList) {
 			newStackList.add(stack.copy());
 		}
 		return newStackList;
 	}
 
-	public static boolean isStackListEmpty(NonNullList<ItemStack> stackList) {
-		for (ItemStack stack : stackList) {
+	public static boolean isStackListEmpty(final NonNullList<ItemStack> stackList) {
+		for (final ItemStack stack : stackList) {
 			if (!stack.isEmpty()) {
 				return false;
 			}
@@ -442,9 +423,9 @@ public final class MinechemUtil {
 		return true;
 	}
 
-	public static ArrayList<PotionChemical> pushTogetherChemicals(ArrayList<PotionChemical> oldList) {
-		ArrayList<PotionChemical> list = new ArrayList<PotionChemical>();
-		for (PotionChemical chemical : oldList) {
+	public static ArrayList<PotionChemical> pushTogetherChemicals(final ArrayList<PotionChemical> oldList) {
+		final ArrayList<PotionChemical> list = new ArrayList<>();
+		for (final PotionChemical chemical : oldList) {
 			list.add(chemical.copy());
 		}
 		for (int i = list.size() - 1; i >= 0; i--) {
@@ -470,23 +451,23 @@ public final class MinechemUtil {
 		return list;
 	}
 
-	public static boolean itemStackMatchesChemical(ItemStack itemstack, PotionChemical potionChemical) {
+	public static boolean itemStackMatchesChemical(final ItemStack itemstack, final PotionChemical potionChemical) {
 		return itemStackMatchesChemical(itemstack, potionChemical, 1);
 	}
 
-	public static boolean itemStackMatchesChemical(ItemStack itemstack, PotionChemical potionChemical, int factor) {
+	public static boolean itemStackMatchesChemical(final ItemStack itemstack, final PotionChemical potionChemical, final int factor) {
 		if (potionChemical instanceof Element && itemstack.getItem() == ModItems.element) {
-			Element element = (Element) potionChemical;
-			return (itemstack.getItemDamage() == element.element.atomicNumber()) && (itemstack.getCount() >= element.amount * factor);
+			final Element element = (Element) potionChemical;
+			return itemstack.getItemDamage() == element.element.atomicNumber() && itemstack.getCount() >= element.amount * factor;
 		}
 		if (potionChemical instanceof Molecule && itemstack.getItem() == ModItems.molecule) {
-			Molecule molecule = (Molecule) potionChemical;
-			return (itemstack.getItemDamage() == molecule.molecule.id()) && (itemstack.getCount() >= molecule.amount * factor);
+			final Molecule molecule = (Molecule) potionChemical;
+			return itemstack.getItemDamage() == molecule.molecule.id() && itemstack.getCount() >= molecule.amount * factor;
 		}
 		return false;
 	}
 
-	public static ItemStack chemicalToItemStack(PotionChemical potionChemical, int amount) {
+	public static ItemStack chemicalToItemStack(final PotionChemical potionChemical, final int amount) {
 		if (potionChemical instanceof Element) {
 			return new ItemStack(ModItems.element, amount, ((Element) potionChemical).element.atomicNumber());
 		}
@@ -496,15 +477,15 @@ public final class MinechemUtil {
 		return ItemStack.EMPTY;
 	}
 
-	public static PotionChemical[] stackListToChemicalArray(List<ItemStack> stackList) {
-		PotionChemical[] chemicalList = new PotionChemical[stackList.size()];
+	public static PotionChemical[] stackListToChemicalArray(final List<ItemStack> stackList) {
+		final PotionChemical[] chemicalList = new PotionChemical[stackList.size()];
 		for (int i = 0; i < stackList.size(); i++) {
 			chemicalList[i] = itemStackToChemical(stackList.get(i));
 		}
 		return chemicalList;
 	}
 
-	public static PotionChemical itemStackToChemical(@Nonnull ItemStack itemstack) {
+	public static PotionChemical itemStackToChemical(@Nonnull final ItemStack itemstack) {
 		if (isStackAnElement(itemstack)) {
 			if (itemstack.getItemDamage() == 0) {
 				return null;
@@ -517,11 +498,11 @@ public final class MinechemUtil {
 		return null;
 	}
 
-	public static ItemStack getBucketForChemical(MinechemChemicalType type) {
-		for (Block block : ModFluids.getFluidBlocks()) {
+	public static ItemStack getBucketForChemical(final MinechemChemicalType type) {
+		for (final Block block : ModFluids.getFluidBlocks()) {
 			if (block instanceof BlockFluidMinechem && ((BlockFluidMinechem) block).getFluid() instanceof FluidMinechem) {
-				BlockFluidMinechem fluidBlock = (BlockFluidMinechem) block;
-				MinechemChemicalType blockType = ((FluidMinechem) fluidBlock.getFluid()).getChemical();
+				final BlockFluidMinechem fluidBlock = (BlockFluidMinechem) block;
+				final MinechemChemicalType blockType = ((FluidMinechem) fluidBlock.getFluid()).getChemical();
 				if (blockType instanceof MoleculeEnum && ((MoleculeEnum) blockType).name().equals("water")) {
 					return new ItemStack(Items.WATER_BUCKET);
 				}
@@ -535,12 +516,12 @@ public final class MinechemUtil {
 		return ItemStack.EMPTY;
 	}
 
-	public static ElementEnum getElement(ItemStack stack) {
-		return (stack.getItem() == ModItems.element && stack.getItemDamage() != 0) ? ElementEnum.getByID(stack.getItemDamage()) : null;
+	public static ElementEnum getElement(final ItemStack stack) {
+		return stack.getItem() == ModItems.element && stack.getItemDamage() != 0 ? ElementEnum.getByID(stack.getItemDamage()) : null;
 	}
 
-	public static MoleculeEnum getMolecule(ItemStack itemstack) {
-		int itemDamage = itemstack.getItemDamage();
+	public static MoleculeEnum getMolecule(final ItemStack itemstack) {
+		final int itemDamage = itemstack.getItemDamage();
 		MoleculeEnum mol = MoleculeEnum.getById(itemDamage);
 		if (mol == null) {
 			itemstack.setItemDamage(0);
@@ -549,15 +530,15 @@ public final class MinechemUtil {
 		return mol;
 	}
 
-	public static ItemStack getBucketForFluid(Fluid fluid) {
+	public static ItemStack getBucketForFluid(final Fluid fluid) {
 		return FluidUtil.getFilledBucket(new FluidStack(fluid, 1000));
 	}
 
-	public static int getElementIDFromBucket(@Nonnull ItemStack bucket) {
+	public static int getElementIDFromBucket(@Nonnull final ItemStack bucket) {
 		if (bucket.getItem() instanceof UniversalBucket) {
-			Fluid fluid = ((UniversalBucket) bucket.getItem()).getFluid(bucket).getFluid();
+			final Fluid fluid = ((UniversalBucket) bucket.getItem()).getFluid(bucket).getFluid();
 			if (fluid instanceof FluidElement) {
-				FluidElement fluidElement = (FluidElement) fluid;
+				final FluidElement fluidElement = (FluidElement) fluid;
 				if (fluidElement.getChemical() instanceof ElementEnum) {
 					return ((ElementEnum) fluidElement.getChemical()).atomicNumber();
 				}
@@ -566,11 +547,11 @@ public final class MinechemUtil {
 		return -1;
 	}
 
-	public static int getMoleculeIDFromBucket(@Nonnull ItemStack bucket) {
+	public static int getMoleculeIDFromBucket(@Nonnull final ItemStack bucket) {
 		if (bucket.getItem() instanceof UniversalBucket) {
-			Fluid fluid = ((UniversalBucket) bucket.getItem()).getFluid(bucket).getFluid();
+			final Fluid fluid = ((UniversalBucket) bucket.getItem()).getFluid(bucket).getFluid();
 			if (fluid instanceof FluidMolecule) {
-				FluidMolecule fluidElement = (FluidMolecule) fluid;
+				final FluidMolecule fluidElement = (FluidMolecule) fluid;
 				if (fluidElement.getChemical() instanceof MoleculeEnum) {
 					return ((MoleculeEnum) fluidElement.getChemical()).id();
 				}
@@ -579,9 +560,9 @@ public final class MinechemUtil {
 		return -1;
 	}
 
-	public static MinechemChemicalType getChemicalTypeFromBucket(@Nonnull ItemStack bucket) {
+	public static MinechemChemicalType getChemicalTypeFromBucket(@Nonnull final ItemStack bucket) {
 		if (bucket.getItem() instanceof UniversalBucket) {
-			Fluid fluid = ((UniversalBucket) bucket.getItem()).getFluid(bucket).getFluid();
+			final Fluid fluid = ((UniversalBucket) bucket.getItem()).getFluid(bucket).getFluid();
 			if (fluid instanceof FluidMinechem) {
 				return ((FluidMinechem) fluid).getChemical();
 			}
@@ -594,35 +575,35 @@ public final class MinechemUtil {
 	 * FMLClientHandler.instance().getClient(),mc.gameSettings.chatLinksPrompt
 	 * before using.
 	 */
-	public static void openURL(String url) {
+	public static void openURL(final String url) {
 		try {
-			Class<?> oclass = Class.forName("java.awt.Desktop");
-			Object object = oclass.getMethod("getDesktop", new Class[0]).invoke((Object) null, new Object[0]);
+			final Class<?> oclass = Class.forName("java.awt.Desktop");
+			final Object object = oclass.getMethod("getDesktop", new Class[0]).invoke((Object) null, new Object[0]);
 			oclass.getMethod("browse", new Class[] {
 					URI.class
 			}).invoke(object, new Object[] {
 					new URI(url)
 			});
 		}
-		catch (Throwable throwable) {
+		catch (final Throwable throwable) {
 			ModLogger.debug("Couldn\'t open link: " + url);
 		}
 	}
 
-	public static boolean stacksAreSameKind(ItemStack is1, ItemStack is2) {
+	public static boolean stacksAreSameKind(final ItemStack is1, final ItemStack is2) {
 		boolean damageMatters = false;
 		if (MinechemUtil.isStackAnElement(is1) && MinechemUtil.isStackAnElement(is2)) {
 			damageMatters = true;
 		}
-		int dmg1 = is1.getItemDamage();
-		int dmg2 = is2.getItemDamage();
+		final int dmg1 = is1.getItemDamage();
+		final int dmg2 = is2.getItemDamage();
 		if (damageMatters) {
 			if (dmg1 != dmg2) {
 				return false;
 			}
 		}
-		NBTTagCompound nbt1 = is1.serializeNBT();
-		NBTTagCompound nbt2 = is2.serializeNBT();
+		final NBTTagCompound nbt1 = is1.serializeNBT();
+		final NBTTagCompound nbt2 = is2.serializeNBT();
 		boolean sameNBT = true;
 		if (nbt1 != null && nbt2 != null) {
 			sameNBT = nbt1.equals(nbt2);
@@ -630,23 +611,23 @@ public final class MinechemUtil {
 		return is1.getItem() == is2.getItem() && sameNBT;
 	}
 
-	public static boolean isStackAChemical(ItemStack itemstack) {
+	public static boolean isStackAChemical(final ItemStack itemstack) {
 		return itemstack.getItem() instanceof ItemElement || itemstack.getItem() instanceof ItemMolecule;
 	}
 
-	public static boolean isStackAnElement(ItemStack itemstack) {
+	public static boolean isStackAnElement(final ItemStack itemstack) {
 		return itemstack.getItem() instanceof ItemElement && !isStackAnEmptyTestTube(itemstack);
 	}
 
-	public static boolean isStackAMolecule(ItemStack itemstack) {
+	public static boolean isStackAMolecule(final ItemStack itemstack) {
 		return itemstack.getItem() instanceof ItemMolecule && !isStackAnEmptyTestTube(itemstack);
 	}
 
-	public static boolean isStackAnEmptyTestTube(ItemStack itemstack) {
+	public static boolean isStackAnEmptyTestTube(final ItemStack itemstack) {
 		return itemstack.toString().contains("minechem.itemTestTube");
 	}
 
-	public static String stringSieve(String str) {
+	public static String stringSieve(final String str) {
 		return str.toLowerCase().trim() // remove trailing whitespace
 				.replaceAll("\\s", "") // replace spaces
 				.replaceAll("block", "").replaceAll("item", "");

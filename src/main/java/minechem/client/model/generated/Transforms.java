@@ -1,22 +1,13 @@
 package minechem.client.model.generated;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 import javax.vecmath.Vector3f;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 
 import minechem.client.model.generated.ITransformFactory.IStandardTransformFactory;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -114,7 +105,7 @@ public class Transforms {
 	 * @param s  The scale.
 	 * @return The new TRSRTransformation.
 	 */
-	public static TRSRTransformation create(float tx, float ty, float tz, float rx, float ry, float rz, float s) {
+	public static TRSRTransformation create(final float tx, final float ty, final float tz, final float rx, final float ry, final float rz, final float s) {
 		return create(new Vector3f(tx / 16, ty / 16, tz / 16), new Vector3f(rx, ry, rz), new Vector3f(s, s, s));
 	}
 
@@ -126,7 +117,7 @@ public class Transforms {
 	 * @param scale     The scale.
 	 * @return The new TRSRTransformation.
 	 */
-	public static TRSRTransformation create(Vector3 transform, Vector3 rotation, Vector3 scale) {
+	public static TRSRTransformation create(final Vector3 transform, final Vector3 rotation, final Vector3 scale) {
 		return create(transform.vector3f(), rotation.vector3f(), scale.vector3f());
 	}
 
@@ -138,7 +129,7 @@ public class Transforms {
 	 * @param scale     The scale.
 	 * @return The new TRSRTransformation.
 	 */
-	public static TRSRTransformation create(Vector3f transform, Vector3f rotation, Vector3f scale) {
+	public static TRSRTransformation create(final Vector3f transform, final Vector3f rotation, final Vector3f scale) {
 		return TRSRTransformation.blockCenterToCorner(new TRSRTransformation(transform, TRSRTransformation.quatFromXYZDegrees(rotation), scale, null));
 	}
 
@@ -148,7 +139,7 @@ public class Transforms {
 	 * @param transform The right hand transform.
 	 * @return The new left hand transform.
 	 */
-	public static TRSRTransformation flipLeft(TRSRTransformation transform) {
+	public static TRSRTransformation flipLeft(final TRSRTransformation transform) {
 		return TRSRTransformation.blockCenterToCorner(flipX.compose(TRSRTransformation.blockCornerToCenter(transform)).compose(flipX));
 	}
 
@@ -158,13 +149,13 @@ public class Transforms {
 	 * @param mod        The mod.
 	 * @param transforms The JsonObject holding the transform factory data.
 	 */
-	public static void loadTransformFactory(ModContainer mod, JsonObject transforms) {
-		for (Entry<String, JsonElement> entry : transforms.entrySet()) {
+	public static void loadTransformFactory(final ModContainer mod, final JsonObject transforms) {
+		for (final Entry<String, JsonElement> entry : transforms.entrySet()) {
 			if (entry.getValue().isJsonPrimitive() && entry.getValue().getAsJsonPrimitive().isString()) {
-				String key = entry.getKey();
-				String value = entry.getValue().getAsString();
+				final String key = entry.getKey();
+				final String value = entry.getValue().getAsString();
 				try {
-					Class<?> clazz = Class.forName(value);
+					final Class<?> clazz = Class.forName(value);
 					if (ITransformFactory.class.isAssignableFrom(clazz)) {
 						registerTransformFactory(new ResourceLocation(mod.getModId(), key), (ITransformFactory) clazz.newInstance());
 					}
@@ -172,7 +163,7 @@ public class Transforms {
 						throw new JsonSyntaxException("Class '" + value + "' is not an instance of ITransformFactory");
 					}
 				}
-				catch (ClassNotFoundException e) {
+				catch (final ClassNotFoundException e) {
 					throw new JsonSyntaxException("Could not find class: '" + value + "'!", e);
 				}
 				catch (InstantiationException | IllegalAccessException e) {
@@ -191,7 +182,7 @@ public class Transforms {
 	 * @param type    The factory identifier.
 	 * @param factory The Factory instance.
 	 */
-	public static void registerTransformFactory(ResourceLocation type, ITransformFactory factory) {
+	public static void registerTransformFactory(final ResourceLocation type, final ITransformFactory factory) {
 		if (transformFactories.containsKey(type)) {
 			//CCLLog.big(Level.WARN, "Overriding already registered transform factory for type '%s', this may cause issues...", type);
 		}
@@ -204,7 +195,7 @@ public class Transforms {
 	 * @param type The factory identifier.
 	 * @return The factory.
 	 */
-	public static ITransformFactory getTransformFactory(ResourceLocation type) {
+	public static ITransformFactory getTransformFactory(final ResourceLocation type) {
 		if (!transformFactories.containsKey(type)) {
 			throw new IllegalArgumentException(String.format("Unable to get TransformFactory for unregistered type{%s}!", type));
 		}
@@ -215,25 +206,25 @@ public class Transforms {
 		registerTransformFactory(new ResourceLocation("minecraft:default"), new IStandardTransformFactory() {
 
 			@Override
-			public TRSRTransformation getTransform(TransformType type, JsonObject object) {
-				Vector3 rot = parseVec3(object, "rotation", Vector3.zero.copy());
-				Vector3 trans = parseVec3(object, "translation", Vector3.zero.copy());
+			public TRSRTransformation getTransform(final TransformType type, final JsonObject object) {
+				final Vector3 rot = parseVec3(object, "rotation", Vector3.zero.copy());
+				final Vector3 trans = parseVec3(object, "translation", Vector3.zero.copy());
 				trans.multiply(1D / 16D);
 				trans.x = clip(trans.x, -5.0D, 5.0D);
 				trans.y = clip(trans.y, -5.0D, 5.0D);
 				trans.z = clip(trans.z, -5.0D, 5.0D);
-				Vector3 scale = parseVec3(object, "scale", Vector3.one);
+				final Vector3 scale = parseVec3(object, "scale", Vector3.one);
 				scale.x = clip(scale.x, -4.0D, 4.0D);
 				scale.y = clip(scale.y, -4.0D, 4.0D);
 				scale.z = clip(scale.z, -4.0D, 4.0D);
 				return create(trans, rot, scale);
 			}
 
-			private Vector3 parseVec3(JsonObject object, String key, Vector3 defaultValue) {
+			private Vector3 parseVec3(final JsonObject object, final String key, final Vector3 defaultValue) {
 				if (object.has(key)) {
-					JsonArray array = JsonUtils.getJsonArray(object, key);
+					final JsonArray array = JsonUtils.getJsonArray(object, key);
 					if (array.size() == 3) {
-						float[] floats = new float[3];
+						final float[] floats = new float[3];
 						for (int i = 0; i < 3; i++) {
 							floats[i] = JsonUtils.getFloat(array.get(i), key + "[ " + i + " ]");
 						}
@@ -246,7 +237,7 @@ public class Transforms {
 		});
 	}
 
-	public static double clip(double value, double min, double max) {
+	public static double clip(double value, final double min, final double max) {
 		if (value > max) {
 			value = max;
 		}
@@ -262,21 +253,22 @@ public class Transforms {
 	 * @param json The Json that contains either ModelRotation x,y,TRSRTransforms or CCL defaults.
 	 * @return A IModelState.
 	 */
-	public static Optional<IModelState> parseFromJson(JsonObject json) {
+	@SuppressWarnings("deprecation")
+	public static Optional<IModelState> parseFromJson(final JsonObject json) {
 		Optional<IModelState> ret = Optional.empty();
 		if (json.has("x") || json.has("y")) {
-			int x = JsonUtils.getInt(json, "x", 0);
-			int y = JsonUtils.getInt(json, "y", 0);
-			ModelRotation rot = ModelRotation.getModelRotation(x, y);
+			final int x = JsonUtils.getInt(json, "x", 0);
+			final int y = JsonUtils.getInt(json, "y", 0);
+			final ModelRotation rot = ModelRotation.getModelRotation(x, y);
 			ret = Optional.of(new TRSRTransformation(rot));
 			if (!ret.isPresent()) {
 				throw new JsonParseException("Invalid BlockModelRotation x: " + x + " y: " + y);
 			}
 		}
 		if (json.has("transform")) {
-			JsonElement transformElement = json.get("transform");
+			final JsonElement transformElement = json.get("transform");
 			if (transformElement.isJsonPrimitive() && transformElement.getAsJsonPrimitive().isString()) {
-				String transform = transformElement.getAsString();
+				final String transform = transformElement.getAsString();
 				switch (transform) {
 				case "identity":
 					ret = Optional.of(TRSRTransformation.identity());
@@ -300,24 +292,24 @@ public class Transforms {
 			}
 			else if (!transformElement.isJsonObject()) {
 				try {
-					TRSRTransformation base = GSON.fromJson(transformElement, TRSRTransformation.class);
+					final TRSRTransformation base = GSON.fromJson(transformElement, TRSRTransformation.class);
 					ret = Optional.of(TRSRTransformation.blockCenterToCorner(base));
 				}
-				catch (JsonParseException e) {
+				catch (final JsonParseException e) {
 					throw new JsonParseException("transform: expected a string, object or valid base transformation, got: " + transformElement);
 				}
 			}
 			else {
-				JsonObject transform = transformElement.getAsJsonObject();
+				final JsonObject transform = transformElement.getAsJsonObject();
 				if (transform.has("type")) {
-					JsonElement typeElement = transform.get("type");
+					final JsonElement typeElement = transform.get("type");
 					if (typeElement.isJsonPrimitive() && typeElement.getAsJsonPrimitive().isString()) {
-						ResourceLocation type = new ResourceLocation(typeElement.getAsString());
+						final ResourceLocation type = new ResourceLocation(typeElement.getAsString());
 						try {
-							ITransformFactory factory = getTransformFactory(type);
+							final ITransformFactory factory = getTransformFactory(type);
 							ret = Optional.of(factory.getModelState(transform));
 						}
-						catch (IllegalArgumentException e) {
+						catch (final IllegalArgumentException e) {
 							throw new JsonParseException("Unregistered type!" + type, e);
 						}
 					}
@@ -327,54 +319,54 @@ public class Transforms {
 				}
 				else {
 					//TODO, move this to a factory.
-					EnumMap<TransformType, TRSRTransformation> transforms = Maps.newEnumMap(TransformType.class);
+					final EnumMap<TransformType, TRSRTransformation> transforms = Maps.newEnumMap(TransformType.class);
 					if (transform.has("thirdperson")) {
-						TRSRTransformation t = GSON.fromJson(transform.get("thirdperson"), TRSRTransformation.class);
+						final TRSRTransformation t = GSON.fromJson(transform.get("thirdperson"), TRSRTransformation.class);
 						transform.remove("thirdperson");
 						transforms.put(TransformType.THIRD_PERSON_RIGHT_HAND, TRSRTransformation.blockCenterToCorner(t));
 					}
 					if (transform.has("thirdperson_righthand")) {
-						TRSRTransformation t = GSON.fromJson(transform.get("thirdperson_righthand"), TRSRTransformation.class);
+						final TRSRTransformation t = GSON.fromJson(transform.get("thirdperson_righthand"), TRSRTransformation.class);
 						transform.remove("thirdperson_righthand");
 						transforms.put(TransformType.THIRD_PERSON_RIGHT_HAND, TRSRTransformation.blockCenterToCorner(t));
 					}
 					if (transform.has("thirdperson_lefthand")) {
-						TRSRTransformation t = GSON.fromJson(transform.get("thirdperson_lefthand"), TRSRTransformation.class);
+						final TRSRTransformation t = GSON.fromJson(transform.get("thirdperson_lefthand"), TRSRTransformation.class);
 						transform.remove("thirdperson_lefthand");
 						transforms.put(TransformType.THIRD_PERSON_LEFT_HAND, TRSRTransformation.blockCenterToCorner(t));
 					}
 					if (transform.has("firstperson")) {
-						TRSRTransformation t = GSON.fromJson(transform.get("firstperson"), TRSRTransformation.class);
+						final TRSRTransformation t = GSON.fromJson(transform.get("firstperson"), TRSRTransformation.class);
 						transform.remove("firstperson");
 						transforms.put(TransformType.FIRST_PERSON_RIGHT_HAND, TRSRTransformation.blockCenterToCorner(t));
 					}
 					if (transform.has("firstperson_righthand")) {
-						TRSRTransformation t = GSON.fromJson(transform.get("firstperson_righthand"), TRSRTransformation.class);
+						final TRSRTransformation t = GSON.fromJson(transform.get("firstperson_righthand"), TRSRTransformation.class);
 						transform.remove("firstperson_righthand");
 						transforms.put(TransformType.FIRST_PERSON_RIGHT_HAND, TRSRTransformation.blockCenterToCorner(t));
 					}
 					if (transform.has("firstperson_lefthand")) {
-						TRSRTransformation t = GSON.fromJson(transform.get("firstperson_lefthand"), TRSRTransformation.class);
+						final TRSRTransformation t = GSON.fromJson(transform.get("firstperson_lefthand"), TRSRTransformation.class);
 						transform.remove("firstperson_lefthand");
 						transforms.put(TransformType.FIRST_PERSON_LEFT_HAND, TRSRTransformation.blockCenterToCorner(t));
 					}
 					if (transform.has("head")) {
-						TRSRTransformation t = GSON.fromJson(transform.get("head"), TRSRTransformation.class);
+						final TRSRTransformation t = GSON.fromJson(transform.get("head"), TRSRTransformation.class);
 						transform.remove("head");
 						transforms.put(TransformType.HEAD, TRSRTransformation.blockCenterToCorner(t));
 					}
 					if (transform.has("gui")) {
-						TRSRTransformation t = GSON.fromJson(transform.get("gui"), TRSRTransformation.class);
+						final TRSRTransformation t = GSON.fromJson(transform.get("gui"), TRSRTransformation.class);
 						transform.remove("gui");
 						transforms.put(TransformType.GUI, TRSRTransformation.blockCenterToCorner(t));
 					}
 					if (transform.has("ground")) {
-						TRSRTransformation t = GSON.fromJson(transform.get("ground"), TRSRTransformation.class);
+						final TRSRTransformation t = GSON.fromJson(transform.get("ground"), TRSRTransformation.class);
 						transform.remove("ground");
 						transforms.put(TransformType.GROUND, TRSRTransformation.blockCenterToCorner(t));
 					}
 					if (transform.has("fixed")) {
-						TRSRTransformation t = GSON.fromJson(transform.get("fixed"), TRSRTransformation.class);
+						final TRSRTransformation t = GSON.fromJson(transform.get("fixed"), TRSRTransformation.class);
 						transform.remove("fixed");
 						transforms.put(TransformType.FIXED, TRSRTransformation.blockCenterToCorner(t));
 					}
@@ -408,7 +400,7 @@ public class Transforms {
 					}
 					else {
 						state = part -> {
-							ImmutableMap<TransformType, TRSRTransformation> map = Maps.immutableEnumMap(transforms);
+							final ImmutableMap<TransformType, TRSRTransformation> map = Maps.immutableEnumMap(transforms);
 							if (!part.isPresent() || !(part.get() instanceof TransformType) || !map.containsKey(part.get())) {
 								TRSRTransformation base2 = TRSRTransformation.identity();
 								if (!transform.entrySet().isEmpty()) {
@@ -427,7 +419,7 @@ public class Transforms {
 		return ret;
 	}
 
-	public static TRSRTransformation fromMatrix4(Matrix4 matrix4) {
+	public static TRSRTransformation fromMatrix4(final Matrix4 matrix4) {
 		return new TRSRTransformation(matrix4.toMatrix4f());
 	}
 }

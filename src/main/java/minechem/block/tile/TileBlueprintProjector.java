@@ -1,16 +1,9 @@
 package minechem.block.tile;
 
 import minechem.api.IMinechemBlueprint;
-import minechem.block.multiblock.tile.TileFissionCore;
-import minechem.block.multiblock.tile.TileFusionCore;
-import minechem.block.multiblock.tile.TileGhostBlock;
-import minechem.block.multiblock.tile.TileReactorCore;
+import minechem.block.multiblock.tile.*;
 import minechem.block.multiblock.tile.TileReactorCore.MultiBlockStatusEnum;
-import minechem.init.ModBlocks;
-import minechem.init.ModBlueprints;
-import minechem.init.ModItems;
-import minechem.init.ModRegistries;
-import minechem.init.ModSounds;
+import minechem.init.*;
 import minechem.utils.BlueprintUtil;
 import minechem.utils.LocalPosition;
 import net.minecraft.block.Block;
@@ -20,10 +13,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -32,6 +22,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
  * @author p455w0rd
  *
  */
+@SuppressWarnings("deprecation")
 public class TileBlueprintProjector extends TileMinechemEnergyBase {
 
 	IMinechemBlueprint blueprint, lastBlueprint;
@@ -75,7 +66,7 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 		if (timer % 5 == 0) {
 			destroyProjection();
 			markDirty();
-			IBlockState iblockstate = getWorld().getBlockState(getPos());
+			final IBlockState iblockstate = getWorld().getBlockState(getPos());
 			if (iblockstate != null) {
 				getWorld().notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
 			}
@@ -95,7 +86,7 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 	}
 
 	private EnumFacing getFacing() {
-		int facing = world.getBlockState(pos).getBlock().getMetaFromState(world.getBlockState(pos));
+		final int facing = world.getBlockState(pos).getBlock().getMetaFromState(world.getBlockState(pos));
 		return EnumFacing.values()[facing].getOpposite();
 	}
 
@@ -104,14 +95,14 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 			return;
 		}
 
-		EnumFacing direction = getFacing();
-		LocalPosition position = new LocalPosition(pos.getX(), pos.getY(), pos.getZ(), direction);
-		LocalPosition worldPos = new LocalPosition(blueprint.getManagerPosX(), blueprint.getManagerPosY(), blueprint.getManagerPosZ(), direction);
+		final EnumFacing direction = getFacing();
+		final LocalPosition position = new LocalPosition(pos.getX(), pos.getY(), pos.getZ(), direction);
+		//LocalPosition worldPos = new LocalPosition(blueprint.getManagerPosX(), blueprint.getManagerPosY(), blueprint.getManagerPosZ(), direction);
 
-		position.moveForwards(blueprint.zSize() + 1);
+		position.moveForward(blueprint.zSize() + 1);
 		position.moveLeft(Math.floor(blueprint.xSize() / 2));
 
-		LocalPosition.Pos3 mgrPos = position.getLocalPos(blueprint.getManagerPosX(), blueprint.getManagerPosY(), blueprint.getManagerPosZ());
+		final LocalPosition.Pos3 mgrPos = position.getLocalPos(blueprint.getManagerPosX(), blueprint.getManagerPosY(), blueprint.getManagerPosZ());
 
 		int totalIncorrectCount = 0;
 		if (!isComplete()) {
@@ -125,7 +116,7 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 				for (int y = 0; y < blueprint.ySize(); ++y) {
 					for (int z = 0; z < blueprint.zSize(); ++z) {
 						if (shouldProjectGhostBlocks) {
-							MultiBlockStatusEnum multiBlockStatusEnum = projectGhostBlock(x, y, z, position);//isManagerBlock(x, y, z) ? MultiBlockStatusEnum.CORRECT : projectGhostBlock(x, y, z, position);
+							final MultiBlockStatusEnum multiBlockStatusEnum = projectGhostBlock(x, y, z, position);//isManagerBlock(x, y, z) ? MultiBlockStatusEnum.CORRECT : projectGhostBlock(x, y, z, position);
 							if (multiBlockStatusEnum != MultiBlockStatusEnum.CORRECT) {
 								continue;
 							}
@@ -152,30 +143,30 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 		}
 	}
 
-	private void buildStructure(LocalPosition position) {
+	private void buildStructure(final LocalPosition position) {
 		if (needToBuild) {
-			IBlockState[][][] resultStructure = blueprint.getStructure();
-			TileEntity managerTileEntity = buildManagerBlock(position);
+			//IBlockState[][][] resultStructure = blueprint.getStructure();
+			final TileEntity managerTileEntity = buildManagerBlock(position);
 			if (managerTileEntity != null && managerTileEntity instanceof TileReactorCore) {
-				for (int x = 0; x < blueprint.xSize(); ++x) {
+				/*for (int x = 0; x < blueprint.xSize(); ++x) {
 					for (int y = 0; y < blueprint.ySize(); ++y) {
 						for (int z = 0; z < blueprint.zSize(); ++z) {
 							if (isManagerBlock(x, y, z)) {
 								continue;
 							}
 							IBlockState state = resultStructure[y][x][z];
-
+				
 							//setBlock(new BlockPos(x, y, z), position, state);
 						}
 					}
-				}
+				}*/
 				((TileReactorCore) managerTileEntity).linkProxies();
 			}
 			needToBuild = false;
 		}
 	}
 
-	private void setBlock(BlockPos posIn, LocalPosition position, IBlockState state) {
+	/*private void setBlock(BlockPos posIn, LocalPosition position, IBlockState state) {
 		if (state.getBlock() == Blocks.AIR) {
 			return;
 		}
@@ -184,11 +175,11 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 			getWorld().setBlockState(new BlockPos(worldPos.x, worldPos.y, worldPos.z), state, 3);
 		}
 	}
-
+	
 	private boolean isManagerBlock(int x, int y, int z) {
 		return x == blueprint.getManagerPosX() && y == blueprint.getManagerPosY() && z == blueprint.getManagerPosZ();
 	}
-
+	
 	private TileEntity getManager() {
 		if (getBlueprint() != null) {
 			EnumFacing direction = getFacing();
@@ -199,10 +190,10 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 			return getWorld().getTileEntity(new BlockPos(worldPos.x, worldPos.y, worldPos.z));
 		}
 		return null;
-	}
+	}*/
 
-	private TileEntity buildManagerBlock(LocalPosition position) {
-		LocalPosition.Pos3 worldPos = position.getLocalPos(blueprint.getManagerPosX(), blueprint.getManagerPosY(), blueprint.getManagerPosZ());
+	private TileEntity buildManagerBlock(final LocalPosition position) {
+		final LocalPosition.Pos3 worldPos = position.getLocalPos(blueprint.getManagerPosX(), blueprint.getManagerPosY(), blueprint.getManagerPosZ());
 		//getWorld().setBlockState(new BlockPos(worldPos.x, worldPos.y, worldPos.z), ModBlocks.reactor_core.getDefaultState(), 3);
 		//if (getWorld().getTileEntity(new BlockPos(worldPos.x, worldPos.y, worldPos.z)) == null) {
 		if (getWorld().getBlockState(new BlockPos(worldPos.x, worldPos.y, worldPos.z)) == ModBlocks.reactor_core) {
@@ -210,14 +201,14 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 				getWorld().removeTileEntity(new BlockPos(worldPos.x, worldPos.y, worldPos.z));
 			}
 			if (blueprint == ModBlueprints.fusion) {
-				TileFusionCore fusion = new TileFusionCore(position.orientation);
+				final TileFusionCore fusion = new TileFusionCore(position.orientation);
 				fusion.setWorld(getWorld());
 				fusion.setPos(new BlockPos(worldPos.x, worldPos.y, worldPos.z));
 				ObfuscationReflectionHelper.setPrivateValue(TileEntity.class, fusion, ModBlocks.reactor_core, "blockType", "field_145854_h");
 				getWorld().addTileEntity(fusion);
 			}
 			if (blueprint == ModBlueprints.fission) {
-				TileFissionCore fission = new TileFissionCore(position.orientation);
+				final TileFissionCore fission = new TileFissionCore(position.orientation);
 				fission.setWorld(getWorld());
 				fission.setPos(new BlockPos(worldPos.x, worldPos.y, worldPos.z));
 				ObfuscationReflectionHelper.setPrivateValue(TileEntity.class, fission, ModBlocks.reactor_core, "blockType", "field_145854_h");
@@ -228,14 +219,14 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 		return getWorld().getTileEntity(new BlockPos(worldPos.x, worldPos.y, worldPos.z));
 	}
 
-	private MultiBlockStatusEnum projectGhostBlock(int x, int y, int z, LocalPosition position) {
-		LocalPosition.Pos3 worldPos = position.getLocalPos(x, y, z);
-		IBlockState structureState = structure[y][x][z];
-		IBlockState state = getWorld().getBlockState(new BlockPos(worldPos.x, worldPos.y, worldPos.z));
-		Block block = state.getBlock();
-		Block structureBlock = structureState.getBlock();
-		int blockMetadata = block.getMetaFromState(state);
-		int structureBlockMetadata = structureBlock.getMetaFromState(structureState);
+	private MultiBlockStatusEnum projectGhostBlock(final int x, final int y, final int z, final LocalPosition position) {
+		final LocalPosition.Pos3 worldPos = position.getLocalPos(x, y, z);
+		final IBlockState structureState = structure[y][x][z];
+		final IBlockState state = getWorld().getBlockState(new BlockPos(worldPos.x, worldPos.y, worldPos.z));
+		final Block block = state.getBlock();
+		final Block structureBlock = structureState.getBlock();
+		final int blockMetadata = block.getMetaFromState(state);
+		final int structureBlockMetadata = structureBlock.getMetaFromState(structureState);
 		if (block == Blocks.AIR && structureState.getBlock() != Blocks.AIR) {
 			createGhostBlock(worldPos.x, worldPos.y, worldPos.z, structureState);
 			return MultiBlockStatusEnum.INCORRECT;
@@ -246,11 +237,11 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 		return MultiBlockStatusEnum.INCORRECT;
 	}
 
-	private void createGhostBlock(int x, int y, int z, IBlockState state) {
+	private void createGhostBlock(final int x, final int y, final int z, final IBlockState state) {
 		getWorld().setBlockState(new BlockPos(x, y, z), ModBlocks.ghostBlock.getStateFromMeta(0), 3);
-		TileEntity tileEntity = getWorld().getTileEntity(new BlockPos(x, y, z));
+		final TileEntity tileEntity = getWorld().getTileEntity(new BlockPos(x, y, z));
 		if (tileEntity instanceof TileGhostBlock) {
-			TileGhostBlock ghostBlock = (TileGhostBlock) tileEntity;
+			final TileGhostBlock ghostBlock = (TileGhostBlock) tileEntity;
 			ghostBlock.setRenderedBlockState(state);
 		}
 	}
@@ -259,14 +250,14 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 		destroyProjection(true);
 	}
 
-	public void destroyProjection(boolean override) {
-		if ((getEnergyStored() >= getEnergyRequired() && blueprint != null) && !override) {
+	public void destroyProjection(final boolean override) {
+		if (getEnergyStored() >= getEnergyRequired() && blueprint != null && !override) {
 			return;
 		}
 		if (blueprint == null && lastBlueprint != null) {
 			structure = lastBlueprint.getStructure();
-			LocalPosition position = new LocalPosition(pos.getX(), pos.getY(), pos.getZ(), getFacing());
-			position.moveForwards(lastBlueprint.xSize() + 1);
+			final LocalPosition position = new LocalPosition(pos.getX(), pos.getY(), pos.getZ(), getFacing());
+			position.moveForward(lastBlueprint.xSize() + 1);
 			position.moveLeft(Math.floor(lastBlueprint.xSize() / 2));
 			for (int x = 0; x < lastBlueprint.xSize(); ++x) {
 				for (int y = 0; y < lastBlueprint.ySize(); ++y) {
@@ -280,9 +271,9 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 		}
 	}
 
-	private void destroyGhostBlock(int x, int y, int z, LocalPosition position) {
-		LocalPosition.Pos3 worldPos = position.getLocalPos(x, y, z);
-		Block block = getWorld().getBlockState(new BlockPos(worldPos.x, worldPos.y, worldPos.z)).getBlock();
+	private void destroyGhostBlock(final int x, final int y, final int z, final LocalPosition position) {
+		final LocalPosition.Pos3 worldPos = position.getLocalPos(x, y, z);
+		final Block block = getWorld().getBlockState(new BlockPos(worldPos.x, worldPos.y, worldPos.z)).getBlock();
 		if (block == ModBlocks.ghostBlock) {
 			getWorld().setBlockToAir(new BlockPos(worldPos.x, worldPos.y, worldPos.z));
 		}
@@ -293,7 +284,7 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 			return getWorld().getBlockState(pos).getBlock().getMetaFromState(getWorld().getBlockState(pos));
 		}
 	*/
-	public void setBlueprint(IMinechemBlueprint blueprint) {
+	public void setBlueprint(final IMinechemBlueprint blueprint) {
 		destroyProjection();
 		if (blueprint != null) {
 			this.blueprint = blueprint;
@@ -308,7 +299,7 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 	}
 
 	public IMinechemBlueprint takeBlueprint() {
-		IMinechemBlueprint blueprint = this.blueprint;
+		final IMinechemBlueprint blueprint = this.blueprint;
 		setBlueprint(null);
 
 		return blueprint;
@@ -324,8 +315,8 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 	}
 
 	@Override
-	public ItemStack decrStackSize(int slot, int amount) {
-		ItemStack returnStack = super.decrStackSize(slot, amount);
+	public ItemStack decrStackSize(final int slot, final int amount) {
+		final ItemStack returnStack = super.decrStackSize(slot, amount);
 		destroyProjection();
 		setBlueprint(null);
 
@@ -333,10 +324,10 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack itemstack) {
+	public void setInventorySlotContents(final int slot, final ItemStack itemstack) {
 		super.setInventorySlotContents(slot, itemstack);
 		if (!itemstack.isEmpty()) {
-			IMinechemBlueprint blueprint = BlueprintUtil.getBlueprint(itemstack);
+			final IMinechemBlueprint blueprint = BlueprintUtil.getBlueprint(itemstack);
 			destroyProjection();
 			setBlueprint(blueprint);
 		}
@@ -358,9 +349,9 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
+	public NBTTagCompound writeToNBT(final NBTTagCompound nbtTagCompound) {
 		super.writeToNBT(nbtTagCompound);
-		ItemStack blueprintStack = getStackInSlot(0);
+		final ItemStack blueprintStack = getStackInSlot(0);
 		if (!blueprintStack.isEmpty()) {
 			nbtTagCompound.setTag("blueprint", blueprintStack.writeToNBT(new NBTTagCompound()));
 		}
@@ -369,20 +360,20 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbtTagCompound) {
+	public void readFromNBT(final NBTTagCompound nbtTagCompound) {
 		super.readFromNBT(nbtTagCompound);
 		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
 		//isComplete = false;
-		NBTTagCompound blueprintNBT = (NBTTagCompound) nbtTagCompound.getTag("blueprint");
+		final NBTTagCompound blueprintNBT = (NBTTagCompound) nbtTagCompound.getTag("blueprint");
 		if (blueprintNBT != null) {
-			ItemStack blueprintStack = new ItemStack(blueprintNBT);
-			IMinechemBlueprint blueprint = BlueprintUtil.getBlueprint(blueprintStack);
+			final ItemStack blueprintStack = new ItemStack(blueprintNBT);
+			final IMinechemBlueprint blueprint = BlueprintUtil.getBlueprint(blueprintStack);
 			setBlueprint(blueprint);
 			inventory.set(0, blueprintStack);
 			setInventorySlotContents(0, blueprintStack);
 		}
 		if (nbtTagCompound.hasKey("lastBlueprint", Constants.NBT.TAG_STRING)) {
-			String regName = nbtTagCompound.getString("lastBlueprint");
+			final String regName = nbtTagCompound.getString("lastBlueprint");
 			if (!regName.isEmpty()) {
 				lastBlueprint = ModRegistries.MINECHEM_BLUEPRINTS.getValue(new ResourceLocation(regName));
 			}
@@ -394,17 +385,17 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
+	public boolean isItemValidForSlot(final int i, final ItemStack itemstack) {
 		return itemstack.getItem() == ModItems.blueprint && BlueprintUtil.getBlueprint(itemstack) != null;
 	}
 
 	@Override
-	public int getField(int i) {
+	public int getField(final int i) {
 		return 0;
 	}
 
 	@Override
-	public void setField(int i, int i1) {
+	public void setField(final int i, final int i1) {
 
 	}
 
@@ -419,17 +410,17 @@ public class TileBlueprintProjector extends TileMinechemEnergyBase {
 	}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer entityplayer) {
+	public boolean isUsableByPlayer(final EntityPlayer entityplayer) {
 		return true;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer entityPlayer) {
+	public void openInventory(final EntityPlayer entityPlayer) {
 
 	}
 
 	@Override
-	public void closeInventory(EntityPlayer entityPlayer) {
+	public void closeInventory(final EntityPlayer entityPlayer) {
 
 	}
 

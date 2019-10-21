@@ -60,7 +60,7 @@ public class ItemElement extends ItemBase {
 	public ItemElement() {
 		setCreativeTab(ModCreativeTab.CREATIVE_TAB_ELEMENTS);
 		setUnlocalizedName("item_element");
-		setRegistryName(ModGlobals.ID + ":item_element");
+		setRegistryName(ModGlobals.MODID + ":item_element");
 		setHasSubtypes(true);
 		ForgeRegistries.ITEMS.register(this);
 	}
@@ -68,7 +68,7 @@ public class ItemElement extends ItemBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerRenderer() {
-		ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(new ResourceLocation(ModGlobals.ID, "tube_empty"), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(new ResourceLocation(ModGlobals.MODID, "tube_empty"), "inventory"));
 	}
 
 	@Override

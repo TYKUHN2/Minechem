@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.Fluid;
 
 abstract public class FluidMinechem extends Fluid {
 
-	private static String texturePrefix = ModGlobals.ID + ":blocks/";
+	private static String texturePrefix = ModGlobals.MODID + ":blocks/";
 	private int quanta;
 
 	public FluidMinechem(String fluidName, boolean hasFlowIcon, MatterState roomstatus) {

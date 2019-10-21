@@ -6,9 +6,7 @@ import java.util.Locale;
 import com.google.common.collect.Lists;
 
 import minechem.api.IOreDictionaryHandler;
-import minechem.handler.oredict.OreDictionaryAppliedEnergisticsHandler;
-import minechem.handler.oredict.OreDictionaryDefaultHandler;
-import minechem.handler.oredict.OreDictionaryExtraUtilitiesHandler;
+import minechem.handler.oredict.*;
 import minechem.init.ModIntegration.Mods;
 import minechem.item.ItemElement;
 import minechem.item.element.Element;
@@ -16,23 +14,13 @@ import minechem.item.element.ElementEnum;
 import minechem.item.molecule.Molecule;
 import minechem.item.molecule.MoleculeEnum;
 import minechem.potion.PotionChemical;
-import minechem.recipe.RecipeCloneChemistJournal;
-import minechem.recipe.RecipeDecomposer;
-import minechem.recipe.RecipeDecomposerChance;
-import minechem.recipe.RecipeDecomposerFluid;
-import minechem.recipe.RecipeDecomposerFluidSelect;
-import minechem.recipe.RecipeDecomposerSelect;
-import minechem.recipe.RecipeDecomposerSuper;
-import minechem.recipe.RecipePotionCoating;
-import minechem.recipe.RecipePotionSpiking;
+import minechem.recipe.*;
 import minechem.recipe.handler.RecipeHandlerSynthesis;
 import minechem.utils.BlueprintUtil;
 import net.minecraft.block.BlockOre;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
@@ -347,61 +335,60 @@ public class ModRecipes {
 		getInstance().registerOreDictRecipes();
 	}
 
-	//TODO convert to JSON
 	public void registerMinecraftRecipes() {
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "concave_lens"), null, ModItems.concaveLens, new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "concave_lens"), null, ModItems.concaveLens, new Object[] {
 				"G G", "GGG", "G G", Character.valueOf('G'), blockGlass
 		});
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "convex_lens"), null, ModItems.convexLens, new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "convex_lens"), null, ModItems.convexLens, new Object[] {
 				" G ", "GGG", " G ", Character.valueOf('G'), blockGlass
 		});
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "microscope_lens"), null, ModItems.microscopeLens, new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "microscope_lens"), null, ModItems.microscopeLens, new Object[] {
 				"A", "B", "A", Character.valueOf('A'), ModItems.convexLens, Character.valueOf('B'), ModItems.concaveLens
 		});
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "microscope"), null, new ItemStack(ModBlocks.microscope), new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "microscope"), null, new ItemStack(ModBlocks.microscope), new Object[] {
 				" LI", " PI", "III", Character.valueOf('L'), ModItems.microscopeLens, Character.valueOf('P'), blockThinGlass, Character.valueOf('I'), itemIngotIron
 		});
 
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "atomic_manipulator"), null, new ItemStack(ModItems.atomicManipulator), new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "atomic_manipulator"), null, new ItemStack(ModItems.atomicManipulator), new Object[] {
 				"PPP", "PIP", "PPP", Character.valueOf('P'), new ItemStack(Blocks.PISTON), Character.valueOf('I'), blockIron
 		});
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "decomposer"), null, new ItemStack(ModBlocks.decomposer), new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "decomposer"), null, new ItemStack(ModBlocks.decomposer), new Object[] {
 				"III", "IAI", "IRI", Character.valueOf('A'), minechemItemsAtomicManipulator, Character.valueOf('I'), itemIngotIron, Character.valueOf('R'), itemRedstone
 		});
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "synthesis"), null, new ItemStack(ModBlocks.synthesis), new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "synthesis"), null, new ItemStack(ModBlocks.synthesis), new Object[] {
 				"IRI", "IAI", "IDI", Character.valueOf('A'), minechemItemsAtomicManipulator, Character.valueOf('I'), itemIngotIron, Character.valueOf('R'), itemRedstone, Character.valueOf('D'), new ItemStack(Items.DIAMOND)
 		});
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "fusion_1"), null, new ItemStack(ModBlocks.reactor_wall, 16), new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "fusion_1"), null, new ItemStack(ModBlocks.reactor_wall, 16), new Object[] {
 				"ILI", "ILI", "ILI", Character.valueOf('I'), itemIngotIron, Character.valueOf('L'), ItemElement.createStackOf(ElementEnum.Pb, 1)
 		});
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "fusion_2"), null, new ItemStack(ModBlocks.tungsten_plating, 16), new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "fusion_2"), null, new ItemStack(ModBlocks.tungsten_plating, 16), new Object[] {
 				"IWI", "IBI", "IWI", Character.valueOf('I'), itemIngotIron, Character.valueOf('W'), ItemElement.createStackOf(ElementEnum.W, 1), Character.valueOf('B'), ItemElement.createStackOf(ElementEnum.Be, 1)
 		});
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "fusion_3"), null, new ItemStack(ModBlocks.reactor_core), new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "fusion_3"), null, new ItemStack(ModBlocks.reactor_core), new Object[] {
 				"III", "IBI", "III", Character.valueOf('I'), itemIngotIron, Character.valueOf('B'), ItemElement.createStackOf(ElementEnum.U, 1)
 		});
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "projector_lens"), null, ModItems.projectorLens, new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "projector_lens"), null, ModItems.projectorLens, new Object[] {
 				"ABA", Character.valueOf('A'), ModItems.concaveLens, Character.valueOf('B'), ModItems.convexLens
 		});
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "blueprint_projector"), null, new ItemStack(ModBlocks.blueprintProjector), new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "blueprint_projector"), null, new ItemStack(ModBlocks.blueprintProjector), new Object[] {
 				" I ", "GPL", " I ", Character.valueOf('I'), itemIngotIron, Character.valueOf('P'), blockThinGlass, Character.valueOf('L'), ModItems.projectorLens, Character.valueOf('G'), new ItemStack(Blocks.REDSTONE_LAMP)
 		});
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "leaded_chest"), null, new ItemStack(ModBlocks.leadChest), new Object[] {
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "leaded_chest"), null, new ItemStack(ModBlocks.leadChest), new Object[] {
 				"LLL", "LCL", "LLL", Character.valueOf('L'), new ItemStack(ModItems.element, 1, ElementEnum.Pb.atomicNumber()), Character.valueOf('C'), new ItemStack(Blocks.CHEST)
 		});
-		GameRegistry.addShapelessRecipe(new ResourceLocation(ModGlobals.ID, "journal"), null, new ItemStack(ModItems.journal), Ingredient.fromItem(Items.BOOK), Ingredient.fromItem(Item.getItemFromBlock(Blocks.GLASS)));
+		GameRegistry.addShapelessRecipe(new ResourceLocation(ModGlobals.MODID, "journal"), null, new ItemStack(ModItems.journal), Ingredient.fromItem(Items.BOOK), Ingredient.fromItem(Item.getItemFromBlock(Blocks.GLASS)));
 		// Fusion
-		GameRegistry.addShapelessRecipe(new ResourceLocation(ModGlobals.ID, "blueprint_fusion"), null, BlueprintUtil.createStack(ModBlueprints.fusion), Ingredient.fromStacks(new ItemStack(Items.PAPER), new ItemStack(Blocks.DIAMOND_BLOCK)));
+		GameRegistry.addShapelessRecipe(new ResourceLocation(ModGlobals.MODID, "blueprint_fusion"), null, BlueprintUtil.createStack(ModBlueprints.fusion), Ingredient.fromStacks(new ItemStack(Items.PAPER), new ItemStack(Blocks.DIAMOND_BLOCK)));
 		// Fission
-		GameRegistry.addShapelessRecipe(new ResourceLocation(ModGlobals.ID, "blueprint_fission"), null, BlueprintUtil.createStack(ModBlueprints.fission), Ingredient.fromStacks(new ItemStack(Items.PAPER), new ItemStack(Items.DIAMOND)));
-		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.ID, "empty_tube"), null, ModItems.emptyTube, new Object[] {
+		GameRegistry.addShapelessRecipe(new ResourceLocation(ModGlobals.MODID, "blueprint_fission"), null, BlueprintUtil.createStack(ModBlueprints.fission), Ingredient.fromStacks(new ItemStack(Items.PAPER), new ItemStack(Items.DIAMOND)));
+		GameRegistry.addShapedRecipe(new ResourceLocation(ModGlobals.MODID, "empty_tube"), null, ModItems.emptyTube, new Object[] {
 				"   ", "P P", " P ", Character.valueOf('P'), blockThinGlass
 		});
 
 	}
 
 	public void registerFluidRecipes() {
-		int threeQuarterFluidPerIngot = 180;
+		final int threeQuarterFluidPerIngot = 180;
 		RecipeDecomposer.add(new RecipeDecomposerFluid(new FluidStack(FluidRegistry.WATER, BUCKET_AMOUNT), new PotionChemical[] {
 				element(ElementEnum.H, 2), element(ElementEnum.O)
 		}));
@@ -505,10 +492,10 @@ public class ModRecipes {
 		});
 
 		if (ModConfig.decomposeChemicalFluids) {
-			for (ElementEnum element : ModFluids.FLUID_ELEMENTS.keySet()) {
+			for (final ElementEnum element : ModFluids.FLUID_ELEMENTS.keySet()) {
 				RecipeDecomposerFluid.add(new RecipeDecomposerFluid(new FluidStack(ModFluids.FLUID_ELEMENTS.get(element), 125), new Element(element, 1)));
 			}
-			for (MoleculeEnum molecule : ModFluids.FLUID_MOLECULES.keySet()) {
+			for (final MoleculeEnum molecule : ModFluids.FLUID_MOLECULES.keySet()) {
 				RecipeDecomposerFluid.add(new RecipeDecomposerFluid(new FluidStack(ModFluids.FLUID_MOLECULES.get(molecule), 125), molecule.componentsArray()));
 			}
 		}
@@ -739,7 +726,7 @@ public class ModRecipes {
 		RecipeHandlerSynthesis.addShapelessRecipe("carpet_cyan", COST_CARPET, carpetBlockCyanWool, new PotionChemical[] {
 				molecule(MoleculeEnum.glycine), molecule(MoleculeEnum.lightbluePigment), molecule(MoleculeEnum.whitePigment)
 		});
-		//TODO
+
 		RecipeHandlerSynthesis.addShapelessRecipe("carpet_purple", COST_CARPET, carpetBlockPurpleWool, new PotionChemical[] {
 				molecule(MoleculeEnum.glycine), molecule(MoleculeEnum.purplePigment)
 		});
@@ -800,7 +787,7 @@ public class ModRecipes {
 		RecipeHandlerSynthesis.addShapedRecipe("redstone_dust", COST_LAPIS, itemRedstoneDust, "  a", " b ", 'a', molecule(MoleculeEnum.iron3oxide), 'b', element(ElementEnum.Cu));
 		RecipeHandlerSynthesis.addShapedRecipe("redstone_block", COST_LAPISBLOCK, blockRedstone, "  a", " b ", 'a', molecule(MoleculeEnum.iron3oxide, 9), 'b', element(ElementEnum.Cu, 9));
 		RecipeHandlerSynthesis.addShapedRecipe("snowball", COST_FOOD, new ItemStack(Items.SNOWBALL, 5), "a a", " a ", "a a", 'a', molecule(MoleculeEnum.water));
-		RecipeHandlerSynthesis.addShapedRecipe("leather", COST_ITEM, new ItemStack(Items.LEATHER, 5), "   ", " a ", "   ", 'a', molecule(MoleculeEnum.keratin));
+		RecipeHandlerSynthesis.addShapedRecipe("leather", COST_ITEM, new ItemStack(Items.LEATHER, 1), "   ", " a ", "   ", 'a', molecule(MoleculeEnum.keratin));
 		RecipeHandlerSynthesis.addShapedRecipe("brick", COST_ITEM, new ItemStack(Items.BRICK, 8), "aa ", "aa ", 'a', molecule(MoleculeEnum.kaolinite));
 		RecipeHandlerSynthesis.addShapelessRecipe("item_clay", COST_ITEM, new ItemStack(Items.CLAY_BALL, 2), new PotionChemical[] {
 				molecule(MoleculeEnum.kaolinite)
@@ -873,9 +860,9 @@ public class ModRecipes {
 				element(ElementEnum.Fe, 3), element(ElementEnum.Fe, 3)
 		});
 
-		for (MoleculeEnum molecule : MoleculeEnum.molecules.values()) {
+		for (final MoleculeEnum molecule : MoleculeEnum.molecules.values()) {
 			if (molecule != null) {
-				ItemStack moleculeItemStack = new ItemStack(ModItems.molecule, 1, molecule.id());
+				final ItemStack moleculeItemStack = new ItemStack(ModItems.molecule, 1, molecule.id());
 				RecipeHandlerSynthesis.addShapelessRecipe("molecule_" + molecule.name().toLowerCase(Locale.US), COST_ITEM * molecule.components().size(), moleculeItemStack, molecule.components().toArray(new PotionChemical[molecule.components().size()]));
 			}
 		}
@@ -1782,9 +1769,9 @@ public class ModRecipes {
 		//Uranium Ore
 		RecipeDecomposer.addOreDictRecipe("oreUranium", element(ElementEnum.U, 48));
 
-		for (MoleculeEnum molecule : MoleculeEnum.molecules.values()) {
+		for (final MoleculeEnum molecule : MoleculeEnum.molecules.values()) {
 			if (molecule != null) {
-				ItemStack itemStack = new ItemStack(ModItems.molecule, 1, molecule.id());
+				final ItemStack itemStack = new ItemStack(ModItems.molecule, 1, molecule.id());
 				RecipeDecomposer.add(new RecipeDecomposer(itemStack, molecule.components()));
 			}
 		}
@@ -1819,7 +1806,7 @@ public class ModRecipes {
 				element(ElementEnum.Fe, 10), element(ElementEnum.Ni, 6)
 		});
 
-		for (String oreName : OreDictionary.getOreNames()) {
+		for (final String oreName : OreDictionary.getOreNames()) {
 			if (oreName.contains("gemApatite")) {
 				RecipeDecomposer.addOreDictRecipe(oreName, new PotionChemical[] {
 						element(ElementEnum.Ca, 5), molecule(MoleculeEnum.phosphate, 4), element(ElementEnum.Cl)
@@ -1943,7 +1930,7 @@ public class ModRecipes {
 				});
 			}
 			else {
-				for (IOreDictionaryHandler handler : getOreDictionaryHandlers()) {
+				for (final IOreDictionaryHandler handler : getOreDictionaryHandlers()) {
 					if (handler.canHandle(oreName)) {
 						handler.handle(oreName);
 						return;
@@ -1954,7 +1941,7 @@ public class ModRecipes {
 	}
 
 	//TODO should be able to remove these 2
-	public boolean shouldCreateSynthesis(ItemStack item) {
+	public boolean shouldCreateSynthesis(final ItemStack item) {
 		if (item.getItem() == Items.STICK) {
 			return false;
 		}
@@ -1964,13 +1951,13 @@ public class ModRecipes {
 		return true;
 	}
 
-	public boolean shouldCreateSynthesis(ItemBlock block) {
+	public boolean shouldCreateSynthesis(final ItemBlock block) {
 		// check if the block is an oreBlock
 		return !(block.getBlock() instanceof BlockOre);
 	}
 
 	public static ArrayList<IOreDictionaryHandler> getOreDictionaryHandlers() {
-		ArrayList<IOreDictionaryHandler> oreDictionaryHandlers = Lists.newArrayList();
+		final ArrayList<IOreDictionaryHandler> oreDictionaryHandlers = Lists.newArrayList();
 		oreDictionaryHandlers.add(new OreDictionaryDefaultHandler());
 		if (Mods.AE2.isLoaded()) {
 			oreDictionaryHandlers.add(new OreDictionaryAppliedEnergisticsHandler());
@@ -1981,31 +1968,31 @@ public class ModRecipes {
 		return oreDictionaryHandlers;
 	}
 
-	public static Element element(ElementEnum var1, int var2) {
+	public static Element element(final ElementEnum var1, final int var2) {
 		return new Element(var1, var2);
 	}
 
-	public static Element element(ElementEnum var1) {
+	public static Element element(final ElementEnum var1) {
 		return new Element(var1, 1);
 	}
 
-	public static Molecule molecule(MoleculeEnum var1, int var2) {
+	public static Molecule molecule(final MoleculeEnum var1, final int var2) {
 		return new Molecule(var1, var2);
 	}
 
-	public static Molecule molecule(MoleculeEnum var1) {
+	public static Molecule molecule(final MoleculeEnum var1) {
 		return new Molecule(var1, 1);
 	}
 
-	public static void registerCustomRecipes(IForgeRegistry<IRecipe> registry) {
+	public static void registerCustomRecipes(final IForgeRegistry<IRecipe> registry) {
 		registry.register(new RecipePotionCoating());
 		registry.register(new RecipePotionSpiking());
 		registry.register(new RecipeCloneChemistJournal());
 
-		for (String oreName : OreDictionary.getOreNames()) {
+		for (final String oreName : OreDictionary.getOreNames()) {
 			ModLogger.debug("Checking oredict " + oreName);
 			if (ModRecipes.getOreDictionaryHandlers() != null) {
-				for (IOreDictionaryHandler handler : ModRecipes.getOreDictionaryHandlers()) {
+				for (final IOreDictionaryHandler handler : ModRecipes.getOreDictionaryHandlers()) {
 					if (handler.canHandle(oreName)) {
 						handler.handle(oreName);
 						break;

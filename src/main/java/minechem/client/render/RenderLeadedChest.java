@@ -9,10 +9,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,18 +24,18 @@ public class RenderLeadedChest extends TileEntitySpecialRenderer<TileLeadedChest
 		model = new ModelChest();
 	}
 
-	public void renderTileEntityLeadedChestAt(TileLeadedChest leadedChest, double xCoord, double yCoord, double zCoord, float partialTick) {
+	public void renderTileEntityLeadedChestAt(final TileLeadedChest leadedChest, final double xCoord, final double yCoord, final double zCoord, final float partialTick) {
 
 	}
 
 	@Override
-	public void render(TileLeadedChest tileentity, double xCoord, double yCoord, double zCoord, float partialTick, int ii, float alpha) {
+	public void render(final TileLeadedChest tileentity, final double xCoord, final double yCoord, final double zCoord, final float partialTick, final int ii, final float alpha) {
 		if (tileentity == null) {
 			return;
 		}
-		World world = Minecraft.getMinecraft().world;
-		IBlockState state = world.getBlockState(tileentity.getPos());
-		int facing = state.getBlock().getMetaFromState(state);
+		final World world = Minecraft.getMinecraft().world;
+		final IBlockState state = world.getBlockState(tileentity.getPos());
+		final int facing = state.getBlock().getMetaFromState(state);
 
 		GlStateManager.pushMatrix();
 		GlStateManager.enableRescaleNormal();
@@ -98,8 +95,8 @@ public class RenderLeadedChest extends TileEntitySpecialRenderer<TileLeadedChest
 	public static class ItemRenderLeadedChest extends TileEntityItemStackRenderer {
 
 		@Override
-		public void renderByItem(ItemStack stack, float partialTicks) {
-			RenderHelper.enableStandardItemLighting();
+		public void renderByItem(final ItemStack stack, final float partialTicks) {
+			//RenderHelper.enableStandardItemLighting();
 			TileEntityRendererDispatcher.instance.render(new TileLeadedChest(), 0.0D, 0.0D, 0.0D, 0.0F);
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		}

@@ -1,25 +1,13 @@
 package minechem.recipe.handler;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntAVLTreeSet;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntCollection;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.ints.IntListIterator;
+import it.unimi.dsi.fastutil.ints.*;
 import minechem.api.recipe.ISynthesisRecipe;
 import minechem.init.ModGlobals;
 import minechem.init.ModRegistries;
@@ -28,10 +16,8 @@ import minechem.item.ItemMolecule;
 import minechem.item.element.Element;
 import minechem.item.molecule.Molecule;
 import minechem.potion.PotionChemical;
-import minechem.recipe.RecipeSynthesisShaped;
+import minechem.recipe.*;
 import minechem.recipe.RecipeSynthesisShaped.MinechemShapedPrimer;
-import minechem.recipe.RecipeSynthesisShapeless;
-import minechem.recipe.SingleItemStackBasedIngredient;
 import minechem.utils.MinechemUtil;
 import minechem.utils.RecipeUtil;
 import net.minecraft.inventory.InventoryCrafting;
@@ -41,9 +27,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.registries.GameData;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.*;
 
 public class RecipeHandlerSynthesis {
 
@@ -52,27 +36,13 @@ public class RecipeHandlerSynthesis {
 
 	public static RecipeHandlerSynthesis instance = new RecipeHandlerSynthesis();
 
-	public static boolean itemStacksMatchesShapelessRecipe(NonNullList<ItemStack> stacks, RecipeSynthesisShapeless recipe, int factor) {
-		NonNullList<ItemStack> stacksCopy = MinechemUtil.copyStackList(stacks);
-		NonNullList<ItemStack> stackList = NonNullList.<ItemStack>create();
-		for (SingleItemStackBasedIngredient ingredient : recipe.getSingleIngredients()) {
+	public static boolean itemStacksMatchesShapelessRecipe(final NonNullList<ItemStack> stacks, final RecipeSynthesisShapeless recipe, final int factor) {
+		final NonNullList<ItemStack> stacksCopy = MinechemUtil.copyStackList(stacks);
+		final NonNullList<ItemStack> stackList = NonNullList.<ItemStack>create();
+		for (final SingleItemStackBasedIngredient ingredient : recipe.getSingleIngredients()) {
 			stackList.add(ingredient.getIngredientStack());
 		}
 		if (stacksCopy.size() == stackList.size()) {
-			/*
-			List<PotionChemical> potionChemicals = new ArrayList<>();
-			for (ItemStack stack : stackList) {
-				ElementEnum element = MinechemUtil.getElement(stack);
-				MoleculeEnum molecule = MinechemUtil.getMolecule(stack);
-				if (element != null) {
-					potionChemicals.add(new Element(element, element.atomicNumber()));
-				}
-				else if (molecule != null) {
-					potionChemicals.add(new Molecule(molecule, molecule.id()));
-				}
-			}
-			*/
-			//NonNullList<ItemStack> shapelessRecipe = MinechemUtil.convertChemicalsIntoItemStacks(potionChemicals);
 			for (int i = 0; i < stackList.size(); i++) {
 				for (int j = 0; j < stacksCopy.size(); j++) {
 					if (!stackList.get(i).isEmpty() && MinechemUtil.stacksAreSameKind(stacksCopy.get(j), stackList.get(i))/*ItemStack.areItemStacksEqual(stacksCopy.get(i), shapelessRecipe.get(i))*/ && stackList.get(i).getCount() == stacksCopy.get(j).getCount()) {
@@ -88,9 +58,9 @@ public class RecipeHandlerSynthesis {
 		return false;
 	}
 
-	public static boolean itemStacksMatchesShapedRecipe(NonNullList<ItemStack> stacks, RecipeSynthesisShaped recipe, int factor) {
-		PotionChemical[] chemicals = MinechemUtil.stackListToChemicalArray(stacks);
-		NonNullList<ItemStack> recipeStacks = RecipeUtil.ingredientListToStackList(recipe.getIngredients());
+	public static boolean itemStacksMatchesShapedRecipe(final NonNullList<ItemStack> stacks, final RecipeSynthesisShaped recipe, final int factor) {
+		final PotionChemical[] chemicals = MinechemUtil.stackListToChemicalArray(stacks);
+		final NonNullList<ItemStack> recipeStacks = RecipeUtil.ingredientListToStackList(recipe.getIngredients());
 		for (int i = 0; i < chemicals.length; i++) {
 			if (stacks.get(i).isEmpty() && chemicals[i] == null) {
 				continue;
@@ -106,8 +76,8 @@ public class RecipeHandlerSynthesis {
 	}
 
 	@Nullable
-	public static ISynthesisRecipe findMatchingRecipe(InventoryCrafting craftMatrix, World worldIn) {
-		for (ISynthesisRecipe irecipe : ModRegistries.SYNTHESIS_RECIPES) {
+	public static ISynthesisRecipe findMatchingRecipe(final InventoryCrafting craftMatrix, final World worldIn) {
+		for (final ISynthesisRecipe irecipe : ModRegistries.SYNTHESIS_RECIPES) {
 			if (irecipe.matches(craftMatrix, worldIn)) {
 				return irecipe;
 			}
@@ -116,20 +86,20 @@ public class RecipeHandlerSynthesis {
 		return null;
 	}
 
-	private static NonNullList<ItemStack> getListFromRecipe(ISynthesisRecipe recipe) {
-		NonNullList<ItemStack> tmpList = NonNullList.create();
-		NonNullList<SingleItemStackBasedIngredient> ingredients = recipe.getSingleIngredients();
-		for (SingleItemStackBasedIngredient ingredient : ingredients) {
+	private static NonNullList<ItemStack> getListFromRecipe(final ISynthesisRecipe recipe) {
+		final NonNullList<ItemStack> tmpList = NonNullList.create();
+		final NonNullList<SingleItemStackBasedIngredient> ingredients = recipe.getSingleIngredients();
+		for (final SingleItemStackBasedIngredient ingredient : ingredients) {
 			tmpList.add(ingredient.getIngredientStack());
 		}
 		return tmpList;
 	}
 
-	public static ISynthesisRecipe getRecipeFromInput(NonNullList<ItemStack> stackList) {
+	public static ISynthesisRecipe getRecipeFromInput(final NonNullList<ItemStack> stackList) {
 		ISynthesisRecipe matchedRecipe = null;
-		for (Map.Entry<ResourceLocation, ISynthesisRecipe> recipeEntry : ModRegistries.SYNTHESIS_RECIPES.getEntries()) {
-			ISynthesisRecipe recipe = recipeEntry.getValue();
-			NonNullList<ItemStack> recipeList = getListFromRecipe(recipe);
+		for (final Map.Entry<ResourceLocation, ISynthesisRecipe> recipeEntry : ModRegistries.SYNTHESIS_RECIPES.getEntries()) {
+			final ISynthesisRecipe recipe = recipeEntry.getValue();
+			final NonNullList<ItemStack> recipeList = getListFromRecipe(recipe);
 			if (recipe.isShaped()) {
 				if (recipeList.size() != stackList.size()) {
 					continue;
@@ -164,54 +134,49 @@ public class RecipeHandlerSynthesis {
 		return matchedRecipe;
 	}
 
-	/*
-	private static <K extends IForgeRegistryEntry<K>> K register(K object) {
-		return GameData.register_impl(object);
-	}
-	*/
-	private static <K extends IForgeRegistryEntry<ISynthesisRecipe>> ISynthesisRecipe register(ISynthesisRecipe object) {
+	private static <K extends IForgeRegistryEntry<ISynthesisRecipe>> ISynthesisRecipe register(final ISynthesisRecipe object) {
 		return GameData.register_impl(object);
 	}
 
-	public static void addShapedRecipe(ResourceLocation registryName, int energyCost, ItemStack result, Object... recipe) {
-		MinechemShapedPrimer primer = RecipeSynthesisShaped.parseShaped(recipe);
-		ISynthesisRecipe newRecipe = new RecipeSynthesisShaped(primer.width, primer.height, energyCost, primer.input, result).setRegistryName(registryName);
+	public static void addShapedRecipe(final ResourceLocation registryName, final int energyCost, final ItemStack result, final Object... recipe) {
+		final MinechemShapedPrimer primer = RecipeSynthesisShaped.parseShaped(recipe);
+		final ISynthesisRecipe newRecipe = new RecipeSynthesisShaped(primer.width, primer.height, energyCost, primer.input, result).setRegistryName(registryName);
 		register(newRecipe);
 	}
 
-	public static void addShapedRecipe(String name, int energyCost, ItemStack result, Object... recipe) {
-		String regDomain = name.split(":").length == 1 ? ModGlobals.ID : name.split(":")[1];
-		String regPath = name.split(":").length == 1 ? name : name.split(":")[1];
+	public static void addShapedRecipe(final String name, final int energyCost, final ItemStack result, final Object... recipe) {
+		final String regDomain = name.split(":").length == 1 ? ModGlobals.MODID : name.split(":")[1];
+		final String regPath = name.split(":").length == 1 ? name : name.split(":")[1];
 		addShapedRecipe(new ResourceLocation(regDomain, PREFIX_SHAPED + "" + regPath), energyCost, result, recipe);
 	}
 
-	public static void addShapelessRecipe(String name, int energyCost, @Nonnull ItemStack output, PotionChemical... recipe) {
-		NonNullList<ItemStack> lst = NonNullList.create();
-		for (Object ingredient : recipe) {
+	public static void addShapelessRecipe(final String name, final int energyCost, @Nonnull final ItemStack output, final PotionChemical... recipe) {
+		final NonNullList<ItemStack> lst = NonNullList.create();
+		for (final Object ingredient : recipe) {
 			if (ingredient instanceof PotionChemical) {
-				PotionChemical chemical = (PotionChemical) ingredient;
+				final PotionChemical chemical = (PotionChemical) ingredient;
 				lst.add(MinechemUtil.chemicalToItemStack(chemical, chemical.amount));//RecipeUtil.getIngredient(ingredient));
 			}
 		}
-		NonNullList<SingleItemStackBasedIngredient> dumbList = SingleItemStackBasedIngredient.fromItemStacks(lst.toArray(new ItemStack[lst.size()]));
-		ISynthesisRecipe newRecipe = new RecipeSynthesisShapeless(output, energyCost, dumbList).setRegistryName(new ResourceLocation(ModGlobals.ID, PREFIX_SHAPELESS + "" + name));
+		final NonNullList<SingleItemStackBasedIngredient> dumbList = SingleItemStackBasedIngredient.fromItemStacks(lst.toArray(new ItemStack[lst.size()]));
+		final ISynthesisRecipe newRecipe = new RecipeSynthesisShapeless(output, energyCost, dumbList).setRegistryName(new ResourceLocation(ModGlobals.MODID, PREFIX_SHAPELESS + "" + name));
 		register(newRecipe);
 	}
 
-	public static void removeShapedRecipe(ItemStack stack) {
+	public static void removeShapedRecipe(final ItemStack stack) {
 		if (stack.getItem() instanceof ItemElement || stack.getItem() instanceof ItemMolecule) {
 			removeShapedRecipe(MinechemUtil.itemStackToChemical(stack));
 		}
 	}
 
-	private static void removeShapedRecipe(PotionChemical recipeOutput) {
-		RecipeSynthesisShaped recipe = getShapedRecipe(recipeOutput);
+	private static void removeShapedRecipe(final PotionChemical recipeOutput) {
+		final RecipeSynthesisShaped recipe = getShapedRecipe(recipeOutput);
 		if (recipe != null) {
 			RecipeUtil.removeRecipe(recipe.getRegistryName());
 		}
 	}
 
-	public static ISynthesisRecipe getRecipeFromOutput(ItemStack stack) {
+	public static ISynthesisRecipe getRecipeFromOutput(final ItemStack stack) {
 		ISynthesisRecipe recipe = null;
 		recipe = getShapedRecipe(stack);
 		if (recipe == null) {
@@ -220,7 +185,7 @@ public class RecipeHandlerSynthesis {
 		return recipe;
 	}
 
-	public static int getEnergyCost(ISynthesisRecipe recipe) {
+	public static int getEnergyCost(final ISynthesisRecipe recipe) {
 		if (recipe instanceof RecipeSynthesisShaped) {
 			return ((RecipeSynthesisShaped) recipe).getEnergyCost();
 		}
@@ -230,19 +195,19 @@ public class RecipeHandlerSynthesis {
 		return 0;
 	}
 
-	public static boolean isShaped(ISynthesisRecipe recipe) {
+	public static boolean isShaped(final ISynthesisRecipe recipe) {
 		return recipe.isShaped();
 	}
 
-	public static boolean isShapeless(ISynthesisRecipe recipe) {
+	public static boolean isShapeless(final ISynthesisRecipe recipe) {
 		return !recipe.isShaped();
 	}
 
-	public static PotionChemical[] getChemicalsFromRecipe(ISynthesisRecipe recipe) {
-		PotionChemical[] returnArray = new PotionChemical[recipe.getIngredients().size()];
-		NonNullList<ItemStack> stackList = RecipeUtil.getRecipeAsStackList(recipe);
+	public static PotionChemical[] getChemicalsFromRecipe(final ISynthesisRecipe recipe) {
+		final PotionChemical[] returnArray = new PotionChemical[recipe.getIngredients().size()];
+		final NonNullList<ItemStack> stackList = RecipeUtil.getRecipeAsStackList(recipe);
 		for (int i = 0; i < stackList.size(); i++) {
-			ItemStack stack = stackList.get(i).copy();
+			final ItemStack stack = stackList.get(i).copy();
 			if (MinechemUtil.isStackAnElement(stack)) {
 				returnArray[i] = new Element(MinechemUtil.getElement(stack));
 			}
@@ -256,7 +221,7 @@ public class RecipeHandlerSynthesis {
 		return returnArray;
 	}
 
-	private static RecipeSynthesisShaped getShapedRecipe(PotionChemical recipeOutput) {
+	private static RecipeSynthesisShaped getShapedRecipe(final PotionChemical recipeOutput) {
 		int amount = 1;
 		if (recipeOutput instanceof Element) {
 			amount = ((Element) recipeOutput).amount;
@@ -267,12 +232,12 @@ public class RecipeHandlerSynthesis {
 		return getShapedRecipe(MinechemUtil.chemicalToItemStack(recipeOutput, amount));
 	}
 
-	private static RecipeSynthesisShaped getShapedRecipe(ItemStack recipeOutput) {
-		Set<Map.Entry<ResourceLocation, ISynthesisRecipe>> recipes = ModRegistries.SYNTHESIS_RECIPES.getEntries();
-		for (Map.Entry<ResourceLocation, ISynthesisRecipe> recipeEntry : recipes) {
-			ISynthesisRecipe recipe = recipeEntry.getValue();
+	private static RecipeSynthesisShaped getShapedRecipe(final ItemStack recipeOutput) {
+		final Set<Map.Entry<ResourceLocation, ISynthesisRecipe>> recipes = ModRegistries.SYNTHESIS_RECIPES.getEntries();
+		for (final Map.Entry<ResourceLocation, ISynthesisRecipe> recipeEntry : recipes) {
+			final ISynthesisRecipe recipe = recipeEntry.getValue();
 			if (recipe instanceof RecipeSynthesisShaped) {
-				ItemStack resultStack = recipe.getRecipeOutput();
+				final ItemStack resultStack = recipe.getRecipeOutput();
 				if (MinechemUtil.stacksAreSameKind(recipeOutput, resultStack)) {
 					return (RecipeSynthesisShaped) recipe;
 				}
@@ -281,12 +246,12 @@ public class RecipeHandlerSynthesis {
 		return null;
 	}
 
-	private static RecipeSynthesisShapeless getShapelessRecipe(ItemStack recipeOutput) {
-		Set<Map.Entry<ResourceLocation, ISynthesisRecipe>> recipes = ModRegistries.SYNTHESIS_RECIPES.getEntries();
-		for (Map.Entry<ResourceLocation, ISynthesisRecipe> recipeEntry : recipes) {
-			ISynthesisRecipe recipe = recipeEntry.getValue();
+	private static RecipeSynthesisShapeless getShapelessRecipe(final ItemStack recipeOutput) {
+		final Set<Map.Entry<ResourceLocation, ISynthesisRecipe>> recipes = ModRegistries.SYNTHESIS_RECIPES.getEntries();
+		for (final Map.Entry<ResourceLocation, ISynthesisRecipe> recipeEntry : recipes) {
+			final ISynthesisRecipe recipe = recipeEntry.getValue();
 			if (recipe instanceof RecipeSynthesisShapeless) {
-				ItemStack resultStack = recipe.getRecipeOutput();
+				final ItemStack resultStack = recipe.getRecipeOutput();
 				if (MinechemUtil.stacksAreSameKind(recipeOutput, resultStack)) {
 					return (RecipeSynthesisShapeless) recipe;
 				}
@@ -295,7 +260,7 @@ public class RecipeHandlerSynthesis {
 		return null;
 	}
 
-	private static RecipeSynthesisShapeless getShapelessRecipe(PotionChemical recipeOutput) {
+	/*private static RecipeSynthesisShapeless getShapelessRecipe(final PotionChemical recipeOutput) {
 		int amount = 1;
 		if (recipeOutput instanceof Element) {
 			amount = ((Element) recipeOutput).amount;
@@ -304,36 +269,36 @@ public class RecipeHandlerSynthesis {
 			amount = ((Molecule) recipeOutput).amount;
 		}
 		return getShapelessRecipe(MinechemUtil.chemicalToItemStack(recipeOutput, amount));
-	}
+	}*/
 
-	public static void addShapelessOreDictRecipe(String item, int energyCost, PotionChemical... chemicals) {
-		List<ItemStack> oreDictEntries = OreDictionary.getOres(item);
+	public static void addShapelessOreDictRecipe(final String item, final int energyCost, final PotionChemical... chemicals) {
+		final List<ItemStack> oreDictEntries = OreDictionary.getOres(item);
 		int entry = 0;
-		for (Iterator<ItemStack> itr = oreDictEntries.iterator(); itr.hasNext() && entry < 8; entry++) {
-			PotionChemical[] val = new PotionChemical[9];
+		for (final Iterator<ItemStack> itr = oreDictEntries.iterator(); itr.hasNext() && entry < 8; entry++) {
+			final PotionChemical[] val = new PotionChemical[9];
 			for (int i = 0; i < chemicals.length; i++) {
 				val[(i + entry) % 9] = chemicals[i];
 			}
-			ItemStack ore = itr.next();
+			final ItemStack ore = itr.next();
 			addShapelessRecipe(ore.getItem().getUnlocalizedName(), energyCost, new ItemStack(ore.getItem(), 1, ore.getItemDamage()), val);
 		}
 	}
 
-	public static void addShapedOreDictRecipe(String item, int energyCost, PotionChemical... chemicals) {
-		List<ItemStack> oreDictEntries = OreDictionary.getOres(item);
+	public static void addShapedOreDictRecipe(final String item, final int energyCost, final PotionChemical... chemicals) {
+		final List<ItemStack> oreDictEntries = OreDictionary.getOres(item);
 		//int entry = 0;
 		//for (Iterator<ItemStack> itr = oreDictEntries.iterator(); itr.hasNext() && entry < 8; entry++) {
 		if (!oreDictEntries.isEmpty()) {
-			ItemStack ore = oreDictEntries.get(0);
-			ResourceLocation regName = ore.getItem().getRegistryName();
+			final ItemStack ore = oreDictEntries.get(0);
+			final ResourceLocation regName = ore.getItem().getRegistryName();
 			addShapedRecipe(regName.getResourceDomain() + "_" + regName.getResourcePath() + "_" + ore.getItemDamage(), energyCost, new ItemStack(ore.getItem(), 1, ore.getItemDamage()), createShapedObject(chemicals));
 		}
 	}
 
-	private static Object[] createShapedObject(PotionChemical[] chemicals) {
+	private static Object[] createShapedObject(final PotionChemical[] chemicals) {
 		int currentSymbolIndex = 'a';
-		String[] pattern = new String[3];
-		List<Object> symbolDefs = new ArrayList<>();
+		final String[] pattern = new String[3];
+		final List<Object> symbolDefs = new ArrayList<>();
 		// String pattern
 		for (int i = 0; i < 3; i++) {
 			String rowStr = "";
@@ -350,7 +315,7 @@ public class RecipeHandlerSynthesis {
 			}
 			pattern[i] = rowStr;
 		}
-		Object[] returnObject = new Object[pattern.length + symbolDefs.size()];
+		final Object[] returnObject = new Object[pattern.length + symbolDefs.size()];
 		for (int i = 0; i < 3; i++) {
 			returnObject[i] = pattern[i];
 		}
@@ -364,30 +329,30 @@ public class RecipeHandlerSynthesis {
 
 	public final Int2IntMap itemToCount = new Int2IntOpenHashMap();
 
-	public void accountStack(ItemStack stack) {
+	public void accountStack(final ItemStack stack) {
 		this.accountStack(stack, -1);
 	}
 
-	public void accountStack(ItemStack stack, int forceCount) {
+	public void accountStack(final ItemStack stack, final int forceCount) {
 		if (!stack.isEmpty() && !stack.isItemDamaged() && !stack.isItemEnchanted() && !stack.hasDisplayName()) {
-			int i = pack(stack);
-			int j = forceCount == -1 ? stack.getCount() : forceCount;
+			final int i = pack(stack);
+			final int j = forceCount == -1 ? stack.getCount() : forceCount;
 			increment(i, j);
 		}
 	}
 
-	public static int pack(ItemStack stack) {
-		Item item = stack.getItem();
-		int i = item.getHasSubtypes() ? stack.getMetadata() : 0;
+	public static int pack(final ItemStack stack) {
+		final Item item = stack.getItem();
+		final int i = item.getHasSubtypes() ? stack.getMetadata() : 0;
 		return Item.REGISTRY.getIDForObject(item) << 16 | i & 65535;
 	}
 
-	public boolean containsItem(int p_194120_1_) {
+	public boolean containsItem(final int p_194120_1_) {
 		return itemToCount.get(p_194120_1_) > 0;
 	}
 
-	public int tryTake(int p_194122_1_, int maximum) {
-		int i = itemToCount.get(p_194122_1_);
+	public int tryTake(final int p_194122_1_, final int maximum) {
+		final int i = itemToCount.get(p_194122_1_);
 
 		if (i >= maximum) {
 			itemToCount.put(p_194122_1_, i - maximum);
@@ -398,27 +363,27 @@ public class RecipeHandlerSynthesis {
 		}
 	}
 
-	private void increment(int p_194117_1_, int amount) {
+	private void increment(final int p_194117_1_, final int amount) {
 		itemToCount.put(p_194117_1_, itemToCount.get(p_194117_1_) + amount);
 	}
 
-	public boolean canCraft(ISynthesisRecipe recipe, @Nullable IntList p_194116_2_) {
+	public boolean canCraft(final ISynthesisRecipe recipe, @Nullable final IntList p_194116_2_) {
 		return this.canCraft(recipe, p_194116_2_, 1);
 	}
 
-	public boolean canCraft(ISynthesisRecipe recipe, @Nullable IntList p_194118_2_, int p_194118_3_) {
-		return (new RecipeHandlerSynthesis.RecipePicker(recipe)).tryPick(p_194118_3_, p_194118_2_);
+	public boolean canCraft(final ISynthesisRecipe recipe, @Nullable final IntList p_194118_2_, final int p_194118_3_) {
+		return new RecipeHandlerSynthesis.RecipePicker(recipe).tryPick(p_194118_3_, p_194118_2_);
 	}
 
-	public int getBiggestCraftableStack(ISynthesisRecipe recipe, @Nullable IntList p_194114_2_) {
+	public int getBiggestCraftableStack(final ISynthesisRecipe recipe, @Nullable final IntList p_194114_2_) {
 		return this.getBiggestCraftableStack(recipe, Integer.MAX_VALUE, p_194114_2_);
 	}
 
-	public int getBiggestCraftableStack(ISynthesisRecipe recipe, int p_194121_2_, @Nullable IntList p_194121_3_) {
-		return (new RecipeHandlerSynthesis.RecipePicker(recipe)).tryPickAll(p_194121_2_, p_194121_3_);
+	public int getBiggestCraftableStack(final ISynthesisRecipe recipe, final int p_194121_2_, @Nullable final IntList p_194121_3_) {
+		return new RecipeHandlerSynthesis.RecipePicker(recipe).tryPickAll(p_194121_2_, p_194121_3_);
 	}
 
-	public static ItemStack unpack(int p_194115_0_) {
+	public static ItemStack unpack(final int p_194115_0_) {
 		return p_194115_0_ == 0 ? ItemStack.EMPTY : new ItemStack(Item.getItemById(p_194115_0_ >> 16 & 65535), 1, p_194115_0_ & 65535);
 	}
 
@@ -433,9 +398,9 @@ public class RecipeHandlerSynthesis {
 		private final int[] possessedIngredientStacks;
 		private final int possessedIngredientStackCount;
 		private final BitSet data;
-		private IntList path = new IntArrayList();
+		private final IntList path = new IntArrayList();
 
-		public RecipePicker(ISynthesisRecipe p_i47608_2_) {
+		public RecipePicker(final ISynthesisRecipe p_i47608_2_) {
 			recipe = p_i47608_2_;
 			ingredients.addAll(p_i47608_2_.getSingleIngredients());
 			ingredients.removeIf((p_194103_0_) -> {
@@ -447,7 +412,7 @@ public class RecipeHandlerSynthesis {
 			data = new BitSet(ingredientCount + possessedIngredientStackCount + ingredientCount + ingredientCount * possessedIngredientStackCount);
 
 			for (int i = 0; i < ingredients.size(); ++i) {
-				IntList intlist = ingredients.get(i).getValidItemStacksPacked();
+				final IntList intlist = ingredients.get(i).getValidItemStacksPacked();
 
 				for (int j = 0; j < possessedIngredientStackCount; ++j) {
 					if (intlist.contains(possessedIngredientStacks[j])) {
@@ -457,7 +422,7 @@ public class RecipeHandlerSynthesis {
 			}
 		}
 
-		public boolean tryPick(int p_194092_1_, @Nullable IntList listIn) {
+		public boolean tryPick(final int p_194092_1_, @Nullable final IntList listIn) {
 			if (p_194092_1_ <= 0) {
 				return true;
 			}
@@ -466,7 +431,7 @@ public class RecipeHandlerSynthesis {
 
 				for (k = 0; dfs(p_194092_1_); ++k) {
 					tryTake(possessedIngredientStacks[path.getInt(0)], p_194092_1_);
-					int l = path.size() - 1;
+					final int l = path.size() - 1;
 					setSatisfied(path.getInt(l));
 
 					for (int i1 = 0; i1 < l; ++i1) {
@@ -477,8 +442,8 @@ public class RecipeHandlerSynthesis {
 					data.clear(0, ingredientCount + possessedIngredientStackCount);
 				}
 
-				boolean flag = k == ingredientCount;
-				boolean flag1 = flag && listIn != null;
+				final boolean flag = k == ingredientCount;
+				final boolean flag1 = flag && listIn != null;
 
 				if (flag1) {
 					listIn.clear();
@@ -486,7 +451,7 @@ public class RecipeHandlerSynthesis {
 
 				data.clear(0, ingredientCount + possessedIngredientStackCount + ingredientCount);
 				int j1 = 0;
-				List<SingleItemStackBasedIngredient> list = recipe.getSingleIngredients();
+				final List<SingleItemStackBasedIngredient> list = recipe.getSingleIngredients();
 
 				for (int k1 = 0; k1 < list.size(); ++k1) {
 					if (flag1 && list.get(k1) == SingleItemStackBasedIngredient.EMPTY) {
@@ -513,13 +478,13 @@ public class RecipeHandlerSynthesis {
 		}
 
 		private int[] getUniqueAvailIngredientItems() {
-			IntCollection intcollection = new IntAVLTreeSet();
+			final IntCollection intcollection = new IntAVLTreeSet();
 
-			for (SingleItemStackBasedIngredient ingredient : ingredients) {
+			for (final SingleItemStackBasedIngredient ingredient : ingredients) {
 				intcollection.addAll(ingredient.getValidItemStacksPacked());
 			}
 
-			IntIterator intiterator = intcollection.iterator();
+			final IntIterator intiterator = intcollection.iterator();
 
 			while (intiterator.hasNext()) {
 				if (!containsItem(intiterator.nextInt())) {
@@ -530,23 +495,23 @@ public class RecipeHandlerSynthesis {
 			return intcollection.toIntArray();
 		}
 
-		private boolean dfs(int p_194098_1_) {
-			int k = possessedIngredientStackCount;
+		private boolean dfs(final int p_194098_1_) {
+			final int k = possessedIngredientStackCount;
 
 			for (int l = 0; l < k; ++l) {
 				if (itemToCount.get(possessedIngredientStacks[l]) >= p_194098_1_) {
 					visit(false, l);
 
 					while (!path.isEmpty()) {
-						int i1 = path.size();
-						boolean flag = (i1 & 1) == 1;
-						int j1 = path.getInt(i1 - 1);
+						final int i1 = path.size();
+						final boolean flag = (i1 & 1) == 1;
+						final int j1 = path.getInt(i1 - 1);
 
 						if (!flag && !isSatisfied(j1)) {
 							break;
 						}
 
-						int k1 = flag ? ingredientCount : k;
+						final int k1 = flag ? ingredientCount : k;
 
 						for (int l1 = 0; l1 < k1; ++l1) {
 							if (!hasVisited(flag, l1) && hasConnection(flag, j1, l1) && hasResidual(flag, j1, l1)) {
@@ -555,7 +520,7 @@ public class RecipeHandlerSynthesis {
 							}
 						}
 
-						int i2 = path.size();
+						final int i2 = path.size();
 
 						if (i2 == i1) {
 							path.removeInt(i2 - 1);
@@ -571,54 +536,54 @@ public class RecipeHandlerSynthesis {
 			return false;
 		}
 
-		private boolean isSatisfied(int p_194091_1_) {
+		private boolean isSatisfied(final int p_194091_1_) {
 			return data.get(getSatisfiedIndex(p_194091_1_));
 		}
 
-		private void setSatisfied(int p_194096_1_) {
+		private void setSatisfied(final int p_194096_1_) {
 			data.set(getSatisfiedIndex(p_194096_1_));
 		}
 
-		private int getSatisfiedIndex(int p_194094_1_) {
+		private int getSatisfiedIndex(final int p_194094_1_) {
 			return ingredientCount + possessedIngredientStackCount + p_194094_1_;
 		}
 
-		private boolean hasConnection(boolean p_194093_1_, int p_194093_2_, int p_194093_3_) {
+		private boolean hasConnection(final boolean p_194093_1_, final int p_194093_2_, final int p_194093_3_) {
 			return data.get(getIndex(p_194093_1_, p_194093_2_, p_194093_3_));
 		}
 
-		private boolean hasResidual(boolean p_194100_1_, int p_194100_2_, int p_194100_3_) {
+		private boolean hasResidual(final boolean p_194100_1_, final int p_194100_2_, final int p_194100_3_) {
 			return p_194100_1_ != data.get(1 + getIndex(p_194100_1_, p_194100_2_, p_194100_3_));
 		}
 
-		private void toggleResidual(boolean p_194089_1_, int p_194089_2_, int p_194089_3_) {
+		private void toggleResidual(final boolean p_194089_1_, final int p_194089_2_, final int p_194089_3_) {
 			data.flip(1 + getIndex(p_194089_1_, p_194089_2_, p_194089_3_));
 		}
 
-		private int getIndex(boolean p_194095_1_, int p_194095_2_, int p_194095_3_) {
-			int k = p_194095_1_ ? p_194095_2_ * ingredientCount + p_194095_3_ : p_194095_3_ * ingredientCount + p_194095_2_;
+		private int getIndex(final boolean p_194095_1_, final int p_194095_2_, final int p_194095_3_) {
+			final int k = p_194095_1_ ? p_194095_2_ * ingredientCount + p_194095_3_ : p_194095_3_ * ingredientCount + p_194095_2_;
 			return ingredientCount + possessedIngredientStackCount + ingredientCount + 2 * k;
 		}
 
-		private void visit(boolean p_194088_1_, int p_194088_2_) {
+		private void visit(final boolean p_194088_1_, final int p_194088_2_) {
 			data.set(getVisitedIndex(p_194088_1_, p_194088_2_));
 			path.add(p_194088_2_);
 		}
 
-		private boolean hasVisited(boolean p_194101_1_, int p_194101_2_) {
+		private boolean hasVisited(final boolean p_194101_1_, final int p_194101_2_) {
 			return data.get(getVisitedIndex(p_194101_1_, p_194101_2_));
 		}
 
-		private int getVisitedIndex(boolean p_194099_1_, int p_194099_2_) {
+		private int getVisitedIndex(final boolean p_194099_1_, final int p_194099_2_) {
 			return (p_194099_1_ ? 0 : ingredientCount) + p_194099_2_;
 		}
 
-		public int tryPickAll(int p_194102_1_, @Nullable IntList list) {
+		public int tryPickAll(final int p_194102_1_, @Nullable final IntList list) {
 			int k = 0;
 			int l = Math.min(p_194102_1_, getMinIngredientCount()) + 1;
 
 			while (true) {
-				int i1 = (k + l) / 2;
+				final int i1 = (k + l) / 2;
 
 				if (tryPick(i1, (IntList) null)) {
 					if (l - k <= 1) {
@@ -640,11 +605,11 @@ public class RecipeHandlerSynthesis {
 		private int getMinIngredientCount() {
 			int k = Integer.MAX_VALUE;
 
-			for (SingleItemStackBasedIngredient ingredient : ingredients) {
+			for (final SingleItemStackBasedIngredient ingredient : ingredients) {
 				int l = 0;
 				int i1;
 
-				for (IntListIterator intlistiterator = ingredient.getValidItemStacksPacked().iterator(); intlistiterator.hasNext(); l = Math.max(l, itemToCount.get(i1))) {
+				for (final IntListIterator intlistiterator = ingredient.getValidItemStacksPacked().iterator(); intlistiterator.hasNext(); l = Math.max(l, itemToCount.get(i1))) {
 					i1 = intlistiterator.next().intValue();
 				}
 
@@ -662,7 +627,7 @@ public class RecipeHandlerSynthesis {
 		public static final SynthesisRecipeCallbacks INSTANCE = new SynthesisRecipeCallbacks();
 
 		@Override
-		public ISynthesisRecipe createMissing(ResourceLocation key, boolean isNetwork) {
+		public ISynthesisRecipe createMissing(final ResourceLocation key, final boolean isNetwork) {
 			return isNetwork ? new DummyRecipe().setRegistryName(key) : null;
 		}
 
@@ -672,7 +637,7 @@ public class RecipeHandlerSynthesis {
 			private ResourceLocation name;
 
 			@Override
-			public ISynthesisRecipe setRegistryName(ResourceLocation name) {
+			public ISynthesisRecipe setRegistryName(final ResourceLocation name) {
 				this.name = name;
 				return this;
 			}
@@ -688,17 +653,17 @@ public class RecipeHandlerSynthesis {
 			}
 
 			@Override
-			public boolean matches(InventoryCrafting inv, World worldIn) {
+			public boolean matches(final InventoryCrafting inv, final World worldIn) {
 				return false;
 			}
 
 			@Override
-			public ItemStack getCraftingResult(InventoryCrafting inv) {
+			public ItemStack getCraftingResult(final InventoryCrafting inv) {
 				return result;
 			}
 
 			@Override
-			public boolean canFit(int width, int height) {
+			public boolean canFit(final int width, final int height) {
 				return false;
 			}
 

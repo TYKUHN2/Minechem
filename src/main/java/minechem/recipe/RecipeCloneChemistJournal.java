@@ -49,7 +49,7 @@ public class RecipeCloneChemistJournal implements IRecipe {
 
 	@Override
 	public ResourceLocation getRegistryName() {
-		return new ResourceLocation(ModGlobals.ID, "clone_journal");
+		return new ResourceLocation(ModGlobals.MODID, "clone_journal");
 	}
 
 	@Override
