@@ -1,6 +1,5 @@
 package minechem.item.polytool.types;
 
-import java.util.Iterator;
 import java.util.List;
 
 import minechem.item.element.ElementEnum;
@@ -22,15 +21,13 @@ public class PolytoolTypeNickel extends PolytoolUpgradeType {
 	public void onBlockDestroyed(ItemStack itemStack, World world, Block block, int x, int y, int z, EntityLivingBase player) {
 		List<EntityItem> items = player.world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(player.posX - power, player.posY - power, player.posZ - power, player.posX + power, player.posY + power, player.posZ + power));
 
-		Iterator<EntityItem> iter = items.iterator();
-		while (iter.hasNext()) {
-			EntityItem entity = iter.next();
-			entity.motionX = -1 * (entity.posX - player.posX);
+        for (EntityItem entity : items) {
+            entity.motionX = -1 * (entity.posX - player.posX);
 
-			entity.motionY = -1 * (entity.posY - player.posY);
+            entity.motionY = -1 * (entity.posY - player.posY);
 
-			entity.motionZ = -1 * (entity.posZ - player.posZ);
-		}
+            entity.motionZ = -1 * (entity.posZ - player.posZ);
+        }
 	}
 
 	@Override

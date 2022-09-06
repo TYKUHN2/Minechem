@@ -27,12 +27,11 @@ public class RenderDecomposer extends TileEntitySpecialRenderer<TileDecomposer> 
 
 	@Override
 	public void render(final TileDecomposer tileEntity, final double x, final double y, final double z, final float var8, final int var9, final float alpha) {
-		final TileDecomposer decomposer = tileEntity;
-		model = getModelForTile(decomposer.getPos());
+		model = getModelForTile(tileEntity.getPos());
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x + 0.5D, y + 1.5D, z + 0.5D);
 		GlStateManager.rotate(180f, 0f, 0f, 1f);
-		final boolean isRunning = decomposer.isCooking() && decomposer.getState() != State.jammed;
+		final boolean isRunning = tileEntity.isCooking() && tileEntity.getState() != State.jammed;
 		bindTexture(isRunning ? ModResources.Model.DECOMPOSER_ON : ModResources.Model.DECOMPOSER_OFF);
 		if (isRunning) {
 			model.updateWindillRotation();

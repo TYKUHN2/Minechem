@@ -17,7 +17,7 @@ public enum ElementAlloyEnum
     public final float sword;
     public final ElementEnum element;
 
-    private ElementAlloyEnum(ElementEnum element, float axe, float shovel, float pickaxe, float stone, float sword)
+    ElementAlloyEnum(ElementEnum element, float axe, float shovel, float pickaxe, float stone, float sword)
     {
         this.element = element;
         this.axe = 2 * axe;

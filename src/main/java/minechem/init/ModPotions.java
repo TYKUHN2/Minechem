@@ -19,7 +19,7 @@ import net.minecraftforge.registries.IForgeRegistry;
  */
 public class ModPotions {
 
-	private static List<Potion> POTION_LIST = new ArrayList<>();
+	private static final List<Potion> POTION_LIST = new ArrayList<>();
 
 	public static final Potion ATROPINE_HIGH = new PotionAtropineHigh();
 
@@ -37,7 +37,7 @@ public class ModPotions {
 	}
 
 	public static List<PotionMinechem> getMinechemPotionsList() {
-		List<PotionMinechem> potionList = new ArrayList<PotionMinechem>();
+		List<PotionMinechem> potionList = new ArrayList<>();
 		for (Potion potion : getPotionList()) {
 			if (potion instanceof PotionMinechem) {
 				potionList.add((PotionMinechem) potion);

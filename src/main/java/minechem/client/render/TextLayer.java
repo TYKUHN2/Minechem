@@ -43,7 +43,7 @@ public class TextLayer implements ILayer {
 
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(scale, scale, 1.0F);
-		GlStateManager.translate(0.0F, (scale / scale) + (scale / scale) + 0.250F, 0.0F);
+		GlStateManager.translate(0.0F, (1.0f) + (1.0f) + 0.250F, 0.0F);
 
 		RenderUtil.renderQuads(getQuadsForString(text), 1.0F);
 		//RenderUtil.render(model);

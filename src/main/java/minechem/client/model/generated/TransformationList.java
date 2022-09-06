@@ -173,10 +173,10 @@ public class TransformationList extends Transformation {
 
 	@Override
 	public String toString() {
-		String s = "";
+		StringBuilder s = new StringBuilder();
 		for (Transformation t : transformations) {
-			s += "\n" + t.toString();
+			s.append("\n").append(t.toString());
 		}
-		return s.trim();
+		return s.toString().trim();
 	}
 }

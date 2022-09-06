@@ -3,15 +3,15 @@ package minechem.api;
 public interface IVerticalScrollContainer
 {
 
-    public boolean isScrollBarActive();
+    boolean isScrollBarActive();
 
-    public int getScreenWidth();
+    int getScreenWidth();
 
-    public int getScreenHeight();
+    int getScreenHeight();
 
-    public int getGuiWidth();
+    int getGuiWidth();
 
-    public int getGuiHeight();
+    int getGuiHeight();
 
-    public int getScrollAmount();
+    int getScrollAmount();
 }

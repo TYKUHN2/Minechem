@@ -139,13 +139,12 @@ public class GuiFakeSlot extends Gui {
 		drawGradientRect(bkX, bkY, bkX + tooltipWidth, bkY + tooltipHeight, backgroundColor, backgroundColor);
 
 		for (int i = 0; i < lines.size(); i++) {
-			final int tx = x;
 			final int ty = y + i * 10;
 			String tooltip = lines.get(i);
 			if (i == 0) {
 				tooltip = stack.getItem().getForgeRarity(stack).getColor() + tooltip;
 			}
-			mc.fontRenderer.drawStringWithShadow(tooltip, tx, ty, 0xFFFFFFFF);
+			mc.fontRenderer.drawStringWithShadow(tooltip, x, ty, 0xFFFFFFFF);
 		}
 		GlStateManager.enableDepth();
 	}

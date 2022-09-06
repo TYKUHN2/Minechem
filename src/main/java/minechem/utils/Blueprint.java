@@ -155,7 +155,7 @@ public class Blueprint {
 			for (int x = 0; x < states[y].length; x++) {
 				for (int z = 0; z < states[y][x].length; z++) {
 					if (states[y][x][z] != null) {
-						if (z != -1 && z != layer) {
+						if (z != layer) {
 							continue;
 						}
 						vertStates[y + x * states.length] = states[y][x][z];

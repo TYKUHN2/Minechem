@@ -1,6 +1,8 @@
 package minechem.recipe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import minechem.potion.PotionChemical;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -8,24 +10,18 @@ import net.minecraftforge.fluids.FluidStack;
 public class RecipeDecomposerFluidSelect extends RecipeDecomposerFluidChance
 {
 
-    ArrayList<RecipeDecomposer> possibleRecipes = new ArrayList<RecipeDecomposer>();
+    ArrayList<RecipeDecomposer> possibleRecipes = new ArrayList<>();
 
     public RecipeDecomposerFluidSelect(FluidStack fluid, float chance, RecipeDecomposer[] recipes)
     {
         super(fluid, chance);
-        for (RecipeDecomposer rec : recipes)
-        {
-            possibleRecipes.add(rec);
-        }
+        possibleRecipes.addAll(Arrays.asList(recipes));
     }
 
     public RecipeDecomposerFluidSelect(String fluid, int amount, float chance, RecipeDecomposer... recipes)
     {
         super(FluidRegistry.getFluidStack(fluid, amount), chance);
-        for (RecipeDecomposer rec : recipes)
-        {
-            possibleRecipes.add(rec);
-        }
+        possibleRecipes.addAll(Arrays.asList(recipes));
     }
 
     @Override

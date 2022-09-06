@@ -29,10 +29,6 @@ public class RenderBlueprintProjector extends TileEntitySpecialRenderer<TileBlue
 		final int facing = state.getBlock().getMetaFromState(state);
 		int j = 0;
 
-		if (facing == 2) {
-			j = 0;
-		}
-
 		if (facing == 3) {
 			j = 180;
 		}
@@ -48,7 +44,7 @@ public class RenderBlueprintProjector extends TileEntitySpecialRenderer<TileBlue
 		GlStateManager.translate(x + 0.5D, y + 1.5D, z + 0.5D);
 		GlStateManager.rotate(180f, 0f, 0f, 1f);
 		GlStateManager.rotate(j * 45.0F, 0.0F, 1.0F, 0.0F);
-		if (tileEntity != null && tileEntity.hasBlueprint() && (!ModConfig.powerUseEnabled || ModConfig.powerUseEnabled && tileEntity.getCapability(CapabilityEnergy.ENERGY, EnumFacing.UP).getEnergyStored() > 0)) {
+		if (tileEntity != null && tileEntity.hasBlueprint() && (!ModConfig.powerUseEnabled || tileEntity.getCapability(CapabilityEnergy.ENERGY, EnumFacing.UP).getEnergyStored() > 0)) {
 			bindTexture(ModResources.Model.PROJECTOR_ON);
 		}
 		else {

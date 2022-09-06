@@ -1,8 +1,5 @@
 package minechem.recipe.handler;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import minechem.recipe.RecipeDecomposer;
 import minechem.recipe.RecipeDecomposerFluid;
 import minechem.recipe.RecipeDecomposerSuper;
@@ -28,12 +25,7 @@ public class RecipeHandlerDecomposer {
 			}
 		}
 		//Culls null recipes (used for recursion but breaks stuff if left in)
-		for (Iterator<Map.Entry<MapKey, RecipeDecomposer>> itr = RecipeDecomposer.recipes.entrySet().iterator(); itr.hasNext();) {
-			Map.Entry<MapKey, RecipeDecomposer> entry = itr.next();
-			if (entry.getValue().isNull()) {
-				itr.remove();
-			}
-		}
+		RecipeDecomposer.recipes.entrySet().removeIf(entry -> entry.getValue().isNull());
 	}
 
 	public static void resetRecursiveRecipes() {

@@ -4,7 +4,6 @@ import minechem.block.multiblock.tile.TileFissionCore;
 import minechem.block.multiblock.tile.TileFusionCore;
 import minechem.init.ModConfig;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.inventory.IInventory;
 
 public class TabFissionState extends GuiTabState {
 	private int lastKnownEnergyCost = 0;
@@ -20,24 +19,21 @@ public class TabFissionState extends GuiTabState {
 		super.update();
 		if (tileEntity instanceof TileFusionCore) {
 			TileFusionCore fissionTile = (TileFusionCore) tileEntity;
-			if (fissionTile instanceof IInventory) {
-				IInventory tileInv = fissionTile;
-				if (tileInv.getStackInSlot(0).isEmpty()) {
-					state = TabState.norecipe;
-				}
-				else {
-					lastKnownEnergyCost = (tileInv.getStackInSlot(0).getItemDamage() + 1) * ModConfig.fissionMultiplier;
-					if (((TileFissionCore) tileEntity).inputIsFissionable()) {
-						if (tileEntity.getEnergyRequired() < tileEntity.getEnergyStored()) {
-							state = TabState.powered;
-						}
-						else {
-							state = TabState.unpowered;
-						}
+			if (fissionTile.getStackInSlot(0).isEmpty()) {
+				state = TabState.norecipe;
+			}
+			else {
+				lastKnownEnergyCost = (fissionTile.getStackInSlot(0).getItemDamage() + 1) * ModConfig.fissionMultiplier;
+				if (((TileFissionCore) tileEntity).inputIsFissionable()) {
+					if (tileEntity.getEnergyRequired() < tileEntity.getEnergyStored()) {
+						state = TabState.powered;
 					}
 					else {
-						state = TabState.norecipe;
+						state = TabState.unpowered;
 					}
+				}
+				else {
+					state = TabState.norecipe;
 				}
 			}
 		}

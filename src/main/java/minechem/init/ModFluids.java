@@ -27,11 +27,11 @@ import net.minecraftforge.fluids.FluidRegistry;
  */
 public class ModFluids {
 
-	public static Map<MoleculeEnum, Fluid> FLUID_MOLECULES = new IdentityHashMap<MoleculeEnum, Fluid>();
-	public static Map<ElementEnum, FluidElement> FLUID_ELEMENTS = new IdentityHashMap<ElementEnum, FluidElement>();
+	public static Map<MoleculeEnum, Fluid> FLUID_MOLECULES = new IdentityHashMap<>();
+	public static Map<ElementEnum, FluidElement> FLUID_ELEMENTS = new IdentityHashMap<>();
 
-	public static Map<Fluid, Block> FLUID_MOLECULE_BLOCKS = new IdentityHashMap<Fluid, Block>();
-	public static Map<FluidElement, Block> FLUID_ELEMENT_BLOCKS = new IdentityHashMap<FluidElement, Block>();
+	public static Map<Fluid, Block> FLUID_MOLECULE_BLOCKS = new IdentityHashMap<>();
+	public static Map<FluidElement, Block> FLUID_ELEMENT_BLOCKS = new IdentityHashMap<>();
 
 	public static void init() {
 		for (ElementEnum element : ElementEnum.elements.values()) {
@@ -88,16 +88,12 @@ public class ModFluids {
 	}
 
 	public static List<Block> getFluidBlocks() {
-		if (FLUID_ELEMENT_BLOCKS.size() <= 0 || FLUID_MOLECULE_BLOCKS.size() <= 0) {
+		if (FLUID_ELEMENT_BLOCKS.size() == 0 || FLUID_MOLECULE_BLOCKS.size() == 0) {
 			init();
 		}
 		List<Block> blockList = Lists.newArrayList();
-		for (Block block : FLUID_ELEMENT_BLOCKS.values()) {
-			blockList.add(block);
-		}
-		for (Block block : FLUID_MOLECULE_BLOCKS.values()) {
-			blockList.add(block);
-		}
+		blockList.addAll(FLUID_ELEMENT_BLOCKS.values());
+		blockList.addAll(FLUID_MOLECULE_BLOCKS.values());
 		return blockList;
 	}
 

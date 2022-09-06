@@ -16,6 +16,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public interface IPotionEffectRenderer {
 
 	@SideOnly(Side.CLIENT)
-	public void render(@Nullable Integer level);
+	void render(@Nullable Integer level);
 
 }

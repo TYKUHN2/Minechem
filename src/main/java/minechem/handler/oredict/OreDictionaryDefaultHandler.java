@@ -19,18 +19,16 @@ public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 			block, oreNether, ore, ingot, nugget, dustDirty, dustSmall, dust, plate, gem, crystal
 	}
 
-	private String[] supportedOres;
+	private final String[] supportedOres;
 
-	private Map<OreDictionaryBaseOreEnum, ArrayList<EnumOrePrefix>> seenOres = new HashMap<OreDictionaryBaseOreEnum, ArrayList<EnumOrePrefix>>();
-
-	private Map<OreDictionaryBaseOreEnum, String> registeredIngots = new HashMap<OreDictionaryBaseOreEnum, String>();
+	private final Map<OreDictionaryBaseOreEnum, ArrayList<EnumOrePrefix>> seenOres = new HashMap<>();
 
 	public OreDictionaryDefaultHandler() {
-		ArrayList<String> ores = new ArrayList<String>();
+		ArrayList<String> ores = new ArrayList<>();
 		for (OreDictionaryBaseOreEnum ore : OreDictionaryBaseOreEnum.values()) {
 			ores.add(ore.name());
 		}
-		supportedOres = ores.toArray(new String[ores.size()]);
+		supportedOres = ores.toArray(new String[0]);
 	}
 
 	public String[] parseOreName(String oreName) {
@@ -72,7 +70,6 @@ public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 			RecipeDecomposer.addOreDictRecipe(oreName, ore.getComposition());
 			if (!haveSeen(ore, EnumOrePrefix.dust) && !haveSeen(ore, EnumOrePrefix.dustSmall)) {
 				RecipeHandlerSynthesis.addShapelessOreDictRecipe(oreName, ModRecipes.COST_INGOT, ore.getComposition());
-				registeredIngots.put(ore, oreName);
 			}
 			break;
 
@@ -129,7 +126,7 @@ public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 		}
 	*/
 	private PotionChemical[] scaleCeil(PotionChemical[] composition, double factor) {
-		ArrayList<PotionChemical> newComposition = new ArrayList<PotionChemical>();
+		ArrayList<PotionChemical> newComposition = new ArrayList<>();
 
 		for (PotionChemical chem : composition) {
 			PotionChemical newChem = chem.copy();
@@ -137,11 +134,11 @@ public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 			newComposition.add(newChem);
 		}
 
-		return newComposition.toArray(new PotionChemical[newComposition.size()]);
+		return newComposition.toArray(new PotionChemical[0]);
 	}
 
 	private PotionChemical[] scaleFloor(PotionChemical[] composition, double factor) {
-		ArrayList<PotionChemical> newComposition = new ArrayList<PotionChemical>();
+		ArrayList<PotionChemical> newComposition = new ArrayList<>();
 
 		for (PotionChemical chem : composition) {
 			PotionChemical newChem = chem.copy();
@@ -151,7 +148,7 @@ public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 			}
 		}
 
-		return newComposition.toArray(new PotionChemical[newComposition.size()]);
+		return newComposition.toArray(new PotionChemical[0]);
 	}
 
 	private boolean haveSeen(OreDictionaryBaseOreEnum ore, EnumOrePrefix prefix) {
@@ -160,7 +157,7 @@ public class OreDictionaryDefaultHandler implements IOreDictionaryHandler {
 
 	private void seen(OreDictionaryBaseOreEnum ore, EnumOrePrefix prefix) {
 		if (!seenOres.containsKey(ore)) {
-			seenOres.put(ore, new ArrayList<EnumOrePrefix>());
+			seenOres.put(ore, new ArrayList<>());
 		}
 		if (!seenOres.get(ore).contains(prefix)) {
 			seenOres.get(ore).add(prefix);

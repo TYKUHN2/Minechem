@@ -13,10 +13,10 @@ public interface INoDecay
     /**
      * @return A list of the itemStacks that will not decay
      */
-    public List<ItemStack> getStorageInventory();
+    List<ItemStack> getStorageInventory();
 
     /**
      * @return A list of itemStacks that will decay
      */
-    public List<ItemStack> getPlayerInventory();
+    List<ItemStack> getPlayerInventory();
 }

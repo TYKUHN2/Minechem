@@ -9,14 +9,14 @@ import net.minecraftforge.fluids.Fluid;
 
 abstract public class FluidMinechem extends Fluid {
 
-	private static String texturePrefix = ModGlobals.MODID + ":blocks/";
+	private static final String texturePrefix = ModGlobals.MODID + ":blocks/";
 	private int quanta;
 
 	public FluidMinechem(String fluidName, boolean hasFlowIcon, MatterState roomstatus) {
 		super(fluidName, new ResourceLocation(texturePrefix + "fluid_still"), new ResourceLocation(texturePrefix + "fluid" + (hasFlowIcon ? "_flow" : "_still")));
 		setGaseous(roomstatus.isGas());
 		setViscosity(roomstatus.getViscosity());
-		setDensity(roomstatus.isGas() ? -10 : roomstatus == MatterState.SOLID ? 10 : 10);
+		setDensity(roomstatus.isGas() ? -10 : 10);
 		setQuanta(roomstatus.getQuanta());
 	}
 

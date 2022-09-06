@@ -17,19 +17,17 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 public class RecipeSynthesisShapeless extends IForgeRegistryEntry.Impl<ISynthesisRecipe> implements ISynthesisRecipe {
 
 	public static final String GROUP = ModGlobals.MODID + ":synthesis_shapeless";
-	private int energyCost = 0;
+	private int energyCost;
 	private final boolean isSimple;
 	private final ItemStack recipeOutput;
-	public final NonNullList<Ingredient> vanillaIngredients = NonNullList.<Ingredient>create();
+	public final NonNullList<Ingredient> vanillaIngredients = NonNullList.create();
 	public final NonNullList<SingleItemStackBasedIngredient> recipeItems;
 
 	public RecipeSynthesisShapeless(ItemStack output, int energyCost, NonNullList<SingleItemStackBasedIngredient> ingredients) {
 		this.energyCost = energyCost;
 		recipeItems = ingredients;
 		recipeOutput = output;
-		for (SingleItemStackBasedIngredient ingredient : ingredients) {
-			vanillaIngredients.add(ingredient);
-		}
+		vanillaIngredients.addAll(ingredients);
 		boolean simple = true;
 		for (SingleItemStackBasedIngredient i : ingredients) {
 			simple &= i.isSimple();

@@ -6,7 +6,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.event.*;
 
-@Mod(modid = ModGlobals.MODID, name = ModGlobals.NAME, version = ModGlobals.VERSION, useMetadata = false, acceptedMinecraftVersions = "[1.12.2]", certificateFingerprint = "@FINGERPRINT@", dependencies = ModGlobals.DEPENDENCIES)
+@Mod(modid = ModGlobals.MODID, name = ModGlobals.NAME, version = ModGlobals.VERSION, acceptedMinecraftVersions = "[1.12.2]", certificateFingerprint = "@FINGERPRINT@", dependencies = ModGlobals.DEPENDENCIES)
 public class Minechem {
 
 	@Mod.Instance(value = ModGlobals.MODID)

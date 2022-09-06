@@ -13,12 +13,12 @@ public class OreDictionaryExtraUtilitiesHandler implements IOreDictionaryHandler
 	private static final int BURNT_QUARTZ = 0;
 	private static final int ICE_STONE = 1;
 
-	private String[] blockTypes = new String[] {
+	private final String[] blockTypes = new String[] {
 			"burntquartz",
 			"icestone"
 	};
 
-	private List<String> blockList = Arrays.asList(blockTypes);
+	private final List<String> blockList = Arrays.asList(blockTypes);
 
 	@Override
 	public boolean canHandle(String oreName) {

@@ -47,8 +47,7 @@ public class Rotation extends Transformation {
 				@Override
 				public void apply(Vector3 vec) {
 					double d1 = vec.x;
-					double d2 = vec.z;
-					vec.x = d2;
+					vec.x = vec.z;
 					vec.z = -d1;
 				}
 
@@ -91,8 +90,7 @@ public class Rotation extends Transformation {
 				@Override
 				public void apply(Vector3 vec) {
 					double d1 = vec.y;
-					double d2 = vec.z;
-					vec.y = d2;
+					vec.y = vec.z;
 					vec.z = -d1;
 				}
 
@@ -105,8 +103,7 @@ public class Rotation extends Transformation {
 				@Override
 				public void apply(Vector3 vec) {
 					double d0 = vec.x;
-					double d1 = vec.y;
-					vec.x = d1;
+					vec.x = vec.y;
 					vec.y = -d0;
 				}
 
@@ -207,7 +204,7 @@ public class Rotation extends Transformation {
 	};
 
 	/**
-	 * Rotate pi/2 * this offset for [side] about y axis before rotating to the side for the rotation indicies to line up
+	 * Rotate pi/2 * this offset for [side] about y-axis before rotating to the side for the rotation indicies to line up
 	 */
 	public static int[] sideRotOffsets = new int[] {
 			0,

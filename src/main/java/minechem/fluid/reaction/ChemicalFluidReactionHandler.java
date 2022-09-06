@@ -29,7 +29,7 @@ public class ChemicalFluidReactionHandler {
 
 	private static final ChemicalFluidReactionHandler INSTANCE = new ChemicalFluidReactionHandler();
 
-	public static final ChemicalFluidReactionHandler getInstance() {
+	public static ChemicalFluidReactionHandler getInstance() {
 		return INSTANCE;
 	}
 
@@ -176,9 +176,7 @@ public class ChemicalFluidReactionHandler {
 			availableSpaces.set(i, findAvailableSpacesAtCrossSection(world, x, y - halfSpace + i, z, 1));
 		}
 
-		final Iterator<MinechemChemicalType> it = output.outputs.iterator();
-		while (it.hasNext()) {
-			final MinechemChemicalType chemical = it.next();
+		for (MinechemChemicalType chemical : output.outputs) {
 			final boolean hasFlowingStatus = chemical.roomState().getQuanta() > 2;
 
 			Vec3i coords = null;
@@ -191,11 +189,10 @@ public class ChemicalFluidReactionHandler {
 							break;
 						}
 					}
-				}
-				else {
-					for (int i = 0; i < availableSpaces.size(); i++) {
-						if (!availableSpaces.get(i).isEmpty()) {
-							coords = availableSpaces.get(i).remove(availableSpaces.get(i).size() - 1);
+				} else {
+					for (List<Vec3i> availableSpace : availableSpaces) {
+						if (!availableSpace.isEmpty()) {
+							coords = availableSpace.remove(availableSpace.size() - 1);
 							break;
 						}
 					}
@@ -206,8 +203,7 @@ public class ChemicalFluidReactionHandler {
 					final ItemStack itemStack = MinechemUtil.createItemStack(chemical, 8);
 					MinechemUtil.throwItemStack(world, itemStack, x, y, z);
 				}
-			}
-			else if (!(popFlowingFluid && !hasFlowingStatus)) {
+			} else if (!(popFlowingFluid && !hasFlowingStatus)) {
 				final int px = coords.getX();
 				final int py = coords.getY();
 				final int pz = coords.getZ();
@@ -218,8 +214,7 @@ public class ChemicalFluidReactionHandler {
 				Block fluidBlock = null;
 				if (chemical instanceof ElementEnum) {
 					fluidBlock = ModFluids.FLUID_ELEMENT_BLOCKS.get(ModFluids.FLUID_ELEMENTS.get(chemical));
-				}
-				else if (chemical instanceof MoleculeEnum) {
+				} else if (chemical instanceof MoleculeEnum) {
 					fluidBlock = ModFluids.FLUID_MOLECULE_BLOCKS.get(ModFluids.FLUID_MOLECULES.get(chemical));
 				}
 

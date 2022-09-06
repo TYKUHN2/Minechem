@@ -26,10 +26,6 @@ public class RenderMicroscope extends TileEntitySpecialRenderer<TileMicroscope> 
 		final int facing = state.getBlock().getMetaFromState(state);
 		int j = 0;
 
-		if (facing == 2) {
-			j = 0;
-		}
-
 		if (facing == 3) {
 			j = 180;
 		}

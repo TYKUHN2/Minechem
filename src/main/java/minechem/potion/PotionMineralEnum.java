@@ -1,6 +1,7 @@
 package minechem.potion;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import minechem.item.molecule.Molecule;
 import minechem.item.molecule.MoleculeEnum;
@@ -14,7 +15,7 @@ public enum PotionMineralEnum {
 	private final ArrayList<PotionChemical> components;
 
 	public PotionChemical[] getComposition() {
-		return components.toArray(new PotionChemical[components.size()]);
+		return components.toArray(new PotionChemical[0]);
 	}
 
 	public String getName() {
@@ -26,9 +27,7 @@ public enum PotionMineralEnum {
 	}
 
 	PotionMineralEnum(PotionChemical... chemicals) {
-		components = new ArrayList<PotionChemical>();
-		for (PotionChemical potionChemical : chemicals) {
-			components.add(potionChemical);
-		}
+		components = new ArrayList<>();
+		components.addAll(Arrays.asList(chemicals));
 	}
 }

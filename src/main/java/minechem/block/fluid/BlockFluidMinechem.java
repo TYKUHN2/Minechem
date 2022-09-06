@@ -139,7 +139,7 @@ public class BlockFluidMinechem extends BlockFluidClassic implements ITileEntity
 		super.eventReceived(state, world, pos, eventID, eventParameter);
 
 		final TileEntity tileentity = world.getTileEntity(pos);
-		return tileentity != null ? tileentity.receiveClientEvent(eventID, eventParameter) : false;
+		return tileentity != null && tileentity.receiveClientEvent(eventID, eventParameter);
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public class BlockFluidMinechem extends BlockFluidClassic implements ITileEntity
 		final double d2 = pos.getZ();
 
 		if (blockMaterial == ModMaterial.FLUID) {
-			final int i = stateIn.getValue(LEVEL).intValue();
+			final int i = stateIn.getValue(LEVEL);
 
 			if (i > 0 && i < 8) {
 				if (rand.nextInt(64) == 0) {

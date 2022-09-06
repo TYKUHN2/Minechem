@@ -6,10 +6,7 @@ package minechem.client.model.generated;
  * @param <Vector>         The vector type
  * @param <Transformation> The transformation type
  */
-@SuppressWarnings({
-		"rawtypes",
-		"hiding"
-})
+@SuppressWarnings("rawtypes")
 public abstract class ITransformation<Vector, Transformation extends ITransformation> {
 
 	/**

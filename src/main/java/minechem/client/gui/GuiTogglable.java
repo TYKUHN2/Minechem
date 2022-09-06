@@ -26,7 +26,7 @@ public abstract class GuiTogglable {
 	protected Minecraft mc;
 	protected GuiContainerTabbed container;
 	protected ResourceLocation texture;
-	protected HashMap<Integer, ToggleButton> buttons = new HashMap<Integer, ToggleButton>();
+	protected HashMap<Integer, ToggleButton> buttons = new HashMap<>();
 
 	public GuiTogglable() {
 		mc = FMLClientHandler.instance().getClient();
@@ -85,14 +85,14 @@ public abstract class GuiTogglable {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder vb = tessellator.getBuffer();
 		vb.begin(7, DefaultVertexFormats.POSITION_TEX);
-		vb.pos(par1 + 0, par2 + par6, zLevel).tex((par3 + 0) * var7, (par4 + par6) * var8).endVertex();
+		vb.pos(par1, par2 + par6, zLevel).tex((par3) * var7, (par4 + par6) * var8).endVertex();
 		vb.pos(par1 + par5, par2 + par6, zLevel).tex((par3 + par5) * var7, (par4 + par6) * var8).endVertex();
-		vb.pos(par1 + par5, par2 + 0, zLevel).tex((par3 + par5) * var7, (par4 + 0) * var8).endVertex();
-		vb.pos(par1 + 0, par2 + 0, zLevel).tex((par3 + 0) * var7, (par4 + 0) * var8).endVertex();
+		vb.pos(par1 + par5, par2, zLevel).tex((par3 + par5) * var7, (par4) * var8).endVertex();
+		vb.pos(par1, par2, zLevel).tex((par3) * var7, (par4) * var8).endVertex();
 		tessellator.draw();
 	}
 
-	public class ToggleButton {
+	public static class ToggleButton {
 		public int u;
 		public int v;
 		public String tooltip;

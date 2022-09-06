@@ -1,6 +1,7 @@
 package minechem.integration.jei;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -40,19 +41,13 @@ public class ShapelessSynthesisWrapper<T extends ISynthesisRecipe> implements IC
 			if (recipe instanceof RecipeSynthesisShapeless) {
 				final RecipeSynthesisShapeless synthRecipe = (RecipeSynthesisShapeless) recipe;
 				for (int i = 0; i < synthRecipe.getSingleIngredients().size(); i++) {
-					final List<ItemStack> tmpList = new ArrayList<>();
-					for (int j = 0; j < synthRecipe.getSingleIngredients().get(i).getMatchingStacks().length; j++) {
-						tmpList.add(synthRecipe.getSingleIngredients().get(i).getMatchingStacks()[j]);
-					}
+                    final List<ItemStack> tmpList = new ArrayList<>(Arrays.asList(synthRecipe.getSingleIngredients().get(i).getMatchingStacks()));
 					inputLists.add(tmpList);
 				}
 			}
 			else {
 				for (int i = 0; i < recipe.getIngredients().size(); i++) {
-					final List<ItemStack> tmpList = new ArrayList<>();
-					for (int j = 0; j < recipe.getIngredients().get(i).getMatchingStacks().length; j++) {
-						tmpList.add(recipe.getIngredients().get(i).getMatchingStacks()[j]);
-					}
+                    final List<ItemStack> tmpList = new ArrayList<>(Arrays.asList(recipe.getIngredients().get(i).getMatchingStacks()));
 					inputLists.add(tmpList);
 				}
 			}

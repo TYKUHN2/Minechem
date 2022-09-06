@@ -18,7 +18,7 @@ public class MoleculeItemRenderer extends TileEntityItemStackRenderer {
 	public void renderByItem(ItemStack stack, float partialTicks) {
 		if (stack.getItem() instanceof ItemMolecule) {
 			MoleculeEnum molecule = MinechemUtil.getMolecule(stack);
-			List<ILayer> layers = new LinkedList<ILayer>();
+			List<ILayer> layers = new LinkedList<>();
 			int color1 = new Color(molecule.red, molecule.green, molecule.blue).getRGB();
 			int color2 = new Color(molecule.red2, molecule.green2, molecule.blue2).getRGB();
 			layers.add(new IconLayer(Textures.Sprite.MOLECULE_TUBE));

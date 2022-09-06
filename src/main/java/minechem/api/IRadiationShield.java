@@ -19,6 +19,6 @@ public interface IRadiationShield
      * @param player the player we're harming.
      * @return a float where n >= 0 && n <= 1
      */
-    public float getRadiationReductionFactor(int baseDamage, ItemStack itemstack, EntityPlayer player);
+    float getRadiationReductionFactor(int baseDamage, ItemStack itemstack, EntityPlayer player);
 
 }

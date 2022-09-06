@@ -35,16 +35,12 @@ public class RecipeDecomposerFluid extends RecipeDecomposer {
 
 	@Override
 	public ArrayList<PotionChemical> getOutput() {
-		ArrayList<PotionChemical> result = new ArrayList<PotionChemical>();
-		result.addAll(output.values());
-		return result;
+		return new ArrayList<>(output.values());
 	}
 
 	@Override
 	public ArrayList<PotionChemical> getOutputRaw() {
-		ArrayList<PotionChemical> result = new ArrayList<PotionChemical>();
-		result.addAll(output.values());
-		return result;
+		return new ArrayList<>(output.values());
 	}
 
 	@Override

@@ -30,7 +30,7 @@ import net.minecraftforge.fluids.UniversalBucket;
 
 public class HandlerElementDecay {
 
-	private static HandlerElementDecay instance = new HandlerElementDecay();
+	private static final HandlerElementDecay instance = new HandlerElementDecay();
 
 	public static HandlerElementDecay getInstance() {
 		return instance == null ? new HandlerElementDecay() : instance;
@@ -98,7 +98,7 @@ public class HandlerElementDecay {
 				*/
 
 				if (radiation != null && radiation != RadiationEnum.stable) {
-					Long time = world.getTotalWorldTime() - ItemElement.getRadiationInfo(itemstack, world).decayStarted;
+					long time = world.getTotalWorldTime() - ItemElement.getRadiationInfo(itemstack, world).decayStarted;
 					ItemStack before = itemstack.copy();
 					int damage = updateRadiation(world, itemstack, inventory, posX, posY, posZ);
 					ItemStack after = itemstack.copy();
@@ -115,7 +115,7 @@ public class HandlerElementDecay {
 	}
 
 	private void applyRadiationDamage(EntityPlayer player, Container container, int damage) {
-		List<Float> reductions = new ArrayList<Float>();
+		List<Float> reductions = new ArrayList<>();
 		if (container instanceof IRadiationShield) {
 			float reduction = ((IRadiationShield) container).getRadiationReductionFactor(damage, null, player);
 			reductions.add(reduction);

@@ -51,11 +51,8 @@ public class ElementItemRenderer extends TileEntityItemStackRenderer {
 			boolean isSolid = true;
 			switch (element.roomState()) {
 			case LIQUID:
-				isSolid = false;
-				frame = (int) translateValue(t, 0, duration, 0, 7);
-				break;
 			case GAS:
-				isSolid = false;
+					isSolid = false;
 				frame = (int) translateValue(t, 0, duration, 0, 7);
 				break;
 			default:
@@ -153,13 +150,10 @@ public class ElementItemRenderer extends TileEntityItemStackRenderer {
 
 	public static Map<LayerType, List<BakedQuad>> getQuadsForElement(ElementEnum element, int frame) {
 		Map<LayerType, List<BakedQuad>> elementQuadsMap = new HashMap<>();
-		List<BakedQuad> elementQuads = new LinkedList<BakedQuad>();
-		List<BakedQuad> tubeQuads = new LinkedList<BakedQuad>();
-		List<BakedQuad> symbolQuads = new LinkedList<BakedQuad>();
 		ResourceLocation[] sprites = getSpritesForElement(element);
-		elementQuads.addAll(ItemLayerModel.getQuadsForSprite(0, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(sprites[frame].toString()), DefaultVertexFormats.ITEM, Optional.of(TRSRTransformation.identity())));
-		tubeQuads.addAll(ItemLayerModel.getQuadsForSprite(0, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(Textures.Sprite.FILLED_TUBE.toString()), DefaultVertexFormats.ITEM, Optional.of(TRSRTransformation.identity())));
-		symbolQuads.addAll(TextLayer.getQuadsForString(element.name()));
+		List<BakedQuad> elementQuads = new LinkedList<>(ItemLayerModel.getQuadsForSprite(0, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(sprites[frame].toString()), DefaultVertexFormats.ITEM, Optional.of(TRSRTransformation.identity())));
+		List<BakedQuad> tubeQuads = new LinkedList<>(ItemLayerModel.getQuadsForSprite(0, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(Textures.Sprite.FILLED_TUBE.toString()), DefaultVertexFormats.ITEM, Optional.of(TRSRTransformation.identity())));
+		List<BakedQuad> symbolQuads = new LinkedList<>(TextLayer.getQuadsForString(element.name()));
 		elementQuadsMap.put(LayerType.ELEMENT, elementQuads);
 		elementQuadsMap.put(LayerType.TUBE, tubeQuads);
 		elementQuadsMap.put(LayerType.SYMBOL, symbolQuads);
@@ -170,10 +164,7 @@ public class ElementItemRenderer extends TileEntityItemStackRenderer {
 		if (!ELEMENT_MODEL_CACHE.containsKey(element.atomicNumber())) {
 			PerspectiveAwareBakedModel[] newModels = new PerspectiveAwareBakedModel[1];
 			List<BakedQuad> quads = getAllQuadsForElement(element, 0);
-			boolean isSolid = true;
-			if (element.roomState() != MatterState.SOLID) {
-				isSolid = false;
-			}
+			boolean isSolid = element.roomState() == MatterState.SOLID;
 			if (isSolid) {
 				PerspectiveAwareBakedModel newModel = new PerspectiveAwareBakedModel(quads, Transforms.DEFAULT_ITEM, ModelProperties.DEFAULT_ITEM);
 				newModels[0] = newModel;
@@ -198,8 +189,8 @@ public class ElementItemRenderer extends TileEntityItemStackRenderer {
 		return rightMin + (valueScaled * rightRange);
 	}
 
-	public static enum LayerType {
-			TUBE, ELEMENT, SYMBOL;
+	public enum LayerType {
+			TUBE, ELEMENT, SYMBOL
 	}
 
 }

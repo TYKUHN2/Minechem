@@ -14,7 +14,7 @@ import net.minecraft.util.NonNullList;
 
 public abstract class TileMinechemBase extends TileEntity implements ITickable, IInventory {
 
-	protected NonNullList<ItemStack> inventory = NonNullList.<ItemStack>create();
+	protected NonNullList<ItemStack> inventory = NonNullList.create();
 
 	public void setBlockType(Block block) {
 		blockType = block;
@@ -65,20 +65,17 @@ public abstract class TileMinechemBase extends TileEntity implements ITickable, 
 		if (!inventory.get(slot).isEmpty()) {
 			ItemStack itemstack;
 			if (inventory.get(slot).getCount() <= amount) {
-
 				itemstack = inventory.get(slot);
 				inventory.set(slot, ItemStack.EMPTY);
-				markDirty();
-				return itemstack;
 			}
 			else {
 				itemstack = inventory.get(slot).splitStack(amount);
 				if (inventory.get(slot).getCount() == 0) {
 					inventory.set(slot, ItemStack.EMPTY);
 				}
-				markDirty();
-				return itemstack;
 			}
+			markDirty();
+			return itemstack;
 		}
 		else {
 			return ItemStack.EMPTY;

@@ -57,8 +57,7 @@ public abstract class AbstractBakedPropertiesModel implements IModelParticleProv
 	}
 
 	protected List<BakedQuad> getAllQuads(IBlockState state) {
-		List<BakedQuad> allQuads = new LinkedList<>();
-		allQuads.addAll(getQuads(state, null, 0L));
+		List<BakedQuad> allQuads = new LinkedList<>(getQuads(state, null, 0L));
 		for (EnumFacing face : EnumFacing.VALUES) {
 			allQuads.addAll(getQuads(state, face, 0L));
 		}

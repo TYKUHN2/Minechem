@@ -37,8 +37,8 @@ public class RenderItemMicroscope extends RenderItem {
 		h *= scale;
 		float guiScaledWidth = (microscopeGui.getGuiWidth() * scale);
 		float guiScaledHeight = (microscopeGui.getGuiHeight() * scale);
-		float guiLeft = ((mc.displayWidth / 2) - guiScaledWidth / 2);
-		float guiTop = ((mc.displayHeight / 2) + guiScaledHeight / 2);
+		float guiLeft = ((float)(mc.displayWidth / 2) - guiScaledWidth / 2);
+		float guiTop = ((float)(mc.displayHeight / 2) + guiScaledHeight / 2);
 		int scissorX = Math.round((guiLeft + x));
 		int scissorY = Math.round(((guiTop - h) - y));
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);

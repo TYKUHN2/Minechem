@@ -11,12 +11,12 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class RadiationDecayEvent extends Event {
 
-	private ItemStack before;
-	private ItemStack after;
-	private int damage;
-	private long time;
-	private IInventory inventory;
-	private EntityPlayer player;
+	private final ItemStack before;
+	private final ItemStack after;
+	private final int damage;
+	private final long time;
+	private final IInventory inventory;
+	private final EntityPlayer player;
 
 	public RadiationDecayEvent(IInventory inventory, int damage, long time, ItemStack before, ItemStack after, EntityPlayer player) {
 		this.inventory = inventory;

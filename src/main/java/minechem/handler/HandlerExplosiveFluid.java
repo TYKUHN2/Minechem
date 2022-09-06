@@ -25,8 +25,8 @@ public class HandlerExplosiveFluid
         return instance;
     }
 
-    private Map<MinechemChemicalType, Float> explosiveFluids = new LinkedHashMap<MinechemChemicalType, Float>();
-    private Set<Block> fireSource = new LinkedHashSet<Block>();
+    private final Map<MinechemChemicalType, Float> explosiveFluids = new LinkedHashMap<>();
+    private final Set<Block> fireSource = new LinkedHashSet<>();
 
     public HandlerExplosiveFluid()
     {

@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class PolytoolHelper
 {
 
-    public static HashMap<ElementEnum, PolytoolUpgradeType> types = new HashMap<ElementEnum, PolytoolUpgradeType>();
+    public static HashMap<ElementEnum, PolytoolUpgradeType> types = new HashMap<>();
 
     public static PolytoolUpgradeType getTypeFromElement(ElementEnum element, float power)
     {

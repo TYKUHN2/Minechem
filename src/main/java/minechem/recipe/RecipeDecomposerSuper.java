@@ -20,7 +20,7 @@ import net.minecraft.util.NonNullList;
 public class RecipeDecomposerSuper extends RecipeDecomposer {
 	//TODO seems to be overcounting the output chance of the stained glasspane recipe (0.4375 instead of 0.375) investigate when have time
 	static Random random = new Random();
-	public Map<MapKey, Double> recipes = new Hashtable<MapKey, Double>();
+	public Map<MapKey, Double> recipes = new Hashtable<>();
 
 	public RecipeDecomposerSuper(@Nonnull ItemStack input, NonNullList<ItemStack> components, int level) {
 		this.input = input.copy();
@@ -112,9 +112,7 @@ public class RecipeDecomposerSuper extends RecipeDecomposer {
 				for (int i = 0; i < recipes.get(currentKey); i++) {
 					ArrayList<PotionChemical> partialResult = current.getOutputRaw();
 					partialResult = MinechemUtil.pushTogetherChemicals(partialResult);
-					if (partialResult != null) {
-						result.addAll(partialResult);
-					}
+					result.addAll(partialResult);
 				}
 			}
 		}

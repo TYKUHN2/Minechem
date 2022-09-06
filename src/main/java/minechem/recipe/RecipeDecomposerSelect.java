@@ -7,26 +7,23 @@ import net.minecraft.item.ItemStack;
 
 public class RecipeDecomposerSelect extends RecipeDecomposerChance {
 
-	ArrayList<RecipeDecomposer> possibleRecipes = new ArrayList<RecipeDecomposer>();
-	ArrayList<ArrayList<PotionChemical>> possibleOutputs = new ArrayList<ArrayList<PotionChemical>>();
+	ArrayList<RecipeDecomposer> possibleRecipes = new ArrayList<>();
+	ArrayList<ArrayList<PotionChemical>> possibleOutputs = new ArrayList<>();
 
 	public RecipeDecomposerSelect(ItemStack input, float chance, ArrayList<ArrayList<PotionChemical>> possibleOutputs) {
 		super(input, chance);
-		for (ArrayList<PotionChemical> outputs : possibleOutputs) {
-			this.possibleOutputs.add(outputs);
-		}
+		this.possibleOutputs.addAll(possibleOutputs);
 	}
 
 	@Override
 	public PotionChemical[] getOutputAsArray() {
 		ArrayList<PotionChemical> out = getOutput();
-		return out.toArray(new PotionChemical[out.size()]);
+		return out.toArray(new PotionChemical[0]);
 	}
 
 	@Override
 	public ArrayList<PotionChemical> getOutput() {
-		ArrayList<PotionChemical> selectedOutput = possibleOutputs.get(random.nextInt(possibleOutputs.size()));
-		return selectedOutput;
+		return possibleOutputs.get(random.nextInt(possibleOutputs.size()));
 	}
 
 	@Override

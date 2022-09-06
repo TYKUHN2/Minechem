@@ -61,10 +61,6 @@ public class RenderLeadedChest extends TileEntitySpecialRenderer<TileLeadedChest
 			j = 180;
 		}
 
-		if (facing == 3) {
-			j = 0;
-		}
-
 		if (facing == 4) {
 			j = 90;
 		}

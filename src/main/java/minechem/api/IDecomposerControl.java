@@ -10,8 +10,7 @@ import net.minecraft.item.ItemStack;
 public interface IDecomposerControl
 {
     /**
-     * @return Returns the Decomposition multiplier for {@code itemStack}
-     * @return Return 0 to disable decomposition output entirely
+     * @return Returns the Decomposition multiplier for {@code itemStack} or 0 to disable decomposition
      */
-    public double getDecomposerMultiplier(ItemStack itemStack);
+    double getDecomposerMultiplier(ItemStack itemStack);
 }

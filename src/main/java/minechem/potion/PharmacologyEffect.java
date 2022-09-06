@@ -16,7 +16,7 @@ import net.minecraft.util.text.TextFormatting;
 
 public abstract class PharmacologyEffect {
 
-	private String colour;
+	private final String colour;
 
 	PharmacologyEffect(TextFormatting colour) {
 		this.colour = colour.toString();
@@ -30,8 +30,8 @@ public abstract class PharmacologyEffect {
 
 	public static class Food extends PharmacologyEffect {
 
-		private int level;
-		private float saturation;
+		private final int level;
+		private final float saturation;
 
 		public Food(int level, float saturation) {
 			super(TextFormatting.DARK_GREEN);
@@ -55,9 +55,7 @@ public abstract class PharmacologyEffect {
 		public boolean equals(Object obj) {
 			if (obj instanceof Food) {
 				Food other = (Food) obj;
-				if (other.level == level && other.saturation == saturation) {
-					return true;
-				}
+				return other.level == level && other.saturation == saturation;
 			}
 			return false;
 		}
@@ -65,7 +63,7 @@ public abstract class PharmacologyEffect {
 
 	public static class Burn extends PharmacologyEffect {
 
-		private int duration;
+		private final int duration;
 
 		public Burn(int duration) {
 			super(TextFormatting.RED);
@@ -86,16 +84,14 @@ public abstract class PharmacologyEffect {
 		public boolean equals(Object obj) {
 			if (obj instanceof Burn) {
 				Burn other = (Burn) obj;
-				if (other.duration == duration) {
-					return true;
-				}
+				return other.duration == duration;
 			}
 			return false;
 		}
 	}
 
 	public static class Cure extends PharmacologyEffect {
-		private Potion potion;
+		private final Potion potion;
 
 		public Cure() {
 			this((Potion) null);
@@ -138,9 +134,7 @@ public abstract class PharmacologyEffect {
 		public boolean equals(Object obj) {
 			if (obj instanceof Cure) {
 				Cure other = (Cure) obj;
-				if (other.potion == potion) {
-					return true;
-				}
+				return other.potion == potion;
 			}
 			return false;
 		}
@@ -148,7 +142,7 @@ public abstract class PharmacologyEffect {
 
 	public static class Damage extends PharmacologyEffect {
 
-		private float damage;
+		private final float damage;
 
 		public Damage(float damage) {
 			super(TextFormatting.GOLD);
@@ -170,9 +164,7 @@ public abstract class PharmacologyEffect {
 		public boolean equals(Object obj) {
 			if (obj instanceof Damage) {
 				Damage other = (Damage) obj;
-				if (other.damage == damage) {
-					return true;
-				}
+				return other.damage == damage;
 			}
 			return false;
 		}
@@ -180,9 +172,9 @@ public abstract class PharmacologyEffect {
 
 	public static class Magic extends PharmacologyEffect {
 
-		private int duration = 0;
-		private int power = 0;
-		private Potion potion;
+		private int duration;
+		private int power;
+		private final Potion potion;
 
 		public Magic(String potionName, int power, int duration) {
 			this(PotionHelper.getPotionByName(potionName), power, duration);
@@ -224,9 +216,7 @@ public abstract class PharmacologyEffect {
 		public boolean equals(Object obj) {
 			if (obj instanceof Magic) {
 				Magic other = (Magic) obj;
-				if (other.duration == duration && other.potion == potion && other.power == power) {
-					return true;
-				}
+				return other.duration == duration && other.potion == potion && other.power == power;
 			}
 			return false;
 		}

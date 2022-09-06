@@ -14,7 +14,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.GuiContainerEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -50,12 +49,12 @@ public abstract class GuiContainerBase extends GuiContainer {
 		GlStateManager.disableLighting();
 		GlStateManager.disableDepth();
 		//super.drawScreen(mouseX, mouseY, partialTicks);
-		for (int ii = 0; ii < buttonList.size(); ++ii) {
-			buttonList.get(ii).drawButton(mc, mouseX, mouseY, partialTicks);
+		for (net.minecraft.client.gui.GuiButton guiButton : buttonList) {
+			guiButton.drawButton(mc, mouseX, mouseY, partialTicks);
 		}
 
-		for (int jj = 0; jj < labelList.size(); ++jj) {
-			labelList.get(jj).drawLabel(mc, mouseX, mouseY);
+		for (net.minecraft.client.gui.GuiLabel guiLabel : labelList) {
+			guiLabel.drawLabel(mc, mouseX, mouseY);
 		}
 
 		RenderHelper.enableGUIStandardItemLighting();
@@ -189,7 +188,7 @@ public abstract class GuiContainerBase extends GuiContainer {
 			final int i3 = returningStackDestSlot.yPos - touchUpY;
 			final int l1 = touchUpX + (int) (l2 * f);
 			final int i2 = touchUpY + (int) (i3 * f);
-			drawStack(returningStack, l1, i2, (String) null);
+			drawStack(returningStack, l1, i2, null);
 		}
 
 		GlStateManager.popMatrix();
@@ -298,7 +297,7 @@ public abstract class GuiContainerBase extends GuiContainer {
 				}
 			}
 
-			if (curSlot != null && curSlot instanceof SlotSynthesisOutput && !itemstack.isEmpty()) {
+			if (curSlot instanceof SlotSynthesisOutput && !itemstack.isEmpty()) {
 				GlStateManager.pushMatrix();
 				final TextureManager textureManager = mc.renderEngine;
 				textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -309,7 +308,7 @@ public abstract class GuiContainerBase extends GuiContainer {
 				GlStateManager.enableBlend();
 				//GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 				GlStateManager.color(0.0F, 1.0F, 1.0F, 1.0F);
-				IBakedModel bakedmodel = itemRender.getItemModelWithOverrides(itemstack, (World) null, mc.player);
+				IBakedModel bakedmodel = itemRender.getItemModelWithOverrides(itemstack, null, mc.player);
 				//itemRender.setupGuiTransform(i, j, bakedmodel.isGui3d());
 				GlStateManager.translate(i, j, 100.0F + zLevel);
 				GlStateManager.translate(8.0F, 8.0F, 0.0F);

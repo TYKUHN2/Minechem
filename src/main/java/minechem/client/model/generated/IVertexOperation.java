@@ -8,7 +8,7 @@ import net.minecraftforge.common.model.IModelState;
 public interface IVertexOperation {
 
 	/**
-	 * Load any required references and add dependencies to the pipeline based on the current model (may be null)
+	 * Load any required references and add dependencies to the pipeline based on the current model (can be null)
 	 * Return false if this operation is redundant in the pipeline with the given model
 	 */
 	boolean load(IModelState state);

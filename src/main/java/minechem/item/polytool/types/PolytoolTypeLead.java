@@ -1,6 +1,5 @@
 package minechem.item.polytool.types;
 
-import java.util.Iterator;
 import java.util.List;
 
 import minechem.item.element.ElementEnum;
@@ -14,13 +13,11 @@ public class PolytoolTypeLead extends PolytoolUpgradeType {
 	public void hitEntity(ItemStack itemStack, EntityLivingBase target, EntityLivingBase player) {
 		if (!target.world.isRemote) {
 			List<EntityLivingBase> targets = target.world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(target.posX - power * 3, target.posY - power * 3, target.posZ - power * 3, target.posX + power * 3, target.posY + power * 3, target.posZ + power * 3));
-			Iterator<EntityLivingBase> iter = targets.iterator();
-			while (iter.hasNext()) {
-				EntityLivingBase entity = iter.next();
-				if (entity != player) {
-					entity.motionY = -50;
-				}
-			}
+            for (EntityLivingBase entity : targets) {
+                if (entity != player) {
+                    entity.motionY = -50;
+                }
+            }
 		}
 	}
 

@@ -7,7 +7,7 @@ public class LocalPosition extends Position {
 
 	DirectionMultiplier multiplier;
 
-	public class Pos3 {
+	public static class Pos3 {
 		public int x;
 		public int y;
 		public int z;

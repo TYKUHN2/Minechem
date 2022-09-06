@@ -21,7 +21,7 @@ public class SingleItemStackBasedIngredient extends Ingredient {
 	}
 
 	public static NonNullList<SingleItemStackBasedIngredient> fromItemStacks(ItemStack... stacks) {
-		NonNullList<SingleItemStackBasedIngredient> list = NonNullList.<SingleItemStackBasedIngredient>create();
+		NonNullList<SingleItemStackBasedIngredient> list = NonNullList.create();
 		if (stacks.length > 0) {
 			for (ItemStack stack : stacks) {
 				if (!stack.isEmpty()) {

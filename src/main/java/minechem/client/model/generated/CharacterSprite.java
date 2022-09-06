@@ -141,7 +141,7 @@ public class CharacterSprite extends TextureAtlasSprite {
 				}
 
 				@Override
-				public void close() throws IOException {
+				public void close() {
 
 				}
 			}, mp);

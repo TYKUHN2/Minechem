@@ -15,11 +15,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipeDecomposer {
-	public static Map<MapKey, RecipeDecomposer> recipes = new LinkedHashMap<MapKey, RecipeDecomposer>();
+	public static Map<MapKey, RecipeDecomposer> recipes = new LinkedHashMap<>();
 
 	private static final Random rand = new Random();
 	ItemStack input = ItemStack.EMPTY;
-	public Map<MapKey, PotionChemical> output = new LinkedHashMap<MapKey, PotionChemical>();
+	public Map<MapKey, PotionChemical> output = new LinkedHashMap<>();
 
 	//TODO:Add blacklist support for fluids
 	public static RecipeDecomposer add(RecipeDecomposer recipe) {
@@ -27,23 +27,16 @@ public class RecipeDecomposer {
 			if (isBlacklisted(recipe.input) || (recipe.input.getItem() instanceof IDecomposerControl && ((IDecomposerControl) recipe.input.getItem()).getDecomposerMultiplier(recipe.input) == 0)) {
 				return null;
 			}
-			if (recipes.get(MapKey.getKey(recipe.input)) == null) {
-				recipes.put(MapKey.getKey(recipe.input), recipe);
-			}
+			recipes.putIfAbsent(MapKey.getKey(recipe.input), recipe);
 		}
 		else if (recipe instanceof RecipeDecomposerFluid && ((RecipeDecomposerFluid) recipe).inputFluid != null) {
-			if (recipes.get(MapKey.getKey(((RecipeDecomposerFluid) recipe).inputFluid)) == null) {
-				recipes.put(MapKey.getKey(((RecipeDecomposerFluid) recipe).inputFluid), recipe);
-			}
+			recipes.putIfAbsent(MapKey.getKey(((RecipeDecomposerFluid) recipe).inputFluid), recipe);
 		}
 		return recipe;
 	}
 
 	public static RecipeDecomposer remove(String string) {
-		if (recipes.containsKey(string)) {
-			return recipes.remove(string);
-		}
-		return null;
+		return recipes.remove(string);
 	}
 
 	public static RecipeDecomposer remove(ItemStack itemStack) {
@@ -101,7 +94,7 @@ public class RecipeDecomposer {
 	}
 
 	public RecipeDecomposer(ItemStack input, List<PotionChemical> chemicals) {
-		this(chemicals.toArray(new PotionChemical[chemicals.size()]));
+		this(chemicals.toArray(new PotionChemical[0]));
 		this.input = input;
 	}
 
@@ -129,32 +122,28 @@ public class RecipeDecomposer {
 	}
 
 	public ArrayList<PotionChemical> getOutput() {
-		ArrayList<PotionChemical> result = new ArrayList<PotionChemical>();
-		result.addAll(output.values());
-		return result;
+		return new ArrayList<>(output.values());
 	}
 
 	public ArrayList<PotionChemical> getOutputRaw() {
-		ArrayList<PotionChemical> result = new ArrayList<PotionChemical>();
-		result.addAll(output.values());
-		return result;
+		return new ArrayList<>(output.values());
 	}
 
 	public PotionChemical[] getOutputAsArray() {
-		return output.values().toArray(new PotionChemical[output.values().size()]);
+		return output.values().toArray(new PotionChemical[0]);
 	}
 
 	public ArrayList<PotionChemical> getPartialOutputRaw(int f) {
 		ArrayList<PotionChemical> raw = getOutput();
-		ArrayList<PotionChemical> result = new ArrayList<PotionChemical>();
+		ArrayList<PotionChemical> result = new ArrayList<>();
 		if (raw != null) {
 			for (PotionChemical chem : raw) {
 				try {
 					if (chem != null) {
 						PotionChemical reduced = chem.copy();
 						if (reduced != null) {
-							reduced.amount = (int) Math.floor(chem.amount / f);
-							if (reduced.amount == 0 && rand.nextFloat() > (chem.amount / f)) {
+							reduced.amount = (int) Math.floor((float)(chem.amount / f));
+							if (reduced.amount == 0 && rand.nextFloat() > (float)(chem.amount / f)) {
 								reduced.amount = 1;
 							}
 							result.add(reduced);

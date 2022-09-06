@@ -34,7 +34,7 @@ public interface IModelParticleProvider extends IBakedModel {
 	Set<TextureAtlasSprite> getHitEffects(@Nonnull RayTraceResult traceResult, IBlockState state, IBlockAccess world, BlockPos pos);
 
 	/**
-	 * Used to retrieve the destroy particles for the block.
+	 * Used to retrieve the destruction particles for the block.
 	 *
 	 * @param state The state, getActualState and getExtendedState has been called.
 	 * @param world The world.

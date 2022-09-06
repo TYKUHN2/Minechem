@@ -1,7 +1,5 @@
 package minechem.container;
 
-import java.util.Iterator;
-
 import minechem.inventory.slot.SlotFake;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -42,7 +40,7 @@ public class ContainerWithFakeSlots extends Container {
 		if (slotNum >= 0 && slotNum < inventorySlots.size()) {
 			slot = getSlot(slotNum);
 		}
-		if (slot != null && slot instanceof SlotFake && clickType != ClickType.CLONE) {
+		if (slot instanceof SlotFake && clickType != ClickType.CLONE) {
 			ItemStack stackOnMouse = entityPlayer.inventory.getItemStack();
 			if (!stackOnMouse.isEmpty() && slot.isItemValid(stackOnMouse)) {
 				if (mouseButton == MOUSE_LEFT) {
@@ -115,11 +113,8 @@ public class ContainerWithFakeSlots extends Container {
 				if (!dragSlots.isEmpty()) {
 					itemstack3 = inventoryplayer.getItemStack().copy();
 					i1 = inventoryplayer.getItemStack().getCount();
-					Iterator<Slot> iterator = dragSlots.iterator();
 
-					while (iterator.hasNext()) {
-						Slot slot1 = iterator.next();
-
+					for (Slot slot1 : dragSlots) {
 						if (slot1 != null && canAddItemToSlot(slot1, inventoryplayer.getItemStack(), true) && slot1.isItemValid(inventoryplayer.getItemStack()) && inventoryplayer.getItemStack().getCount() >= dragSlots.size() && canDragIntoSlot(slot1)) {
 							ItemStack itemstack1 = itemstack3.copy();
 							int j1 = slot1.getHasStack() ? slot1.getStack().getCount() : 0;
@@ -163,7 +158,7 @@ public class ContainerWithFakeSlots extends Container {
 
 			if ((clickType == ClickType.PICKUP || clickType == ClickType.QUICK_MOVE) && (mouseButton == 0 || mouseButton == 1)) {
 				if (slotNum == -999) {
-					if (!inventoryplayer.getItemStack().isEmpty() && slotNum == -999) {
+					if (!inventoryplayer.getItemStack().isEmpty()) {
 						if (mouseButton == 0) {
 							entityPlayer.dropItem(inventoryplayer.getItemStack(), true);
 							inventoryplayer.setItemStack(ItemStack.EMPTY);

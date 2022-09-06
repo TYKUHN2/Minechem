@@ -19,7 +19,7 @@ public class ContainerDecomposer extends Container implements IRadiationShield, 
 	protected final int kPlayerInventorySlotStart;
 	protected final int kPlayerInventorySlotEnd;
 	protected final int kDecomposerInventoryEnd;
-	private InventoryPlayer playerInventory;
+	private final InventoryPlayer playerInventory;
 
 	public ContainerDecomposer(InventoryPlayer inventoryPlayer, TileDecomposer decomposer) {
 		this.decomposer = decomposer;
@@ -119,7 +119,7 @@ public class ContainerDecomposer extends Container implements IRadiationShield, 
 		//	return new ArrayList<ItemStack>();
 		//}
 		//else {
-		List<ItemStack> storageInventory = new ArrayList<ItemStack>();
+		List<ItemStack> storageInventory = new ArrayList<>();
 		//for (int slot = 0; slot <= 18; slot++) {
 		for (int slot : TileDecomposer.outputSlots) {
 			ItemStack stack = getSlot(slot).getStack();
@@ -155,7 +155,7 @@ public class ContainerDecomposer extends Container implements IRadiationShield, 
 			return playerInventory;
 		}
 		*/
-		List<ItemStack> playerInventoryStacks = new ArrayList<ItemStack>();
+		List<ItemStack> playerInventoryStacks = new ArrayList<>();
 		for (int i = 0; i < playerInventory.getSizeInventory(); i++) {
 			playerInventoryStacks.add(playerInventory.getStackInSlot(i));
 		}

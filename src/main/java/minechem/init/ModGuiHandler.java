@@ -173,7 +173,7 @@ public class ModGuiHandler implements IGuiHandler {
 		return new GuiTableOfElements(player);
 	}
 
-	public static enum GUIType {
+	public enum GUIType {
 
 			GUI_ID_TILEENTITY, GUI_ID_JOURNAL, GUI_TABLE, GUI_ID_POLYTOOL, GUI_ID_SYNTHESIS;
 

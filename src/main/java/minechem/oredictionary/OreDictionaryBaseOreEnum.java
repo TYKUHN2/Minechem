@@ -48,8 +48,8 @@ public enum OreDictionaryBaseOreEnum {
 		diamond("Diamond", new Molecule(MoleculeEnum.fullrene, 3)),
 		NetherQuartz("NetherQuartz", new Molecule(MoleculeEnum.aluminiumPhosphate));
 
-	private String name;
-	private PotionChemical[] composition;
+	private final String name;
+	private final PotionChemical[] composition;
 
 	public String getName() {
 		return name;

@@ -59,7 +59,7 @@ public class ContainerPolytool extends Container {
 						return ItemStack.EMPTY;
 					}
 				}
-				else if (slot > 9) {
+				else {
 					if (!mergeItemStack(stackInSlot, 1, 10, true)) {
 						return ItemStack.EMPTY;
 					}

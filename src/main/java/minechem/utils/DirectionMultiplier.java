@@ -21,7 +21,7 @@ public enum DirectionMultiplier {
 	public int yMultiplier;
 	public int zMultiplier;
 
-	private DirectionMultiplier(int x, int y, int z) {
+	DirectionMultiplier(int x, int y, int z) {
 		xMultiplier = x;
 		yMultiplier = y;
 		zMultiplier = z;

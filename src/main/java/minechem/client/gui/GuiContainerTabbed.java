@@ -25,15 +25,15 @@ public abstract class GuiContainerTabbed extends GuiContainerBase implements Gui
 
 	private String clickedURI;
 
-	protected static enum SlotColor {
+	protected enum SlotColor {
 			BLUE, RED, YELLOW, ORANGE, GREEN, PURPLE
 	}
 
-	protected static enum SlotType {
+	protected enum SlotType {
 			SINGLE, OUTPUT, DOUBLEOUTPUT
 	}
 
-	protected static enum SlotRender {
+	protected enum SlotRender {
 			TOP, BOTTOM, FULL
 	}
 
@@ -42,15 +42,13 @@ public abstract class GuiContainerTabbed extends GuiContainerBase implements Gui
 	protected static int SCALE_PROGRESS = 24;
 	protected static int SCALE_SPEED = 16;
 
-	protected ArrayList<GuiTab> tabListLeft = new ArrayList<GuiTab>();
-	protected ArrayList<GuiTab> tabListRight = new ArrayList<GuiTab>();
+	protected ArrayList<GuiTab> tabListLeft = new ArrayList<>();
+	protected ArrayList<GuiTab> tabListRight = new ArrayList<>();
 
 	public int mouseX = 0;
 	public int mouseY = 0;
 
 	public static boolean drawBorders;
-
-	private final int _zLevel = 3;
 
 	public void drawTexture(int x, int y, ResourceLocation resource) {
 		int w = 16;
@@ -60,10 +58,10 @@ public abstract class GuiContainerTabbed extends GuiContainerBase implements Gui
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();
 		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-		buffer.pos(x + 0, y + h, _zLevel - 1).tex(0D, 1D).endVertex();
-		buffer.pos(x + w, y + h, _zLevel - 1).tex(1D, 1D).endVertex();
-		buffer.pos(x + w, y + 0, _zLevel - 1).tex(1D, 0D).endVertex();
-		buffer.pos(x + 0, y + 0, _zLevel - 1).tex(0D, 0D).endVertex();
+		buffer.pos(x, y + h, 2).tex(0D, 1D).endVertex();
+		buffer.pos(x + w, y + h, 2).tex(1D, 1D).endVertex();
+		buffer.pos(x + w, y, 2).tex(1D, 0D).endVertex();
+		buffer.pos(x, y, 2).tex(0D, 0D).endVertex();
 		tessellator.draw();
 	}
 

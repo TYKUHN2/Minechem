@@ -38,8 +38,8 @@ public class TabTable extends GuiTab {
 				buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
 				buffer.pos(x + 4, y + h + 4, 2).tex(0D, 1D).endVertex();
 				buffer.pos(x + 4 + w, y + h + 4, 2).tex(1D, 1D).endVertex();
-				buffer.pos(x + 4 + w, y + 0 + 4, 2).tex(1D, 0D).endVertex();
-				buffer.pos(x + 4 + 0, y + 0 + 4, 2).tex(0D, 0D).endVertex();
+				buffer.pos(x + 4 + w, y + 4, 2).tex(1D, 0D).endVertex();
+				buffer.pos(x + 4, y + 4, 2).tex(0D, 0D).endVertex();
 				tessellator.draw();
 			}
 		}

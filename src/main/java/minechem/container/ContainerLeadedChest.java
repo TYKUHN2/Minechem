@@ -92,7 +92,7 @@ public class ContainerLeadedChest extends Container implements INoDecay {
 
 	@Override
 	public List<ItemStack> getStorageInventory() {
-		List<ItemStack> storageInventory = new ArrayList<ItemStack>();
+		List<ItemStack> storageInventory = new ArrayList<>();
 		for (int slot = 0; slot < 9; slot++) {
 			ItemStack stack = getSlot(slot).getStack();
 			if (!stack.isEmpty()) {
@@ -104,7 +104,7 @@ public class ContainerLeadedChest extends Container implements INoDecay {
 
 	@Override
 	public List<ItemStack> getPlayerInventory() {
-		List<ItemStack> playerInventory = new ArrayList<ItemStack>();
+		List<ItemStack> playerInventory = new ArrayList<>();
 		for (int slot = 9; slot < inventorySlots.size(); slot++) {
 			ItemStack stack = getSlot(slot).getStack();
 			if (!stack.isEmpty()) {

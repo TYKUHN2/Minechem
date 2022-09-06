@@ -14,12 +14,12 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
  */
 public interface ISynthesisRecipe extends IForgeRegistryEntry<ISynthesisRecipe> {
 
-	default public boolean isShaped() {
+	default boolean isShaped() {
 		return false;
 	}
 
-	default public NonNullList<SingleItemStackBasedIngredient> getSingleIngredients() {
-		return NonNullList.<SingleItemStackBasedIngredient>create();
+	default NonNullList<SingleItemStackBasedIngredient> getSingleIngredients() {
+		return NonNullList.create();
 	}
 
 	/**
@@ -44,7 +44,7 @@ public interface ISynthesisRecipe extends IForgeRegistryEntry<ISynthesisRecipe> 
 	}
 
 	default NonNullList<Ingredient> getIngredients() {
-		return NonNullList.<Ingredient>create();
+		return NonNullList.create();
 	}
 
 	default boolean isDynamic() {
@@ -55,6 +55,6 @@ public interface ISynthesisRecipe extends IForgeRegistryEntry<ISynthesisRecipe> 
 		return "";
 	}
 
-	public int getEnergyCost();
+	int getEnergyCost();
 
 }

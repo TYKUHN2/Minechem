@@ -3,7 +3,6 @@ package minechem.client.render;
 import java.util.List;
 
 import minechem.block.multiblock.tile.TileGhostBlock;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -21,10 +20,8 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -45,7 +42,7 @@ public class RenderGhostBlock extends TileEntitySpecialRenderer<TileGhostBlock> 
 			return;
 		}
 		IBakedModel bakedmodel = mesher.getItemModel(stack);
-		bakedmodel = bakedmodel.getOverrides().handleItemState(bakedmodel, stack, (World) null, (EntityLivingBase) null);
+		bakedmodel = bakedmodel.getOverrides().handleItemState(bakedmodel, stack, null, null);
 		TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
 
 		float pbx = OpenGlHelper.lastBrightnessX;
@@ -73,9 +70,9 @@ public class RenderGhostBlock extends TileEntitySpecialRenderer<TileGhostBlock> 
 			BufferBuilder bufferbuilder = tessellator.getBuffer();
 			bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
 			for (EnumFacing enumfacing : EnumFacing.values()) {
-				renderQuads(bufferbuilder, bakedmodel.getQuads((IBlockState) null, enumfacing, 0L), -1, stack);
+				renderQuads(bufferbuilder, bakedmodel.getQuads(null, enumfacing, 0L), -1, stack);
 			}
-			renderQuads(bufferbuilder, bakedmodel.getQuads((IBlockState) null, (EnumFacing) null, 0L), -1, stack);
+			renderQuads(bufferbuilder, bakedmodel.getQuads(null, null, 0L), -1, stack);
 			tessellator.draw();
 
 			if (stack.hasEffect()) {

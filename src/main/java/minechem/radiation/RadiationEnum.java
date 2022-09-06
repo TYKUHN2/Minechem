@@ -11,11 +11,11 @@ public enum RadiationEnum {
 		highlyRadioactive(ModGlobals.TICKS_PER_HOUR * 3, 8, "6"),
 		extremelyRadioactive(ModGlobals.TICKS_PER_HOUR, 16, "4");
 
-	private long life;
-	private int damage;
-	private String colour;
+	private final long life;
+	private final int damage;
+	private final String colour;
 
-	private RadiationEnum(int life, int damage, String colour) {
+	RadiationEnum(int life, int damage, String colour) {
 		this.life = life;
 		this.damage = damage;
 		this.colour = ModGlobals.TEXT_MODIFIER + colour;
