@@ -1,15 +1,324 @@
 buildscript {
 	repositories {
-		jcenter()
 		maven {
-			url = "http://files.minecraftforge.net/maven"
+			url = "https://maven.minecraftforge.net"
 		}
+		mavenCentral()
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+		classpath "net.minecraftforge.gradle:ForgeGradle:3.0.190"
 	}
 }
-apply from : 'https://github.com/p455w0rd/buildscripts/raw/master/base.gradle'
-apply from : 'https://github.com/p455w0rd/buildscripts/raw/master/thermal.gradle'
-apply from : 'https://github.com/p455w0rd/buildscripts/raw/master/enderio.gradle'
-apply from : 'https://github.com/p455w0rd/buildscripts/raw/master/apijar.gradle'
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'maven-publish'
+apply plugin: 'java'
+
+import net.minecraftforge.gradle.common.task.SignJar
+
+dependencies {
+	minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
+
+	compile 'com.google.code.findbugs:jsr305:3.0.2'
+
+	compile 'org.apache.commons:commons-lang3:3.12.0'
+	compile "cofh:ThermalDynamics:1.12.2-2.5.4.18:universal"
+	compile "cofh:ThermalFoundation:1.12.2-2.6.2.26:universal"
+	compile "cofh:ThermalExpansion:1.12.2-5.5.3.41:universal"
+	compile "cofh:CoFHCore:1.12.2-4.6.2.25:universal"
+	compile "cofh:CoFHWorld:1.12.2-1.3.0.6:universal"
+	compile "cofh:RedstoneFlux:1.12-2.1.0.6:universal"
+	compile "info.loenwind.autoconfig:AutoConfig:1.12.2-1.0.1"
+	compile "info.loenwind.autosave:AutoSave:1.12.2-1.0.8"
+	compile "mezz.jei:jei_1.12.2:4.14.3.238"
+	if (!project.hasProperty("excludePwLib")) {
+		compile "p455w0rd:p455w0rdslib:1.12.2-2.3.161"
+	}
+}
+
+minecraft {
+	mappings channel: 'snapshot', version: '20171003-1.12'
+
+	if (project.hasProperty("signSHA1")) {
+		replace '@FINGERPRINT@', project.findProperty('signSHA1')
+	}
+
+	runs {
+		client {
+			workingDirectory project.file('run')
+			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+			property 'forge.logging.console.level', 'debug'
+
+			jvmArgs += "-Dfml.doNotBackup=true"
+		}
+
+		server {
+			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+			property 'forge.logging.console.level', 'debug'
+
+			jvmArgs += "-Dfml.doNotBackup=true"
+			jvmArgs += "-Dfml.queryResult=confirm"
+		}
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url = "https://libraries.minecraft.net/" }
+	maven { url = "https://maven.minecraftforge.net/" }
+	maven {
+		name = "covers Maven"
+		url = "https://maven.covers1624.net"
+	}
+	maven {
+		name = "Jared"
+		url 'https://maven.blamejared.com'
+	}
+	maven {
+		name = "progwml6"
+		url = "https://dvs1.progwml6.com/files/maven"
+	}
+	maven {
+		name = "tterrag"
+		url = "https://maven.tterrag.com"
+	}
+	maven {
+		name = "ProfMobius"
+		url = "https://www.mobiusstrip.eu/maven"
+	}
+	maven {
+		name = "ChickenBones"
+		url = "https://chickenbones.net/maven"
+	}
+	maven {
+		name = "k-4unl"
+		url "https://maven.k-4u.nl"
+	}
+	maven {
+		name = "LatvianModder"
+		url = "https://maven.latmod.com"
+	}
+	maven {
+		name = "Buildcraft"
+		url = 'https://mod-buildcraft.com/maven'
+	}
+	maven {
+		name = "mmd"
+		url = "https://maven.mcmoddev.com"
+	}
+	maven {
+		name = "ModMaven"
+		url = "https://modmaven.dev"
+	}
+	maven {
+		name = "CurseForge Maven"
+		url = "https://minecraft.curseforge.com/api/maven/"
+	}
+}
+
+String getVersion() {
+	String major = "1";
+	String revision = "0";
+	String patch = "0";
+	if (project.hasProperty("modPropertiesJavaFile")) {
+		String prefix = "public static final String VERSION = \"";
+		File file = file(project.modPropertiesJavaFile)
+		file.eachLine { String s ->
+			s = s.trim();
+			if (s.startsWith(prefix)) {
+				s = s.substring(prefix.length(), s.length() - 2);
+				String[] pts = s.split("\\.");
+
+				major = pts[0];
+				revision = pts[1];
+				patch = pts[2];
+			}
+		}
+	}
+	return "$major.$revision.$patch";
+}
+
+sourceCompatibility = targetCompatibility = "1.8"
+
+version = "1.12.2-" + getVersion()
+group = getGroup()
+archivesBaseName = getArchiveName()
+
+configurations.all {
+	transitive = false
+}
+
+task signJar(type: SignJar, dependsOn: "reobfJar") {
+	onlyIf {
+		project.hasProperty('keyStore')
+	}
+	if (project.hasProperty("keyStore")) {
+		keyStore = project.keyStore
+		alias = project.keyStoreAlias
+		storePass = project.keyStorePass
+		keyPass = project.keyStoreKeyPass
+		inputFile = jar.archiveFile
+		outputFile = jar.archiveFile
+	}
+}
+
+task sourcesJar(type: Jar) {
+	from sourceSets.main.allJava
+	classifier = 'sources'
+}
+
+task deobfJar(type: Jar) {
+	from sourceSets.main.output
+	classifier = 'deobf'
+	manifest {
+		if (project.hasProperty("fmlPlugin")) {
+			if (file("./src/main/resources/" + getModId() + "_at.cfg").exists()) {
+				manifest.mainAttributes(
+						"Created-By": "${System.getProperty('java.vm.version')} + (${System.getProperty('java.vm.vendor')})",
+						"Implementation-Title": getModId(),
+						"Implementation-Version": getVersion(),
+						"Built-On": getVersion(),
+						"FMLCorePlugin": project.fmlPlugin,
+						"FMLCorePluginContainsFMLMod": "true",
+						"FMLAT": getModId() + "_at.cfg"
+				)
+			}
+			else {
+				manifest.mainAttributes(
+						"Created-By": "${System.getProperty('java.vm.version')} + (${System.getProperty('java.vm.vendor')})",
+						"Implementation-Title": getModId(),
+						"Implementation-Version": getVersion(),
+						"Built-On": getVersion(),
+						"FMLCorePlugin": project.fmlPlugin,
+						"FMLCorePluginContainsFMLMod": "true"
+				)
+			}
+		}
+		else if (file("./src/main/resources/" + getModId() + "_at.cfg").exists()) {
+			attributes 'FMLAT': getModId() + "_at.cfg"
+		}
+	}
+}
+
+task apiJar(type: Jar) {
+	classifier = 'api'
+	from sourceSets.main.output
+	from sourceSets.main.allJava
+	//from sourceSets.api.java
+	//include "p455w0rd/" + getModId() + "/api/**"
+	//from sourceSets.api.output
+	//include "p455w0rd/" + getModId() + "/api/**"
+}
+
+task repairTextures(type: Copy) {
+	from "src/main/resources/assets/" + getModId() + "/textures"
+	into "build/resources/main/assets/" + getModId() + "/textures"
+}
+
+processResources.finalizedBy repairTextures
+
+artifacts {
+	archives sourcesJar
+	archives deobfJar
+	if (project.hasProperty("buildAPIJar")) {
+		archives apiJar
+	}
+}
+
+processResources {
+	inputs.property "version", project.version
+	inputs.property "mcversion", "1.12.2"
+	filter { String line -> line.replace('@MODNAME@', getModName()) }
+	from(sourceSets.main.resources.srcDirs) {
+		include "mcmod.info"
+		expand "version": project.version, "mcversion": "1.12.2"
+	}
+	from(sourceSets.main.resources.srcDirs) {
+		exclude "mcmod.info"
+	}
+	rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+jar {
+	manifest {
+		if (project.hasProperty("fmlPlugin")) {
+			if (file("./src/main/resources/" + getModId() + "_at.cfg").exists()) {
+				manifest.mainAttributes(
+						"Created-By": "${System.getProperty('java.vm.version')} + (${System.getProperty('java.vm.vendor')})",
+						"Implementation-Title": getModId(),
+						"Implementation-Version": getVersion(),
+						"Built-On": getVersion(),
+						"FMLCorePlugin": project.fmlPlugin,
+						"FMLCorePluginContainsFMLMod": "true",
+						"FMLAT": getModId() + "_at.cfg"
+				)
+			}
+			else {
+				manifest.mainAttributes(
+						"Created-By": "${System.getProperty('java.vm.version')} + (${System.getProperty('java.vm.vendor')})",
+						"Implementation-Title": getModId(),
+						"Implementation-Version": getVersion(),
+						"Built-On": getVersion(),
+						"FMLCorePlugin": project.fmlPlugin,
+						"FMLCorePluginContainsFMLMod": "true"
+				)
+			}
+		}
+		else if (file("./src/main/resources/" + getModId() + "_at.cfg").exists()) {
+			attributes 'FMLAT': getModId() + "_at.cfg"
+		}
+	}
+}
+
+String getArtifactGroup() {
+	if (project.hasProperty("artifactGroup")) {
+		return project.getProperty("artifactGroup");
+	}
+	return getGroup();
+}
+
+String getGroup() {
+	if (project.hasProperty("jarGroup")) {
+		return project.getProperty("jarGroup");
+	}
+	return "p455w0rd." + getModId();
+}
+
+String getModId() {
+	String modid = "mymod";
+	if (project.hasProperty("modPropertiesJavaFile")) {
+		String prefix = "public static final String MODID = \"";
+		File file = file(project.modPropertiesJavaFile)
+		file.eachLine { String s ->
+			s = s.trim();
+			if (s.startsWith(prefix)) {
+				s = s.substring(prefix.length(), s.length() - 2);
+				modid = s;
+			}
+		}
+	}
+	return "$modid";
+}
+
+String getModName() {
+	String modname = "MyMod";
+	if (project.hasProperty("modPropertiesJavaFile")) {
+		String prefix = "public static final String NAME = \"";
+		File file = file(project.modPropertiesJavaFile)
+		file.eachLine { String s ->
+			s = s.trim();
+			if (s.startsWith(prefix)) {
+				s = s.substring(prefix.length(), s.length() - 2);
+				modname = s;
+			}
+		}
+	}
+	return "$modname";
+}
+
+String getArchiveName() {
+	if (project.hasProperty("archiveBase")) {
+		return project.archiveBase;
+	}
+	return getModName();
+}
