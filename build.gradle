@@ -19,22 +19,24 @@ import net.minecraftforge.gradle.common.task.SignJar
 dependencies {
 	minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
 
-	implementation "cofh:ThermalFoundation:1.12.2-2.6.2.26:universal"
-	implementation "cofh:CoFHWorld:1.12.2-1.3.0.6:universal"
-	implementation "cofh:RedstoneFlux:1.12-2.1.0.6:universal"
-	implementation "mezz.jei:jei_1.12.2:4.14.3.238"
+	compileOnly "cofh:ThermalFoundation:1.12.2-2.6.2.26:universal"
+	compileOnly "cofh:CoFHWorld:1.12.2-1.3.0.6:universal"
+	compileOnly "cofh:RedstoneFlux:1.12-2.1.0.6:universal"
+	compileOnly "mezz.jei:jei_1.12.2:4.14.3.238"
 	if (!project.hasProperty("excludePwLib")) {
 		implementation "p455w0rd:p455w0rdslib:1.12.2-2.3.161"
 	}
-	implementation ("cofh:ThermalExpansion:1.12.2-5.5.3.41:universal") {
+	compileOnly ("cofh:ThermalExpansion:1.12.2-5.5.3.41:universal") {
 		transitive = false
 	}
-	implementation ("cofh:CoFHCore:1.12.2-4.6.2.25:universal") {
+	compileOnly ("cofh:CoFHCore:1.12.2-4.6.2.25:universal") {
 		transitive = false
 	}
-	implementation ("cofh:ThermalDynamics:1.12.2-2.5.4.18:universal") {
+	compileOnly ("cofh:ThermalDynamics:1.12.2-2.5.4.18:universal") {
 		transitive = false
 	}
+
+	runtimeOnly "net.minecraftforge:legacydev:0.2.3.1"
 }
 
 minecraft {
@@ -77,6 +79,9 @@ repositories {
 	maven {
 		name = "CurseForge Maven"
 		url = "https://minecraft.curseforge.com/api/maven/"
+	}
+	maven {
+		url = "https://maven.mcmoddev.com/"
 	}
 }
 
